@@ -270,7 +270,7 @@ Affichage automatique :
 Limite :
 
 - Ce hook ne peut pas lire directement la quota restante autoritative du compte.
-- Pour la quota/les limites réelles restantes, exécutez `/stats model`.
+- Pour la quota/les limites réelles restantes, exécutez `/stats model(~0.37.2) or /model(^0.38.0)`.
 - Si Gemini retente le même snapshot de transcript, le hook le considère déjà livré et supprime la sortie dupliquée.
 
 Exemple (silencieux mais snapshots conservés) :

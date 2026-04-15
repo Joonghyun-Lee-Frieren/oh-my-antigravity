@@ -270,7 +270,7 @@ Muestra automáticamente:
 Límite:
 
 - Este hook no puede leer por sí mismo la cuota restante autoritativa de la cuenta.
-- Para cuota/límites reales restantes, ejecuta `/stats model`.
+- Para cuota/límites reales restantes, ejecuta `/stats model(~0.37.2) or /model(^0.38.0)`.
 - Si Gemini reintenta la misma transcripción, el hook la trata como ya entregada y suprime salidas duplicadas.
 
 Ejemplo (silenciar salida del hook pero mantener snapshots de estado):

@@ -743,7 +743,7 @@ Structured Result
           </tr>
           <tr>
             <td>Per-turn usage visibility</td>
-            <td>Manual <code>/stats model</code> checks only</td>
+            <td>Manual <code>/stats model(~0.37.2) or /model(^0.38.0)</code> checks only</td>
             <td>Built-in <code>AfterAgent</code> hook prints compact turn/session token usage after each completed turn and suppresses duplicate replays of the same transcript snapshot</td>
           </tr>
           <tr>
@@ -857,13 +857,13 @@ Structured Result
             <tr><td><code>.omg/state/deep-interview.json</code></td><td>Lock-state input; when active, learn nudges are suppressed to protect interview flow</td></tr>
           </tbody>
         </table>
-        <p class="sub" style="margin-top:10px;">Boundary: the hook cannot fetch authoritative remaining account quota by itself. Use <code>/stats model</code> for remaining quota/limits.</p>
+        <p class="sub" style="margin-top:10px;">Boundary: the hook cannot fetch authoritative remaining account quota by itself. Use <code>/stats model(~0.37.2) or /model(^0.38.0)</code> for remaining quota/limits.</p>
       </div>
       <div>
         <h2>Sample Output</h2>
         <p class="sub">Printed automatically after each completed agent turn.</p>
         <pre class="diagram">[OMG][USAGE][TURN 12] turn=9,703 tok (in 9,487 / out 48 / cache 3,195)
-session=18,859 tok model=gemini-3-flash-preview 18,859 tok remaining=/stats model
+session=18,859 tok model=gemini-3-flash-preview 18,859 tok remaining=/stats model(~0.37.2) or /model(^0.38.0)
 (actionable session only) [OMG][Learn] Actionable session signals detected (4/11). Run '/omg:learn'
 (deep-interview lock active) learn nudge suppressed
 (duplicate retries against the same transcript snapshot are suppressed)</pre>
@@ -1011,7 +1011,7 @@ session=18,859 tok model=gemini-3-flash-preview 18,859 tok remaining=/stats mode
           </tr>
           <tr>
             <td>Enable usage visibility</td>
-            <td><code>/stats model</code> (periodic quota check) + built-in <code>AfterAgent</code> usage hook</td>
+            <td><code>/stats model(~0.37.2) or /model(^0.38.0)</code> (periodic quota check) + built-in <code>AfterAgent</code> usage hook</td>
             <td>Automatic per-turn token usage line plus authoritative remaining quota on demand</td>
           </tr>
           <tr>

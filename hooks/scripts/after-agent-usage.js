@@ -290,7 +290,7 @@ function buildMonitorLine(usage, turnCount, cwdLabel) {
     `(in ${formatNumber(usage.latest.input)} / out ${formatNumber(usage.latest.output)} / cache ${formatNumber(usage.latest.cached)})`,
     `session=${formatNumber(usage.session.total)} tok`,
     `model=${usage.latest.model} ${formatNumber(usage.byModel[usage.latest.model] || 0)} tok`,
-    `remaining=/stats model`,
+    `remaining=/stats model(~0.37.2) or /model(^0.38.0)`,
   ].join(" ");
 }
 
@@ -395,7 +395,7 @@ async function main() {
       `[OMG][USAGE][TURN ${nextTurnCount}]`,
       ...(cwdLabel ? [`cwd=${cwdLabel}`] : []),
       "usage=unavailable",
-      "remaining=/stats model",
+      "remaining=/stats model(~0.37.2) or /model(^0.38.0)",
     ].join(" ");
     writeState(statePath, {
       turn_count: nextTurnCount,
