@@ -222,7 +222,7 @@ function isDeepInterviewLockActive(state, nowMs = Date.now()) {
   return false;
 }
 
-// [수정] 파일 락 대비 재시도 로직 추가
+// Implement retry logic to handle file locks during parallel executions
 function writeState(statePath, state, retries = 5) {
   for (let i = 0; i < retries; i++) {
     try {
@@ -234,10 +234,10 @@ function writeState(statePath, state, retries = 5) {
       return;
     } catch (err) {
       if (i === retries - 1) {
-        // Fail-open
+        // Fail-open: learn hook must never block the parent workflow.
       } else {
         const end = Date.now() + 50;
-        while (Date.now() < end) { /* sync sleep */ }
+        while (Date.now() < end) { /* sync sleep for 50ms */ }
       }
     }
   }
@@ -365,7 +365,7 @@ function isPromptCooldownActive(state, cooldownMinutes, nowMs) {
   return diffMinutes < cooldownMinutes;
 }
 
-// [수정] CWD 결정 로직 개선
+// Improve CWD resolution to avoid collisions between projects
 function deriveCwd(hookInput) {
   if (typeof hookInput?.cwd === "string" && hookInput.cwd) {
     return hookInput.cwd;

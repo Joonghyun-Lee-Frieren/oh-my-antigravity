@@ -183,7 +183,7 @@ function readState(statePath) {
   }
 }
 
-// [수정] 파일 락 대비 재시도 로직 추가
+// Implement retry logic to handle file locks during parallel executions
 function writeState(statePath, state, retries = 5) {
   for (let i = 0; i < retries; i++) {
     try {
@@ -195,25 +195,26 @@ function writeState(statePath, state, retries = 5) {
       return;
     } catch (err) {
       if (i === retries - 1) {
-        // Fail-open
+        // Fail-open: monitor should not block the main workflow
       } else {
         const end = Date.now() + 50;
-        while (Date.now() < end) { /* sync sleep */ }
+        while (Date.now() < end) { /* sync sleep for 50ms */ }
       }
     }
   }
 }
 
-// [수정] CWD 결정 로직 개선
+// Improve CWD resolution to avoid collisions between projects
 function deriveCwd(hookInput) {
   if (typeof hookInput?.cwd === "string" && hookInput.cwd) {
     return hookInput.cwd;
-    
   }
 
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-  return path.resolve(__dirname, "..", "..");
+  try {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    return path.resolve(__dirname, "..", "..");
+  }
 }
 
 function buildUsageFromTranscript(transcript) {
