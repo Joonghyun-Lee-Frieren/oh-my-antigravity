@@ -13,6 +13,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const DEFAULT_STATE_RELATIVE_PATH = path.join(".omg", "state", "quota-watch.json");
 const QUIET_HOOKS_ENV = "OMG_HOOKS_QUIET";
@@ -173,6 +174,7 @@ function detectProvider(modelName) {
 
 function readState(statePath) {
   try {
+    if (!fs.existsSync(statePath)) return {};
     const raw = fs.readFileSync(statePath, "utf8");
     const parsed = safeJsonParse(raw, {});
     return parsed && typeof parsed === "object" ? parsed : {};
@@ -181,14 +183,37 @@ function readState(statePath) {
   }
 }
 
-function writeState(statePath, state) {
-  try {
-    const dir = path.dirname(statePath);
-    fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`, "utf8");
-  } catch {
-    // Fail-open: usage monitor should never block the parent workflow.
+// [수정] 파일 락 대비 재시도 로직 추가
+function writeState(statePath, state, retries = 5) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const dir = path.dirname(statePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`, "utf8");
+      return;
+    } catch (err) {
+      if (i === retries - 1) {
+        // Fail-open
+      } else {
+        const end = Date.now() + 50;
+        while (Date.now() < end) { /* sync sleep */ }
+      }
+    }
   }
+}
+
+// [수정] CWD 결정 로직 개선
+function deriveCwd(hookInput) {
+  if (typeof hookInput?.cwd === "string" && hookInput.cwd) {
+    return hookInput.cwd;
+    
+  }
+
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  return path.resolve(__dirname, "..", "..");
 }
 
 function buildUsageFromTranscript(transcript) {
@@ -291,7 +316,7 @@ async function main() {
   const rawInput = await readStdinText();
   const hookInput = safeJsonParse(rawInput, {});
 
-  const cwd = typeof hookInput?.cwd === "string" && hookInput.cwd ? hookInput.cwd : process.cwd();
+  const cwd = deriveCwd(hookInput);
   const sessionId =
     typeof hookInput?.session_id === "string" && hookInput.session_id
       ? hookInput.session_id

@@ -13,11 +13,10 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const QUIET_HOOKS_ENV = "OMG_HOOKS_QUIET";
 const STATE_ROOT_ENV = "OMG_STATE_ROOT";
-const HOOK_PROFILE_ENV = "OMG_HOOK_PROFILE";
-const DISABLED_HOOKS_ENV = "OMG_DISABLED_HOOKS";
 const DEFAULT_STATE_RELATIVE_PATH = path.join(".omg", "state", "learn-watch.json");
 const DEFAULT_DEEP_INTERVIEW_STATE_RELATIVE_PATH = path.join(
   ".omg",
@@ -53,12 +52,6 @@ const INFORMATIONAL_PREFIXES = [
   "compare",
 ];
 
-const LEARN_HOOK_KEYS = new Set([
-  "learn",
-  "learn-signal",
-  "omg-learn-signal-after-agent",
-]);
-
 function readStdinText() {
   return new Promise((resolve) => {
     let data = "";
@@ -91,36 +84,6 @@ function isTruthy(value) {
   }
   const normalized = value.trim().toLowerCase();
   return normalized === "1" || normalized === "true" || normalized === "yes" || normalized === "on";
-}
-
-function parseCsvEnv(value) {
-  if (typeof value !== "string") {
-    return [];
-  }
-  return value
-    .split(",")
-    .map((item) => item.trim().toLowerCase())
-    .filter(Boolean);
-}
-
-function resolveHookProfile() {
-  const raw =
-    typeof process.env[HOOK_PROFILE_ENV] === "string"
-      ? process.env[HOOK_PROFILE_ENV].trim().toLowerCase()
-      : "";
-  if (raw === "minimal" || raw === "balanced" || raw === "strict") {
-    return raw;
-  }
-  return "balanced";
-}
-
-function isHookDisabled(disabledHooks, candidates) {
-  for (const candidate of candidates) {
-    if (disabledHooks.includes(candidate)) {
-      return true;
-    }
-  }
-  return false;
 }
 
 function resolveStatePath(cwd) {
@@ -181,6 +144,7 @@ function normalizeState(state) {
 
 function readState(statePath) {
   try {
+    if (!fs.existsSync(statePath)) return {};
     const raw = fs.readFileSync(statePath, "utf8");
     return normalizeState(safeJsonParse(raw, {}));
   } catch {
@@ -190,6 +154,7 @@ function readState(statePath) {
 
 function readDeepInterviewState(statePath) {
   try {
+    if (!fs.existsSync(statePath)) return null;
     const raw = fs.readFileSync(statePath, "utf8");
     const parsed = safeJsonParse(raw, null);
     return parsed && typeof parsed === "object" ? parsed : null;
@@ -249,8 +214,6 @@ function isDeepInterviewLockActive(state, nowMs = Date.now()) {
     return false;
   }
 
-  // Backward-compatible fallback: treat recently updated lock snapshots as active
-  // even when no explicit boolean/status flag exists.
   const updatedAt = parseTimestamp(state.updated_at);
   if (updatedAt !== null && nowMs - updatedAt <= 2 * 60 * 60 * 1000) {
     return true;
@@ -259,12 +222,24 @@ function isDeepInterviewLockActive(state, nowMs = Date.now()) {
   return false;
 }
 
-function writeState(statePath, state) {
-  try {
-    fs.mkdirSync(path.dirname(statePath), { recursive: true });
-    fs.writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`, "utf8");
-  } catch {
-    // Fail-open: learn hook must never block the parent workflow.
+// [수정] 파일 락 대비 재시도 로직 추가
+function writeState(statePath, state, retries = 5) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const dir = path.dirname(statePath);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      fs.writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`, "utf8");
+      return;
+    } catch (err) {
+      if (i === retries - 1) {
+        // Fail-open
+      } else {
+        const end = Date.now() + 50;
+        while (Date.now() < end) { /* sync sleep */ }
+      }
+    }
   }
 }
 
@@ -370,50 +345,42 @@ function loadLearnConfig(cwd) {
     return defaults;
   }
 
-  const minSessionLength =
-    Number.isFinite(Number(config.min_session_length)) && Number(config.min_session_length) > 0
-      ? Number(config.min_session_length)
-      : defaults.minSessionLength;
-  const learnedSkillsPath =
-    typeof config.learned_skills_path === "string" && config.learned_skills_path.trim()
-      ? config.learned_skills_path.trim()
-      : defaults.learnedSkillsPath;
-  const promptOncePerSession =
-    typeof config.prompt_once_per_session === "boolean"
-      ? config.prompt_once_per_session
-      : defaults.promptOncePerSession;
-  const promptCooldownMinutes =
-    Number.isFinite(Number(config.prompt_cooldown_minutes)) &&
-    Number(config.prompt_cooldown_minutes) >= 0
-      ? Number(config.prompt_cooldown_minutes)
-      : defaults.promptCooldownMinutes;
-
   return {
-    minSessionLength,
-    learnedSkillsPath,
-    promptOncePerSession,
-    promptCooldownMinutes,
+    minSessionLength: Number(config.min_session_length) || defaults.minSessionLength,
+    learnedSkillsPath: (config.learned_skills_path || defaults.learnedSkillsPath).trim(),
+    promptOncePerSession: typeof config.prompt_once_per_session === "boolean" ? config.prompt_once_per_session : defaults.promptOncePerSession,
+    promptCooldownMinutes: Number(config.prompt_cooldown_minutes) || defaults.promptCooldownMinutes
   };
 }
 
-function isPromptCooldownActive(state, cooldownMinutes, nowMs = Date.now()) {
-  if (!Number.isFinite(cooldownMinutes) || cooldownMinutes <= 0) {
+function isPromptCooldownActive(state, cooldownMinutes, nowMs) {
+  if (!state.last_prompted_at) {
     return false;
   }
-
-  const lastPromptedAt = parseTimestamp(state?.last_prompted_at);
-  if (lastPromptedAt === null) {
+  const lastPromptedAt = Date.parse(state.last_prompted_at);
+  if (!Number.isFinite(lastPromptedAt)) {
     return false;
   }
+  const diffMinutes = (nowMs - lastPromptedAt) / (1000 * 60);
+  return diffMinutes < cooldownMinutes;
+}
 
-  return nowMs - lastPromptedAt < cooldownMinutes * 60 * 1000;
+// [수정] CWD 결정 로직 개선
+function deriveCwd(hookInput) {
+  if (typeof hookInput?.cwd === "string" && hookInput.cwd) {
+    return hookInput.cwd;
+  }
+
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  return path.resolve(__dirname, "..", "..");
 }
 
 async function main() {
   const rawInput = await readStdinText();
   const hookInput = safeJsonParse(rawInput, {});
 
-  const cwd = typeof hookInput?.cwd === "string" && hookInput.cwd ? hookInput.cwd : process.cwd();
+  const cwd = deriveCwd(hookInput);
   const sessionId =
     typeof hookInput?.session_id === "string" && hookInput.session_id
       ? hookInput.session_id
@@ -422,24 +389,17 @@ async function main() {
     typeof hookInput?.transcript_path === "string" && hookInput.transcript_path
       ? hookInput.transcript_path
       : "";
-  const quietHooks = isTruthy(process.env[QUIET_HOOKS_ENV]);
-  const hookProfile = resolveHookProfile();
-  const disabledHooks = parseCsvEnv(process.env[DISABLED_HOOKS_ENV]);
-  const statePath = resolveStatePath(cwd);
-  const deepInterviewStatePath = resolveDeepInterviewStatePath(cwd);
-  const prevState = readState(statePath);
-  const config = loadLearnConfig(cwd);
-  const deepInterviewState = readDeepInterviewState(deepInterviewStatePath);
-  const deepInterviewLockActive = isDeepInterviewLockActive(deepInterviewState);
   const nowMs = Date.now();
   const nowIso = new Date(nowMs).toISOString();
-  const learnHookDisabled =
-    hookProfile === "minimal" || isHookDisabled(disabledHooks, [...LEARN_HOOK_KEYS]);
 
-  if (learnHookDisabled) {
-    emitHookOutput("");
-    return;
-  }
+  const statePath = resolveStatePath(cwd);
+  const deepInterviewStatePath = resolveDeepInterviewStatePath(cwd);
+  const quietHooks = isTruthy(process.env[QUIET_HOOKS_ENV]);
+
+  const config = loadLearnConfig(cwd);
+  const prevState = readState(statePath);
+  const deepInterviewState = readDeepInterviewState(deepInterviewStatePath);
+  const deepInterviewLockActive = isDeepInterviewLockActive(deepInterviewState, nowMs);
 
   if (!transcriptPath || !fs.existsSync(transcriptPath)) {
     const eventKey = buildEventKey(sessionId, transcriptPath, null);
@@ -454,7 +414,7 @@ async function main() {
       last_session_id: sessionId,
       last_event_key: eventKey,
       last_reason: "missing-transcript",
-      updated_at: new Date().toISOString(),
+      updated_at: nowIso,
     });
     emitHookOutput("");
     return;
@@ -502,7 +462,7 @@ async function main() {
 
   const systemMessage =
     shouldPrompt && !quietHooks
-      ? `[OMG][Learn] Actionable session signals detected (${classification.actionableCount}/${messageCount}). Run '/omg:learn' to extract reusable patterns into ${config.learnedSkillsPath}.`
+      ? `[OMG][Learn] Actionable session signals detected (${classification.actionableCount}/${messageCount}). Run '/omg:learn' to extract reusable patterns.`
       : "";
 
   writeState(statePath, {
