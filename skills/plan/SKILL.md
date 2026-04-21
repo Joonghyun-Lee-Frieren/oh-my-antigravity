@@ -1,11 +1,18 @@
 ---
-name = "plan"
-description = "Create a phased implementation plan with risks, dependencies, and validation checkpoints."
+name: "plan"
+description: "Create a phased, dependency-aware implementation plan with risks, validation checkpoints, and rollback notes. Use when the request is non-trivial and should be planned before editing code, scope touches multiple files or subsystems, or work needs sequencing and parallelization decisions."
+user-invocable: true
+triggers:
+  - "plan this feature"
+  - "create implementation plan"
+  - "break down this task"
+  - "strategy for migration"
+  - "roadmap for changes"
 ---
 
 ## Purpose
 
-Use this skill when the request is non-trivial and should be planned before editing code.
+Convert a non-trivial request into a phased execution plan before any code changes begin.
 
 ## Trigger
 
@@ -17,7 +24,7 @@ Use this skill when the request is non-trivial and should be planned before edit
 
 1. Restate goals, constraints, and acceptance criteria.
 2. Inspect only the repository areas required for planning.
-3. Keep this stage read-only (no edits).
+3. Keep this stage read-only — no edits.
 4. Break work into phases and atomic tasks.
 5. Mark dependencies, critical path tasks, and parallelizable sidecars.
 6. Add validation checkpoints and rollback notes.
