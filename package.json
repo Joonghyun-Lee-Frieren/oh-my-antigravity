@@ -1,6 +1,6 @@
 {
-  "name": "oh-my-gemini-cli",
-  "version": "0.8.6",
+  "name": "oh-my-antigravity",
+  "version": "0.9.0",
   "description": "Extension-first context engineering and multi-agent workflow pack for Gemini CLI.",
   "keywords": [
     "gemini",
@@ -10,10 +10,10 @@
     "skills",
     "context-engineering"
   ],
-  "homepage": "https://github.com/Joonghyun-Lee-Frieren/oh-my-gemini-cli",
+  "homepage": "https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Joonghyun-Lee-Frieren/oh-my-gemini-cli.git"
+    "url": "https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity.git"
   },
   "license": "MIT",
   "author": "Joonghyun-Lee-Frieren",

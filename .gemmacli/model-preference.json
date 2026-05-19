@@ -1,0 +1,6 @@
+{
+  "version": 1,
+  "provider": "ollama",
+  "model": "gemma4:e4b",
+  "updatedAt": "2026-05-19T07:57:53.385Z"
+}

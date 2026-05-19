@@ -1,4 +1,4 @@
-# oh-my-gemini-cli Extension Installation Guide
+# oh-my-antigravity Extension Installation Guide
 
 This guide follows the official Gemini CLI Extensions workflow.
 
@@ -23,8 +23,8 @@ Compatibility note:
 ## Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/Joonghyun-Lee-Frieren/oh-my-gemini-cli.git
-cd oh-my-gemini-cli
+git clone https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity.git
+cd oh-my-antigravity
 ```
 
 ## Step 2: Install as Gemini Extension
@@ -32,7 +32,7 @@ cd oh-my-gemini-cli
 Run from your terminal (non-interactive mode):
 
 ```bash
-gemini extensions install https://github.com/Joonghyun-Lee-Frieren/oh-my-gemini-cli
+gemini extensions install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
 ```
 
 ## Step 3: Verify Extension Loaded
@@ -49,7 +49,7 @@ Or from terminal:
 gemini extensions list
 ```
 
-You should see `oh-my-gemini-cli` in the extension list.
+You should see `oh-my-antigravity` in the extension list.
 
 ## Step 3.5: Preview Features
 
@@ -111,5 +111,5 @@ No extension-level setting override is required for installation.
 From terminal:
 
 ```bash
-gemini extensions uninstall oh-my-gemini-cli
+gemini extensions uninstall oh-my-antigravity
 ```

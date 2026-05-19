@@ -1,13 +1,13 @@
-# oh-my-gemini-cli (OmG)
+# oh-my-antigravity (OmG)
 
-[![Release](https://img.shields.io/github/v/tag/Joonghyun-Lee-Frieren/oh-my-gemini-cli?sort=semver&label=release)](https://github.com/Joonghyun-Lee-Frieren/oh-my-gemini-cli/releases)
-[![Version Check](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-gemini-cli/version-check.yml?branch=main&label=version%20check)](https://github.com/Joonghyun-Lee-Frieren/oh-my-gemini-cli/actions/workflows/version-check.yml)
+[![Release](https://img.shields.io/github/v/tag/Joonghyun-Lee-Frieren/oh-my-antigravity?sort=semver&label=release)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/releases)
+[![Version Check](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-antigravity/version-check.yml?branch=main&label=version%20check)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/actions/workflows/version-check.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
-[![Stars](https://img.shields.io/github/stars/Joonghyun-Lee-Frieren/oh-my-gemini-cli?style=social)](https://github.com/Joonghyun-Lee-Frieren/oh-my-gemini-cli/stargazers)
-[![Gemini Extension](https://img.shields.io/badge/Gemini-Extension-0d8a83)](https://geminicli.com/extensions/?name=Joonghyun-Lee-Frierenoh-my-gemini-cli)
+[![Stars](https://img.shields.io/github/stars/Joonghyun-Lee-Frieren/oh-my-antigravity?style=social)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/stargazers)
+[![Gemini Extension](https://img.shields.io/badge/Gemini-Extension-0d8a83)](https://geminicli.com/extensions/?name=Joonghyun-Lee-Frierenoh-my-antigravity)
 [![Sponsor](https://img.shields.io/badge/Sponsor-GitHub_Sponsors-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/Joonghyun-Lee-Frieren)
 
-[Page d'accueil](https://joonghyun-lee-frieren.github.io/oh-my-gemini-cli/) | [Historique](./history.md)
+[Page d'accueil](https://joonghyun-lee-frieren.github.io/oh-my-antigravity/) | [Historique](./history.md)
 
 [한국어](./README_ko.md) | [日本語](./README_ja.md) | [Français](./README_fr.md) | [中文](./README_zh.md) | [Español](./README_es.md)
 
@@ -33,7 +33,7 @@ OmG fait évoluer Gemini CLI d'un assistant mono-session vers un workflow d'ing�
 Installez depuis GitHub via la commande officielle Gemini Extensions :
 
 ```bash
-gemini extensions install https://github.com/Joonghyun-Lee-Frieren/oh-my-gemini-cli
+gemini extensions install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
 ```
 
 Vérification en mode interactif :
@@ -56,18 +56,11 @@ Smoke test :
 
 Note : les commandes d'installation/mise à jour d'extension s'exécutent en mode terminal (`gemini extensions ...`), pas en mode slash interactif.
 
-## Nouveautés de v0.8.1
+## Nouveautés de v0.9.0
 
-- La guidance de modèle OmG par défaut est passée des noms preview `gemini-3.x` figés aux alias Gemini CLI :
-  - la lane `balanced` utilise désormais `pro`, `flash` et `flash-lite` par défaut
-  - `/omg:model`, `/omg:mode` et la guidance d'assemblage d'équipe décrivent maintenant un routage par alias plutôt que des noms de modèles concrets qui vieillissent
-- Le routage par alias adossé aux previews est activé par défaut dans ce workspace :
-  - ajout de `.gemini/settings.json` avec `general.previewFeatures=true`
-  - `pro` et `auto` peuvent suivre le routage plus récent de Gemini CLI vers les previews quand il est pris en charge
-- Visibilité du modèle ajoutée avant exécution :
-  - le nouveau hook `BeforeModel` affiche la stratégie de modèle attendue avant l'envoi de la requête par Gemini CLI
-  - `/omg:status` et les aperçus HUD exposent plus clairement la stratégie, les alias de lane et le statut preview
-- Version extension/package montée à `0.8.1`, avec refresh des README, README coréen, docs landing et historique.
+- Project and extension package name changed from `oh-my-gemini-cli` to `oh-my-antigravity`.
+- GitHub, GitHub Pages, extension gallery, install/uninstall commands, badges, and Star History links were updated for the new repository name.
+- Extension/package metadata was bumped to `0.9.0`, with README, Korean README, landing page, installation guide, localized docs, and history refreshed.
 
 ## Frontière d'extension et sécurité de mise à niveau
 
@@ -475,7 +468,7 @@ Les retained skills sont volontairement limitées à un set compact deep-work po
 ## Structure du projet
 
 ```text
-oh-my-gemini-cli/
+oh-my-antigravity/
 |- GEMINI.md
 |- gemini-extension.json
 |- .omg/
@@ -568,7 +561,7 @@ Note de performance importante :
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/image?repos=Joonghyun-Lee-Frieren/oh-my-gemini-cli&type=date&legend=top-left)](https://www.star-history.com/?repos=Joonghyun-Lee-Frieren%2Foh-my-gemini-cli&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/image?repos=Joonghyun-Lee-Frieren/oh-my-antigravity&type=date&legend=top-left)](https://www.star-history.com/?repos=Joonghyun-Lee-Frieren%2Foh-my-antigravity&type=date&legend=top-left)
 
 ## Licence
 

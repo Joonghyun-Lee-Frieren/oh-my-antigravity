@@ -1,6 +1,15 @@
 # Changelog
 
-All notable changes to oh-my-gemini-cli are documented here.
+All notable changes to oh-my-antigravity are documented here.
+
+## v0.9.0 - Project Rename to oh-my-antigravity (2026-05-20)
+
+### Changed
+
+- Renamed the project and extension package from `oh-my-gemini-cli` to `oh-my-antigravity`.
+- Updated repository, GitHub Pages, extension gallery, installation, uninstall, badge, and Star History references across README, Korean README, localized docs, landing page, and installation guide.
+- Bumped package and extension metadata to `v0.9.0`.
+- Recorded the rename in release history.
 
 ## Unreleased - Gemini CLI May Compatibility Sync (2026-05-13)
 
@@ -84,6 +93,7 @@ All notable changes to oh-my-gemini-cli are documented here.
 
 | Version | Date | Theme | Outcome |
 | --- | --- | --- | --- |
+| `v0.9.0` | 2026-05-20 | Project rename | Renamed the project and extension package to `oh-my-antigravity`, updated public docs and install links, and bumped metadata to `v0.9.0` |
 | `v0.8.6` | 2026-05-18 | Blueprint workflow | Added `/omg:blueprint` and `$blueprint` for product/UI workflow decisions, interface states, content hierarchy, accessibility, responsive constraints, and verification hooks before implementation |
 | `v0.8.5` | 2026-05-04 | Goal mode autonomous delivery | Added `/omg:goal` for routine-approved plan/PRD/taskboard/exec/verify/fix loops while keeping Gemini CLI runtime approval, sandbox, and policy limits explicit |
 | `v0.8.4` | 2026-04-28 | Remove usage monitor hook | Removed the quota-watch AfterAgent hook and script so OmG no longer prints `usage=unavailable`; usage/quota visibility now relies on Gemini CLI native `/model` or `/stats model` |

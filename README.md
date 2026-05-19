@@ -1,12 +1,12 @@
-# oh-my-gemini-cli (OmG)
-[![Release](https://img.shields.io/github/v/tag/Joonghyun-Lee-Frieren/oh-my-gemini-cli?sort=semver&label=release)](https://github.com/Joonghyun-Lee-Frieren/oh-my-gemini-cli/releases)
-[![Version Check](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-gemini-cli/version-check.yml?branch=main&label=version%20check)](https://github.com/Joonghyun-Lee-Frieren/oh-my-gemini-cli/actions/workflows/version-check.yml)
+# oh-my-antigravity (OmG)
+[![Release](https://img.shields.io/github/v/tag/Joonghyun-Lee-Frieren/oh-my-antigravity?sort=semver&label=release)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/releases)
+[![Version Check](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-antigravity/version-check.yml?branch=main&label=version%20check)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/actions/workflows/version-check.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/Joonghyun-Lee-Frieren/oh-my-gemini-cli?style=social)](https://github.com/Joonghyun-Lee-Frieren/oh-my-gemini-cli/stargazers)
-[![Gemini Extension](https://img.shields.io/badge/Gemini-Extension-0d8a83)](https://geminicli.com/extensions/?name=Joonghyun-Lee-Frierenoh-my-gemini-cli)
+[![Stars](https://img.shields.io/github/stars/Joonghyun-Lee-Frieren/oh-my-antigravity?style=social)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/stargazers)
+[![Gemini Extension](https://img.shields.io/badge/Gemini-Extension-0d8a83)](https://geminicli.com/extensions/?name=Joonghyun-Lee-Frierenoh-my-antigravity)
 [![Sponsor](https://img.shields.io/badge/Sponsor-GitHub_Sponsors-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/Joonghyun-Lee-Frieren)
 
-[Landing Page](https://joonghyun-lee-frieren.github.io/oh-my-gemini-cli/) | [History](docs/history.md)
+[Landing Page](https://joonghyun-lee-frieren.github.io/oh-my-antigravity/) | [History](docs/history.md)
 
 [한국어](docs/README_ko.md) | [日本語](docs/README_ja.md) | [Français](docs/README_fr.md) | [中文](docs/README_zh.md) | [Español](docs/README_es.md)
 
@@ -33,7 +33,7 @@ OmG extends Gemini CLI from a single-session assistant into a structured, role-d
 Install from GitHub using the official Gemini Extensions command:
 
 ```bash
-gemini extensions install https://github.com/Joonghyun-Lee-Frieren/oh-my-gemini-cli
+gemini extensions install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
 ```
 
 Verify in interactive mode:
@@ -62,13 +62,11 @@ Run a goal-style autonomous delivery loop:
 
 Note: extension install/update commands run in terminal mode (`gemini extensions ...`), not in interactive slash-command mode.
 
-## What's New in v0.8.6
+## What's New in v0.9.0
 
-- Added `/omg:blueprint` and `$blueprint` for product/UI workflow decisions before implementation.
-- Blueprint mode captures target users, workflows, interface decisions, states, content hierarchy, accessibility, responsive constraints, open questions, and verification hooks.
-- Blueprint output can be kept copy-ready or persisted to `.omg/state/blueprint.md` when the user asks for a durable artifact.
-- The default OmG flow now routes product or interface-heavy work through `intent -> blueprint -> team-plan/team-prd -> taskboard -> team-exec`.
-- Bumped extension/package version to `0.8.6` and refreshed README, Korean README, landing docs, and history.
+- Renamed the project and extension package from `oh-my-gemini-cli` to `oh-my-antigravity`.
+- Updated GitHub, GitHub Pages, extension gallery, installation, uninstall, badge, and Star History links for the new repository name.
+- Bumped extension/package version to `0.9.0` and refreshed README, Korean README, landing page, installation guide, localized docs, and history.
 
 ## Extension Boundary and Upgrade Safety
 
@@ -399,7 +397,7 @@ Retained skills are intentionally limited to a compact set so the extension load
 ## Project Structure
 
 ```text
-oh-my-gemini-cli/
+oh-my-antigravity/
 |- GEMINI.md
 |- gemini-extension.json
 |- .omg/
@@ -500,7 +498,7 @@ Important performance note:
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/image?repos=Joonghyun-Lee-Frieren/oh-my-gemini-cli&type=date&legend=top-left)](https://www.star-history.com/?repos=Joonghyun-Lee-Frieren%2Foh-my-gemini-cli&type=date&legend=top-left)
+[![Star History Chart](https://api.star-history.com/image?repos=Joonghyun-Lee-Frieren/oh-my-antigravity&type=date&legend=top-left)](https://www.star-history.com/?repos=Joonghyun-Lee-Frieren%2Foh-my-antigravity&type=date&legend=top-left)
 
 ## License
 
