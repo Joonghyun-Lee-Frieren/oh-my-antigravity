@@ -1,0 +1,49 @@
+description = "Recall prior decisions and evidence with state-first search and bounded history fallback."
+prompt = """
+Run an OmA recall search to recover prior decisions without replaying full chat history.
+
+Input:
+$ARGUMENTS
+
+Intent:
+- Find relevant prior context quickly with minimal token/runtime cost.
+- Prefer compact OmA state artifacts before scanning broader history.
+
+Protocol:
+1. Parse arguments into:
+   - `query` (required free text; if missing, return usage + examples)
+   - optional `since` (examples: `48h`, `7d`, `2026-03-10`)
+   - optional `limit` (default 6, hard cap 12)
+   - optional `scope` (`state`, `recent`, `all`; default `state`)
+2. Search in this order and stop early when `limit` is reached:
+   - `.omg/state/taskboard.md`
+   - `.omg/state/checkpoint.md`
+   - `.omg/state/workflow.md`
+   - `.omg/state/workspace.json`
+   - `.omg/state/doctor.md`
+   - `.omg/state/notify.json`
+3. If matches are insufficient and `scope` is `recent` or `all`, run bounded fallback:
+   - inspect only recent transcript/log files (newest first)
+   - max 20 files, max 200 matched lines total
+   - skip binary files, vendor directories, and `.git`
+4. Deduplicate near-identical snippets and keep each snippet under about 180 characters.
+5. For each match, capture source path and a lightweight locator (line number or key).
+6. If filesystem tools are available, write `.omg/state/recall.md` with query, filters, and top matches.
+7. Suggest the next best resume command (`/oma:taskboard`, `/oma:checkpoint`, `/oma:team-verify`, etc.) based on findings.
+
+Output format:
+## Recall Summary
+- query:
+- scope:
+- since:
+- searched:
+- matched:
+
+## Top Matches
+1. source: ...
+   evidence: ...
+2. ...
+
+## Next Command
+- ...
+"""

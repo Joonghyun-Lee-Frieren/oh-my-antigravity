@@ -1,6 +1,6 @@
 # Hook Engineering Guide
 
-OmG provides an extension-native hook layer for deterministic orchestration and safer autonomy loops.
+OmA provides an extension-native hook layer for deterministic orchestration and safer autonomy loops.
 
 ## Why This Layer Exists
 
@@ -71,7 +71,7 @@ Recommended behavior:
 - `OMG_DISABLED_HOOKS=learn`: disables only the retained learn-signal `AfterAgent` hook.
 - `GEMINI_PLANS_DIR`: when provided by Gemini CLI, can be used by hook/plan policy to reference native plan-session storage without guessing paths.
 
-Note: OmG no longer ships the quota-watch usage monitor hook. Use Gemini CLI's native `/model` or `/stats model` output when authoritative usage or quota visibility is needed.
+Note: OmA no longer ships the quota-watch usage monitor hook. Use Gemini CLI's native `/model` or `/stats model` output when authoritative usage or quota visibility is needed.
 
 ## Team Safety Policy
 
@@ -83,9 +83,9 @@ In delegated/worker sub-agent turns:
 
 ## Suggested Workflow
 
-1. `/omg:hooks-init`
-2. `/omg:hooks`
-3. `/omg:hooks-validate`
-4. `/omg:hooks-test`
+1. `/oma:hooks-init`
+2. `/oma:hooks`
+3. `/oma:hooks-validate`
+4. `/oma:hooks-test`
 
-Then run `/omg:autopilot` or `/omg:loop` with validated hook policy.
+Then run `/oma:autopilot` or `/oma:loop` with validated hook policy.

@@ -1,0 +1,30 @@
+description = "Generate and converge on the best option through structured multi-agent comparison."
+prompt = """
+Run OmA `consensus` mode.
+
+Decision topic:
+$ARGUMENTS
+
+Protocol:
+1. Delegate criteria definition to `oma-consensus`.
+2. Gather architecture and delivery options from `oma-architect` and `oma-planner`.
+3. Use `oma-reviewer` to stress-test each option for risk.
+4. Score options against criteria (delivery speed, correctness risk, maintainability, reversibility).
+5. Choose one option and provide execution handoff.
+
+Output format:
+## Decision Criteria
+- ...
+
+## Option Comparison
+| Option | Speed | Risk | Maintainability | Reversibility | Notes |
+| --- | --- | --- | --- | --- | --- |
+
+## Chosen Option
+- ...
+
+## Execution Handoff
+1. ...
+2. ...
+3. ...
+"""

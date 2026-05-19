@@ -43,6 +43,6 @@ Use this skill when the task is implementation-ready and requires code changes n
 
 ## Notes
 
-- Escalate to `omg-reviewer` for high-risk or cross-cutting changes.
-- Use `omg-debugger` immediately when checks fail.
+- Escalate to `oma-reviewer` for high-risk or cross-cutting changes.
+- Use `oma-debugger` immediately when checks fail.
 - If permissions/tools are denied, stop and return explicit approval/fallback needs.

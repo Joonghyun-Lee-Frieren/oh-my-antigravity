@@ -1,0 +1,38 @@
+description = "Inspect or set OmA operating mode/profile (balanced, speed, deep, autopilot, ralph, ultrawork)."
+prompt = """
+Run OmA mode manager.
+
+Input:
+$ARGUMENTS
+
+Mode behavior:
+1. If no mode is provided, show current mode and profile table.
+2. If mode is provided, validate against:
+   - `balanced`
+   - `speed`
+   - `deep`
+   - `autopilot`
+   - `ralph`
+   - `ultrawork`
+3. Produce profile settings for planning depth, execution pace, quick-fix lane, and verification strictness.
+4. Read `.omg/state/session-lock.json` before mutating shared operating-profile state.
+5. If filesystem tools are available:
+   - if the current orchestration session owns the lock, write/update `.omg/state/mode.json`
+   - otherwise write `.omg/state/sessions/[session-slug]/mode.json` instead and report the ownership conflict
+
+Suggested `mode.json` shape:
+{
+  "mode": "<selected>",
+  "planning_model": "gemini-3.1-pro-preview",
+  "execution_model": "gemini-3-flash-preview",
+  "quick_edit_model": "gemini-3.1-flash-lite-preview",
+  "verification_strictness": "normal|high",
+  "max_autonomous_cycles": 5
+}
+
+Response:
+- Keep it concise and operator-facing.
+- Include `Mode Status`, `Profile Settings`, and `Recommended Next Command`.
+"""
+
+

@@ -11,7 +11,7 @@ Use this skill when requirements are incomplete, conflicting, or too vague to be
 
 - User asks for implementation but goals/constraints are still unclear
 - Multiple interpretations exist for scope, acceptance criteria, or architecture direction
-- Team needs a compact interview artifact before `/omg:team-plan` or `/omg:team-prd`
+- Team needs a compact interview artifact before `/oma:team-plan` or `/oma:team-prd`
 
 ## Workflow
 

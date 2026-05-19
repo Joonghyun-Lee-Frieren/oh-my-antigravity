@@ -1,0 +1,25 @@
+description = "Quick toggle: set OmA HUD visibility profile to normal."
+prompt = """
+Set OmA HUD visibility profile to `normal`.
+
+Protocol:
+1. Apply `visibility = normal`.
+2. Read `.omg/state/session-lock.json` before mutating shared HUD state.
+3. If filesystem tools are available:
+   - if the current orchestration session owns the lock, write/update `.omg/state/hud.json` with source `oma:hud-on`
+   - otherwise write `.omg/state/sessions/[session-slug]/hud.json` with source `oma:hud-on` and report the ownership conflict
+4. Provide one-line HUD preview and recommended follow-up command.
+
+Output format:
+## HUD
+- applied: normal
+- persisted:
+
+## Preview
+```text
+[OMA][MODEL balanced gemini-3.1-pro-preview/gemini-3-flash-preview/gemini-3.1-flash-lite-preview preview:on][MODE balanced][STAGE team-exec][TASKS 3/8][RISKS 1][NEXT /oma:team-verify]
+```
+
+## Next Command
+- /oma:status
+"""

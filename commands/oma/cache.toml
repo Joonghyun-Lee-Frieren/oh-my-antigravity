@@ -1,0 +1,23 @@
+description = "Audit prompt-cache stability and recommend fixes."
+prompt = """
+Run a cache-focused OmA audit.
+
+User context:
+$ARGUMENTS
+
+Tasks:
+1. Evaluate prefix stability risks.
+2. Identify volatile instructions or tool changes causing misses.
+3. Check whether `.omg/state/taskboard.md` and `.omg/state/workspace.json` are being used as compact state anchors.
+4. Recommend concrete fixes to improve cache hit consistency.
+
+Output format:
+## Cache Audit
+- Stability summary:
+- Main risks:
+
+## Recommended Fixes
+1. ...
+2. ...
+3. ...
+"""

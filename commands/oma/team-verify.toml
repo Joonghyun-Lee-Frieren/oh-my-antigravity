@@ -1,0 +1,57 @@
+description = "Stage 4/5: Verify implementation against acceptance criteria and regression risks."
+prompt = """
+Run OmA `team-verify`.
+
+Task:
+$ARGUMENTS
+
+Protocol:
+1. Read `.omg/state/taskboard.md` and `.omg/state/workspace.json` when available, then identify the active verification queue and lane health.
+2. Delegate review to `oma-reviewer`.
+3. Delegate acceptance-gate checks to `oma-verifier`.
+4. Validate each acceptance criterion with evidence, including explicit lane/subagent context when work crossed lanes or ended early.
+5. Treat missing proof as `unknown` (not pass) and call out evidence required to close the gap.
+6. Mark tasks `verified` only when evidence is explicit, lane state is safe, and criterion coverage is complete.
+7. Run anti-slop quality gate:
+   - detect generic filler, vague claims, and weak evidence phrasing
+   - require concise, evidence-anchored language in final output
+8. Run adversarial checks for regression/security edge-cases where applicable.
+9. Classify issues as blocker, major, or minor.
+10. Produce targeted fix list for `team-fix`, anchored to task IDs and termination reasons when applicable.
+11. Order the fix backlog by priority first (`p0` -> `p3`), then severity.
+12. Read `.omg/state/session-lock.json` before mutating the shared board.
+13. If filesystem tools are available:
+   - if the current orchestration session owns the lock, update `.omg/state/taskboard.md`
+   - otherwise write `.omg/state/sessions/[session-slug]/taskboard.md` and verifier notes instead of overwriting the shared board
+
+Output format:
+## Stage
+- team-verify
+
+## Acceptance Matrix
+| Criterion | Task ID(s) | Priority | Status (pass/fail/unknown) | Evidence | Owner |
+| --- | --- | --- | --- | --- | --- |
+
+## Review Findings
+- ...
+
+## Lane / Handoff Risks
+- ...
+
+## Quality Gate
+- anti-slop status: pass/fail
+- evidence sufficiency: pass/fail
+- notes:
+
+## Fix Backlog
+1. ...
+2. ...
+3. ...
+
+## Verifier Signoff
+- status:
+- verified task ids:
+
+## Release Readiness
+- ...
+"""

@@ -1,0 +1,31 @@
+description = "Stage 5/5: Fix only verified issues, then prepare the next verification pass."
+prompt = """
+Run OmA `team-fix`.
+
+Task:
+$ARGUMENTS
+
+Protocol:
+1. Consume fix backlog from `team-verify`.
+2. Patch only verified failures or explicitly listed unknown gaps (no scope expansion).
+3. Prioritize by severity first, then by task priority (`p0` -> `p3`) when available.
+4. Delegate root-cause analysis to `oma-debugger`.
+5. Delegate patching to `oma-executor` with minimal diffs.
+6. Confirm which issues are resolved vs still open.
+7. If a fix is permission-blocked, keep it open with explicit approval/fallback notes.
+8. Return a clear handoff for the next `team-verify`.
+
+Output format:
+## Stage
+- team-fix
+
+## Issues Addressed
+| Issue | Root Cause | Fix | Status |
+| --- | --- | --- | --- |
+
+## Remaining Issues
+- ...
+
+## Next Verification Scope
+- ...
+"""

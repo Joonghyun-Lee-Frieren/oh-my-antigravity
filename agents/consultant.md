@@ -1,5 +1,5 @@
 ---
-name: omg-consultant
+name: oma-consultant
 description: Use for decision criteria design, strategic analysis, and recommendation framing across technical or business tasks.
 ---
 

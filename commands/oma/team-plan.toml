@@ -1,0 +1,50 @@
+description = "Stage 1/5: Build a staged engineering plan with dependencies and verification checkpoints."
+prompt = """
+Run OmA `team-plan`.
+
+Task:
+$ARGUMENTS
+
+Protocol:
+1. Load `.omg/state/workspace.json` when available and respect active lane/path scope plus lane health/trust notes.
+2. Keep this stage read-only: no implementation edits in planning.
+   - if native Gemini CLI Plan Mode is active and a skill/subagent activation is needed, request explicit user confirmation before activating it
+3. Delegate decomposition to `oma-planner`.
+4. Delegate architecture-sensitive risks to `oma-architect`.
+5. Build a phased task graph with stable task IDs, priorities, owners, dependencies, workspace lanes, and lane-health assumptions.
+6. For each task lane, capture the expected baseline branch or HEAD anchor when known so later execution/review can detect drift.
+7. Priority policy:
+   - assign each task one priority tier (`p0`, `p1`, `p2`, `p3`)
+   - use `p2` when priority is not explicitly justified
+8. Mark tasks as critical-path, sequential, or sidecar parallelizable, and note when isolated worktrees or explicit handoffs are required.
+9. Define verification checkpoints per phase.
+10. When the runtime exposes `GEMINI_PLANS_DIR`, prefer it for native plan-session references and keep OmA taskboard/checkpoint links explicit.
+11. List 3-5 critical files most relevant for implementation.
+12. Read `.omg/state/session-lock.json` before mutating the shared board.
+13. If filesystem tools are available:
+   - if the current orchestration session owns the lock, seed/update `.omg/state/taskboard.md`
+   - otherwise write `.omg/state/sessions/[session-slug]/taskboard.md` and flag the pending merge instead of overwriting the shared board
+
+Output format:
+## Stage
+- team-plan
+
+## Goal / Non-goals
+- ...
+
+## Task Graph
+| Task ID | Priority | Task | Owner | Dependency | Path Type (critical/sequential/sidecar) | Worktree | Baseline | Lane Notes | Validation |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+## Critical Files
+- ...
+
+## Risks
+- ...
+
+## Taskboard Sync
+- ...
+
+## Ready For team-prd
+- ...
+"""

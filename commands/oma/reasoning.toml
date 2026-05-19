@@ -1,0 +1,44 @@
+description = "Inspect or set OmA reasoning effort profile (global + per-teammate overrides) for depth/cost control."
+prompt = """
+Run OmA reasoning-effort manager.
+
+Input:
+$ARGUMENTS
+
+Protocol:
+1. Parse requested global effort value and optional teammate overrides.
+   - example: `global=high reviewer=xhigh executor=medium researcher=low`
+2. Supported values:
+   - `low`
+   - `medium`
+   - `high`
+   - `xhigh`
+3. If no value is provided, show current profile from `.omg/state/reasoning.json` when available.
+4. Map global effort to OmA posture:
+   - planning depth
+   - verification strictness
+   - expected latency/token cost
+5. If teammate overrides are provided, apply them only to listed roles and keep the global default for others.
+6. Read `.omg/state/session-lock.json` before mutating shared reasoning state.
+7. If filesystem tools are available:
+   - if the current orchestration session owns the lock, write/update `.omg/state/reasoning.json`
+   - otherwise write `.omg/state/sessions/[session-slug]/reasoning.json` instead and report the ownership conflict
+8. Clarify boundary: this profile controls OmA orchestration behavior and recommendations, not Gemini runtime flags directly.
+
+Suggested `reasoning.json` shape:
+{
+  "effort": "low|medium|high|xhigh",
+  "planning_depth": "minimal|balanced|deep|maximum",
+  "verification_strictness": "light|normal|high|very-high",
+  "team_overrides": {
+    "oma-reviewer": "xhigh",
+    "oma-executor": "medium"
+  },
+  "updated_at": "<ISO-8601>",
+  "source": "oma:reasoning"
+}
+
+Response:
+- Keep it concise and operator-facing.
+- Include `Reasoning Status`, `Effort Matrix`, `Team Overrides`, and `Recommended Route`.
+"""

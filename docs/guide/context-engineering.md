@@ -1,4 +1,4 @@
-# Context Engineering Guide for OmG
+# Context Engineering Guide for OmA
 
 > "Cache rules everything around me."
 >
@@ -8,7 +8,7 @@
 
 Context engineering is the practice of designing prompt/context structure so the model sees the right information in the right order, with minimal churn across turns.
 
-For OmG, this is not just "write a better prompt."  
+For OmA, this is not just "write a better prompt."
 It is an operating model that controls:
 
 - how stable prefixes are preserved
@@ -25,7 +25,7 @@ Without context engineering, long sessions degrade quickly:
 - Cost rises due to repeated full-token processing.
 - Quality drifts when scope and acceptance criteria are no longer explicit.
 
-## OmG Context Layers
+## OmA Context Layers
 
 | Layer | Typical content | Change frequency | Cache expectation |
 | --- | --- | --- | --- |
@@ -37,7 +37,7 @@ Without context engineering, long sessions degrade quickly:
 
 ## Stage Pipeline and Context Discipline
 
-OmG uses a stage lifecycle:
+OmA uses a stage lifecycle:
 
 1. `team-assemble`
 2. `team-plan`
@@ -100,7 +100,7 @@ Inject dynamic values in late-turn reminder blocks instead.
 
 ### 6) Mode-Aware Operation
 
-OmG modes affect context pressure:
+OmA modes affect context pressure:
 
 | Mode | Context behavior |
 | --- | --- |
@@ -127,12 +127,12 @@ These files help resume work without replaying every raw turn.
 
 Use these commands to keep context healthy:
 
-- `/omg:status` to inspect stage/mode/progress
-- `/omg:cache` to audit cache stability risks
-- `/omg:optimize` to reduce context bloat and churn
-- `/omg:checkpoint` to save compact resume state
-- `/omg:hooks` to inspect hook trigger policy
-- `/omg:hooks-validate` to catch unsafe/non-deterministic hook graphs
+- `/oma:status` to inspect stage/mode/progress
+- `/oma:cache` to audit cache stability risks
+- `/oma:optimize` to reduce context bloat and churn
+- `/oma:checkpoint` to save compact resume state
+- `/oma:hooks` to inspect hook trigger policy
+- `/oma:hooks-validate` to catch unsafe/non-deterministic hook graphs
 
 ## Cache-Miss Triage
 

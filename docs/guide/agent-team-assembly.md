@@ -1,6 +1,6 @@
 # Agent Team Assembly Guide
 
-Use this guide to run OmG with dynamic, task-fit teams instead of fixed engineering-only rosters.
+Use this guide to run OmA with dynamic, task-fit teams instead of fixed engineering-only rosters.
 
 ## Why Dynamic Assembly
 
@@ -11,26 +11,26 @@ Some requests are not pure coding tasks. They mix:
 - implementation and validation
 - report or content packaging
 
-`/omg:team-assemble` builds a roster that matches this shape before execution starts.
+`/oma:team-assemble` builds a roster that matches this shape before execution starts.
 
 ## Command Entry Points
 
-- `/omg:team-assemble "<task>"`
+- `/oma:team-assemble "<task>"`
 - `$team-assemble "<task>"`
 
 These entry points create a team charter with role lanes, model profile, and handoff protocol.
 
 ## Activation
 
-OmG assumes Gemini CLI preview features are enabled so preview-backed aliases can resolve to the newest available preview model when Gemini CLI supports it.
+OmA assumes Gemini CLI preview features are enabled so preview-backed aliases can resolve to the newest available preview model when Gemini CLI supports it.
 If the extension is loaded, `team-assemble` is available through:
 
-- `/omg:team-assemble`
+- `/oma:team-assemble`
 - `$team-assemble`
 
 ## Stage Model
 
-OmG lifecycle with dynamic assembly:
+OmA lifecycle with dynamic assembly:
 
 1. `team-assemble` (new stage 0)
 2. `team-plan`
@@ -46,19 +46,19 @@ Repeat `team-exec -> team-verify -> team-fix` until criteria pass or blockers ar
 Team assembly separates two role families:
 
 - Domain specialists:
-  - `omg-researcher`
-  - `omg-architect`
-  - `omg-consultant`
-  - `omg-executor`
+  - `oma-researcher`
+  - `oma-architect`
+  - `oma-consultant`
+  - `oma-executor`
 - Format specialists:
-  - `omg-editor`
-  - `omg-reviewer`
-  - `omg-verifier`
-  - `omg-debugger`
+  - `oma-editor`
+  - `oma-reviewer`
+  - `oma-verifier`
+  - `oma-debugger`
 
 Orchestration lane:
 
-- `omg-director` coordinates handoffs and resolves conflicts.
+- `oma-director` coordinates handoffs and resolves conflicts.
 
 ## Model Allocation Policy
 
@@ -68,7 +68,7 @@ Default role-to-model policy:
 - implementation-heavy execution: `flash`
 - broad low-risk exploration: `flash-lite`
 
-With Gemini CLI preview features enabled, `pro` can resolve to the latest preview-capable Pro route without OmG hard-pinning an aging concrete model name.
+With Gemini CLI preview features enabled, `pro` can resolve to the latest preview-capable Pro route without OmA hard-pinning an aging concrete model name.
 
 ## Approval Gate
 
@@ -84,38 +84,38 @@ Execution starts only when explicit approval is present (for example: `yes`, `ap
 
 Suggested roster:
 
-- `omg-director`
-- `omg-researcher` x3 (parallel lanes)
-- `omg-consultant`
-- `omg-editor`
-- `omg-reviewer` (quality gate)
+- `oma-director`
+- `oma-researcher` x3 (parallel lanes)
+- `oma-consultant`
+- `oma-editor`
+- `oma-reviewer` (quality gate)
 
 ### 2) Feature Delivery with Validation Discipline
 
 Suggested roster:
 
-- `omg-director`
-- `omg-planner`
-- `omg-product`
-- `omg-executor`
-- `omg-reviewer`
-- `omg-verifier`
-- `omg-debugger`
+- `oma-director`
+- `oma-planner`
+- `oma-product`
+- `oma-executor`
+- `oma-reviewer`
+- `oma-verifier`
+- `oma-debugger`
 
 ### 3) Research-to-Implementation Bridge
 
 Suggested roster:
 
-- `omg-director`
-- `omg-researcher` x2
-- `omg-architect`
-- `omg-executor`
-- `omg-verifier`
-- `omg-editor`
+- `oma-director`
+- `oma-researcher` x2
+- `oma-architect`
+- `oma-executor`
+- `oma-verifier`
+- `oma-editor`
 
 ## State Files
 
-When filesystem tools are available, OmG can persist:
+When filesystem tools are available, OmA can persist:
 
 - `.omg/state/team-assembly.md`
 - `.omg/state/workflow.md`
@@ -125,20 +125,20 @@ Use these to resume sessions without rebuilding the full decision context.
 ## Recommended Sequence
 
 ```text
-/omg:doctor team
-/omg:intent "<task>"
-/omg:team-assemble "<task>"
+/oma:doctor team
+/oma:intent "<task>"
+/oma:team-assemble "<task>"
 # approve roster
-/omg:team "<same task>"
-/omg:loop "Continue unresolved verify backlog"
+/oma:team "<same task>"
+/oma:loop "Continue unresolved verify backlog"
 ```
 
 ## Failure Handling
 
 If the team stalls:
 
-1. Re-run `/omg:team-assemble` with tighter constraints.
+1. Re-run `/oma:team-assemble` with tighter constraints.
 2. Reduce lane count and simplify role overlap.
-3. Force verification-first loop via `/omg:team-verify`.
-4. Use `/omg:consensus` when strategy lanes disagree.
+3. Force verification-first loop via `/oma:team-verify`.
+4. Use `/oma:consensus` when strategy lanes disagree.
 

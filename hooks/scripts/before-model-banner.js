@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * OmG silent BeforeModel router.
+ * OmA silent BeforeModel router.
  *
  * Routes outgoing Gemini CLI model requests according to `.omg/state/model.json`
  * without printing the old per-request banner.
@@ -18,8 +18,8 @@ const MODEL_HOOK_KEYS = new Set([
   "model-router",
   "model-preview",
   "model-banner",
-  "omg-model-router",
-  "omg-before-model-banner",
+  "oma-model-router",
+  "oma-before-model-banner",
 ]);
 
 const DEFAULT_LANE_MODELS = {
@@ -33,7 +33,7 @@ const LANE_PATTERNS = [
   {
     lane: "quick_edit",
     patterns: [
-      /\bomg-quick\b/i,
+      /\boma-quick\b/i,
       /\bquick[_ -]?edit\b/i,
       /\bflash-lite\b/i,
       /\blow-risk (edit|change|fix)\b/i,
@@ -42,8 +42,8 @@ const LANE_PATTERNS = [
   {
     lane: "execution",
     patterns: [
-      /\bomg-executor\b/i,
-      /\/omg:team-exec\b/i,
+      /\boma-executor\b/i,
+      /\/oma:team-exec\b/i,
       /\$execute\b/i,
       /\bteam-exec\b/i,
       /\bstage 3\/5\b/i,
@@ -54,11 +54,11 @@ const LANE_PATTERNS = [
   {
     lane: "review_verify",
     patterns: [
-      /\bomg-reviewer\b/i,
-      /\bomg-verifier\b/i,
-      /\bomg-debugger\b/i,
-      /\/omg:team-verify\b/i,
-      /\/omg:team-fix\b/i,
+      /\boma-reviewer\b/i,
+      /\boma-verifier\b/i,
+      /\boma-debugger\b/i,
+      /\/oma:team-verify\b/i,
+      /\/oma:team-fix\b/i,
       /\bteam-verify\b/i,
       /\bteam-fix\b/i,
       /\breview[_ -]?verify\b/i,
@@ -69,17 +69,17 @@ const LANE_PATTERNS = [
   {
     lane: "planning",
     patterns: [
-      /\bomg-director\b/i,
-      /\bomg-architect\b/i,
-      /\bomg-planner\b/i,
-      /\bomg-product\b/i,
-      /\bomg-consultant\b/i,
-      /\bomg-researcher\b/i,
-      /\/omg:team-plan\b/i,
-      /\/omg:team-prd\b/i,
-      /\/omg:team-assemble\b/i,
+      /\boma-director\b/i,
+      /\boma-architect\b/i,
+      /\boma-planner\b/i,
+      /\boma-product\b/i,
+      /\boma-consultant\b/i,
+      /\boma-researcher\b/i,
+      /\/oma:team-plan\b/i,
+      /\/oma:team-prd\b/i,
+      /\/oma:team-assemble\b/i,
       /\$plan\b/i,
-      /\$omg-plan\b/i,
+      /\$oma-plan\b/i,
       /\$prd\b/i,
       /\$research\b/i,
       /\bteam-plan\b/i,

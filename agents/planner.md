@@ -1,5 +1,5 @@
 ---
-name: omg-planner
+name: oma-planner
 description: Use to break a request into ordered phases, tasks, and validation checkpoints.
 ---
 

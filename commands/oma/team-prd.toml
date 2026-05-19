@@ -1,0 +1,40 @@
+description = "Stage 2/5: Lock scope with PRD-quality acceptance criteria and delivery constraints."
+prompt = """
+Run OmA `team-prd`.
+
+Task:
+$ARGUMENTS
+
+Protocol:
+1. Delegate scope definition to `oma-product`.
+2. Convert user intent into measurable acceptance criteria.
+3. Explicitly define non-goals to prevent scope creep.
+4. Document constraints (compatibility, timeline, dependencies, risk limits, lane-safety or trust assumptions when relevant).
+5. Confirm baseline branch/HEAD expectations for active lanes when the workspace/taskboard already records them.
+6. Map acceptance criteria to task IDs and priority tiers when a taskboard already exists.
+7. If priority is not explicit, keep `p2` as default instead of leaving priority unspecified.
+8. Produce a handoff contract for `team-exec` and `team-verify`, including lane ownership, baseline expectations, evidence needs, and early-stop criteria.
+
+Output format:
+## Stage
+- team-prd
+
+## Problem Statement
+- ...
+
+## Scope / Non-goals
+- ...
+
+## Acceptance Criteria
+| Criterion | Task ID(s) | Priority | Evidence Needed | Owner |
+| --- | --- | --- | --- | --- |
+
+## Constraints
+- ...
+
+## Baseline Expectations
+- ...
+
+## Handoff Contract
+- ...
+"""

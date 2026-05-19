@@ -1,0 +1,59 @@
+description = "Run a Socratic Interview loop to clarify requirements, or manage interview sessions."
+prompt = """
+Run OmA `interview` command.
+
+Input:
+$ARGUMENTS
+
+Protocol:
+1. Subcommand Handling (Optional):
+   - If the first argument is a subcommand, execute the corresponding action:
+     - `status`: Read `.omg/state/interviews/active.json`, then load the referenced `.omg/state/interviews/[slug]/context.json`. Display current `Clarity Score`, `Confirmed Facts`, and `Ready-to-Run Prompt` based ONLY on that file content.
+     - `help`: Display instructions on how the interview works.
+     - `resume`: Read `.omg/state/interviews/active.json`, then load the referenced session context. If the pointer or context file is missing, tell the user no active session exists and they must run `/oma:intent [depth]` first.
+     - `done`: Finalize interview, generate PRD, and transition to ready-to-execute.
+     - `cancel`: Invoke OmA cancel flow specifically for the interview session to stop safely and save checkpoint artifacts.
+     - `restart`: Clear `.omg/state/interviews/active.json` and start a new session folder.
+
+2. Default Interview Loop (If no subcommand):
+   - Language Alignment:
+     - Detect the language used by the user in the current session.
+     - All outputs (Confirmed Facts, Socratic Questions, and status updates) MUST be written in the user's detected language.
+   - Depth: Default is `low` if no depth keyword is provided; otherwise, use the provided depth keyword (e.g., `medium`, `high`).
+   - Initialize or Resume (Strict File-Based Logic):
+     - **Check First**: Use `read_file` to verify the existence of `.omg/state/interviews/active.json`.
+     - **If the file is missing**: **Auto-initialize** a new session folder, create `.omg/state/interviews/active.json` pointing to it, and seed the initial `.omg/state/interviews/[slug]/context.json` with the current user request.
+     - **If resuming**: Resolve the active session folder from `.omg/state/interviews/active.json`, then resolve the session context. This context is the ONLY source of truth.
+   - Socratic Dialogue:
+     - Invoke the `interview` agent.
+     - Identify the highest-risk ambiguity or technical gap.
+     - Ask ONE targeted Socratic question in the user's language.
+   - Convergence & Scoring:
+     - Update `clarity_score`, `facts`, and `questions_asked` in `.omg/state/interviews/[slug]/context.json` after every turn.
+     - Scoring Criteria (0-100):
+       - Per question (turn), award +5 to exactly ONE of the following criteria:
+         1. Core objective defined
+         2. Target audience/context clear
+         3. Tech stack/constraints identified
+         4. Edge cases considered
+         5. Acceptance criteria set
+     - Termination Criteria:
+       - **Always continue until Clarity Score >= 100.**
+     - Threshold Gates (for [READY-TO-RUN PROMPT]):
+       - low: 10, medium: 20, high: 30, xhigh: 40, ultra: 50
+   - Finalization:
+     - Automatically trigger on **Clarity Score >= 100**.
+     - Manual Trigger by `done` or `$intent-done`:
+       - Generate `.omg/state/interviews/[slug]/prd.md` based on `.omg/templates/prd-template.md`.
+       - Transition the workflow to `ready_to_execute`.
+       - Instruct the user to run `/oma:team-assemble --intent="[Confirmed Objective]"` or `/oma:team-exec --intent="[Confirmed Objective]"` (the intent description SHOULD be in English for system consistency).
+     - Triggered by `cancel`:
+       - Invoke OmA cancel flow specifically for the interview session to stop safely and save checkpoint artifacts (status: stopped, no transition).
+
+Response:
+- Keep it concise and professional.
+- Use the user's detected language for all content.
+- Include `[PROGRESS]`, `[CONFIRMED FACTS]`, `[SOCRATIC QUESTION]`, and the `[READY-TO-RUN PROMPT]`.
+- Note: If `Clarity Score < Threshold` for the selected depth, set `[READY-TO-RUN PROMPT]` to `not yet. Unlock at [Threshold Score] points` (translated if appropriate).
+- If `Clarity Score >= Threshold`, the `[READY-TO-RUN PROMPT]` MUST include a command (e.g., `/oma:team-assemble --intent="..."`) reflecting current facts and a specific question in the user's language asking if they want to implement this now.
+"""

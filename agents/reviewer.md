@@ -1,5 +1,5 @@
 ---
-name: omg-reviewer
+name: oma-reviewer
 description: Use for code review focused on correctness, regressions, security, and missing tests.
 ---
 

@@ -1,6 +1,6 @@
-# Memory Management Guide for OmG
+# Memory Management Guide for OmA
 
-This guide adapts Claude Code's memory management pattern to OmG:
+This guide adapts Claude Code's memory management pattern to OmA:
 
 - keep memory layered and file-based
 - keep the root index short
@@ -58,7 +58,7 @@ alwaysApply: false
 
 ## MCP Tools
 
-The OmG memory MCP server exposes:
+The OmA memory MCP server exposes:
 
 - `memory_bootstrap`
 - `memory_index_sync`

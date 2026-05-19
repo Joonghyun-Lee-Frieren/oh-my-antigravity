@@ -8,11 +8,11 @@ description = "Automatically extract reusable patterns from sessions and save th
 
 # Learn Skill
 
-Automatically evaluates OmG sessions to extract reusable patterns (error resolutions, workarounds, conventions) and save them to `.omg/rules/learned/`.
+Automatically evaluates OmA sessions to extract reusable patterns (error resolutions, workarounds, conventions) and save them to `.omg/rules/learned/`.
 
 ## When to Activate
 
-- Setting up automatic pattern extraction from OmG sessions.
+- Setting up automatic pattern extraction from OmA sessions.
 - Configuring the `SessionEnd` hook for session evaluation.
 - Reviewing or curating learned skills in `.omg/rules/learned/`.
 - Adjusting extraction thresholds or pattern categories.
@@ -27,7 +27,7 @@ This skill runs as a **SessionEnd hook** at the end of each session:
 
 ### Interactive Selective Save
 
-When `/omg:learn` is run, the agent will:
+When `/oma:learn` is run, the agent will:
 1. Identify high-signal reusable patterns.
 2. List these patterns with unique IDs.
 3. **Ask the user** whether to save all or specific ones.
@@ -68,6 +68,6 @@ Edit `.omg/rules/learn.json` to customize:
 
 ## Related
 
-- `/omg:memory` - Project-level knowledge.
-- `/omg:rules` - Context-aware rule application.
-- `/omg:learn` - Manual pattern extraction command.
+- `/oma:memory` - Project-level knowledge.
+- `/oma:rules` - Context-aware rule application.
+- `/oma:learn` - Manual pattern extraction command.

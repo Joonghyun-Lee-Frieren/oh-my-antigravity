@@ -1,0 +1,36 @@
+description = "Run high-throughput batch delivery mode for many independent tasks with periodic quality gates."
+prompt = """
+Run OmA `ultrawork` mode.
+
+Objective:
+$ARGUMENTS
+
+Ultrawork protocol:
+1. Decompose work into independent shards.
+2. Group shards by risk and dependency.
+3. Delegate fast implementation slices to `oma-executor`/`oma-quick`.
+4. Run periodic verification gates with `oma-reviewer` every batch.
+5. Keep a rollback-aware summary for each shard.
+
+Rules:
+- Do not merge unverified critical shards.
+- Keep each shard bounded and reversible.
+- Escalate cross-shard coupling risks.
+
+Output format:
+## Mode
+- ultrawork
+
+## Shard Plan
+| Shard | Scope | Owner | Risk | Verify Gate |
+| --- | --- | --- | --- | --- |
+
+## Throughput Log
+- ...
+
+## Quality Gate Summary
+- ...
+
+## Remaining Batch
+- ...
+"""

@@ -510,7 +510,7 @@
         <div class="panel interview-spotlight">
           <p class="interview-quote">"Claude Code's core competitiveness isn't the Opus or Sonnet engine. It's Claude Code itself. Surprisingly, Gemini works well too when attached to Claude Code."</p>
           <div class="interview-meta">- Jeongkyu Shin (CEO of Lablup Inc.), from a YouTube interview</div>
-          <p class="origin-note">OmG started from this question: "What if we bring that harness model to Gemini CLI?"</p>
+          <p class="origin-note">OmA started from this question: "What if we bring that harness model to Gemini CLI?"</p>
         </div>
       </div>
 
@@ -526,7 +526,7 @@
   <section>
     <div class="wrap">
       <h2>Latest Update (Project Rename)</h2>
-      <p class="sub">OmG v0.9.0 renames the project and extension package to <code>oh-my-antigravity</code>, with refreshed repository, landing page, extension gallery, install, badge, and history references.</p>
+      <p class="sub">OmA v0.9.0 renames the project and extension package to <code>oh-my-antigravity</code>, with refreshed repository, landing page, extension gallery, install, badge, and history references.</p>
       <table>
         <thead>
           <tr>
@@ -537,7 +537,7 @@
         <tbody>
           <tr>
             <td>New command</td>
-            <td><code>/omg:blueprint</code> defines product and interface decisions before planning or coding user-facing flows.</td>
+            <td><code>/oma:blueprint</code> defines product and interface decisions before planning or coding user-facing flows.</td>
           </tr>
           <tr>
             <td>New skill</td>
@@ -586,7 +586,7 @@
           </tr>
           <tr>
             <td>Preview/nightly</td>
-            <td>Latest preview observed: <code>v0.42.0-preview.2</code>. Latest nightly observed: <code>v0.42.0-nightly.20260507.ga809bc7c5</code>. OmG does not require preview/nightly-only behavior.</td>
+            <td>Latest preview observed: <code>v0.42.0-preview.2</code>. Latest nightly observed: <code>v0.42.0-nightly.20260507.ga809bc7c5</code>. OmA does not require preview/nightly-only behavior.</td>
           </tr>
           <tr>
             <td>Extensions</td>
@@ -598,7 +598,7 @@
           </tr>
           <tr>
             <td>Subagents</td>
-            <td>Gemini CLI subagents are first-class and can be invoked automatically or with <code>@agent_name</code>; OmG keeps shared workflow state single-writer.</td>
+            <td>Gemini CLI subagents are first-class and can be invoked automatically or with <code>@agent_name</code>; OmA keeps shared workflow state single-writer.</td>
           </tr>
           <tr>
             <td>Policy</td>
@@ -610,11 +610,11 @@
           </tr>
           <tr>
             <td>Hooks</td>
-            <td>Hook diagnostics should go to <code>stderr</code> and final JSON to <code>stdout</code>. OmG retains quiet model routing and learn-signal filtering only.</td>
+            <td>Hook diagnostics should go to <code>stderr</code> and final JSON to <code>stdout</code>. OmA retains quiet model routing and learn-signal filtering only.</td>
           </tr>
           <tr>
             <td>Memory</td>
-            <td>Gemini CLI native <code>/memory</code> and Auto Memory inbox flows are separate from OmG <code>/omg:memory</code>, which remains scoped to project memory files and rule packs.</td>
+            <td>Gemini CLI native <code>/memory</code> and Auto Memory inbox flows are separate from OmA <code>/oma:memory</code>, which remains scoped to project memory files and rule packs.</td>
           </tr>
         </tbody>
       </table>
@@ -625,7 +625,7 @@
     <div class="wrap">
       <div>
         <h2>Model Allocation</h2>
-        <p class="sub">Default balanced split uses explicit preview model IDs: <code>gemini-3.1-pro-preview</code>, <code>gemini-3-flash-preview</code>, and <code>gemini-3.1-flash-lite-preview</code>, so OmG does not depend on Gemini CLI alias target drift.</p>
+        <p class="sub">Default balanced split uses explicit preview model IDs: <code>gemini-3.1-pro-preview</code>, <code>gemini-3-flash-preview</code>, and <code>gemini-3.1-flash-lite-preview</code>, so OmA does not depend on Gemini CLI alias target drift.</p>
         <div class="chart">
           <div class="bar">
             <div class="bar-label"><span>Judgment &amp; Acceptance Gates (<code>gemini-3.1-pro-preview</code>)</span><span>60%</span></div>
@@ -640,7 +640,7 @@
             <div class="bar-track"><div class="bar-fill lite" style="width:15%"></div></div>
           </div>
         </div>
-        <p class="sub" style="margin-top:10px;">Need one policy for every task? Run <code>/omg:model auto</code>. Want deterministic latest-preview routing? Keep the default explicit preview model map.</p>
+        <p class="sub" style="margin-top:10px;">Need one policy for every task? Run <code>/oma:model auto</code>. Want deterministic latest-preview routing? Keep the default explicit preview model map.</p>
       </div>
     </div>
   </section>
@@ -648,25 +648,25 @@
   <section>
     <div class="wrap">
       <h2>Capability Matrix</h2>
-      <p class="sub">What OmG adds over a plain single-session run</p>
+      <p class="sub">What OmA adds over a plain single-session run</p>
       <table>
         <thead>
           <tr>
             <th>Work Need</th>
             <th>Plain Session</th>
-            <th>OmG Extension</th>
+            <th>OmA Extension</th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>Large feature planning</td>
             <td>Manual prompt decomposition</td>
-            <td><code>$plan</code> / <code>$omg-plan</code> and <code>omg-planner</code> with phased output format</td>
+            <td><code>$plan</code> / <code>$oma-plan</code> and <code>oma-planner</code> with phased output format</td>
           </tr>
           <tr>
             <td>Parallel role execution</td>
             <td>Single-thread thinking</td>
-            <td><code>/omg:team-assemble</code> builds role lanes first, then <code>/omg:team</code> executes with explicit handoffs</td>
+            <td><code>/oma:team-assemble</code> builds role lanes first, then <code>/oma:team</code> executes with explicit handoffs</td>
           </tr>
           <tr>
             <td>Task-fit team composition</td>
@@ -676,97 +676,97 @@
           <tr>
             <td>Parallel lane or worktree coordination</td>
             <td>Implicit branch/path assumptions and repeated restarts</td>
-            <td><code>/omg:workspace</code> keeps root/lane ownership explicit and <code>/omg:workspace audit</code> surfaces dirty or untrusted lanes before parallel execution</td>
+            <td><code>/oma:workspace</code> keeps root/lane ownership explicit and <code>/oma:workspace audit</code> surfaces dirty or untrusted lanes before parallel execution</td>
           </tr>
           <tr>
             <td>Consistency in decisions</td>
             <td>High drift risk across long chats</td>
-            <td>Shared baseline from a thin <code>GEMINI.md -&gt; context/omg-core.md</code> chain</td>
+            <td>Shared baseline from a thin <code>GEMINI.md -&gt; context/oma-core.md</code> chain</td>
           </tr>
           <tr>
             <td>Debug/review loop</td>
             <td>Ad-hoc and easy to skip</td>
-            <td>Dedicated <code>omg-reviewer</code> + <code>omg-debugger</code> path</td>
+            <td>Dedicated <code>oma-reviewer</code> + <code>oma-debugger</code> path</td>
           </tr>
           <tr>
             <td>Command discoverability</td>
             <td>No namespaced workflow surface</td>
-            <td>Stable <code>/omg:*</code> command namespace</td>
+            <td>Stable <code>/oma:*</code> command namespace</td>
           </tr>
           <tr>
             <td>Intent-stage mismatch prevention</td>
             <td>Manual interpretation each turn</td>
-            <td><code>/omg:intent</code> gate routes requests to the right stage</td>
+            <td><code>/oma:intent</code> gate routes requests to the right stage</td>
           </tr>
           <tr>
             <td>Long-session bootstrap</td>
             <td>Ad-hoc codebase scanning</td>
-            <td><code>/omg:deep-init</code> creates project map and validation baseline</td>
+            <td><code>/oma:deep-init</code> creates project map and validation baseline</td>
           </tr>
           <tr>
             <td>Done criteria discipline</td>
             <td>Premature completion risk</td>
-            <td><code>/omg:taskboard</code> + <code>/omg:team-verify</code> keep stable task IDs, baseline anchors, and verifier-backed completion evidence</td>
+            <td><code>/oma:taskboard</code> + <code>/oma:team-verify</code> keep stable task IDs, baseline anchors, and verifier-backed completion evidence</td>
           </tr>
           <tr>
             <td>Prior-decision recall</td>
             <td>Manual transcript scrolling and guesswork</td>
-            <td><code>/omg:recall</code> retrieves prior rationale via state-first search with bounded fallback.</td>
+            <td><code>/oma:recall</code> retrieves prior rationale via state-first search with bounded fallback.</td>
           </tr>
           <tr>
             <td>Informational sessions trigger noisy learn nudges</td>
             <td>Manual filtering or turning off learning prompts entirely</td>
-            <td><code>omg-learn-signal-after-agent</code> filters informational-only queries and prompts <code>/omg:learn</code> only when actionable implementation signals exist.</td>
+            <td><code>oma-learn-signal-after-agent</code> filters informational-only queries and prompts <code>/oma:learn</code> only when actionable implementation signals exist.</td>
           </tr>
           <tr>
             <td>Deep interview gets interrupted by auto nudges</td>
             <td>Manual pause of hooks during interview windows</td>
-            <td><code>omg-learn-signal-after-agent</code> suppresses learn nudges automatically while <code>.omg/state/deep-interview.json</code> reports an active lock.</td>
+            <td><code>oma-learn-signal-after-agent</code> suppresses learn nudges automatically while <code>.omg/state/deep-interview.json</code> reports an active lock.</td>
           </tr>
           <tr>
             <td>One global model policy across all tasks</td>
             <td>Re-specify model intent repeatedly or accept lane-policy drift</td>
-            <td><code>/omg:model</code> persists <code>balanced|auto|custom</code> strategy in <code>.omg/state/model.json</code> and keeps lane defaults explicit.</td>
+            <td><code>/oma:model</code> persists <code>balanced|auto|custom</code> strategy in <code>.omg/state/model.json</code> and keeps lane defaults explicit.</td>
           </tr>
           <tr>
             <td>Task-specific guardrails</td>
             <td>Global/static prompt policies</td>
-            <td><code>/omg:rules</code> injects conditional rule packs per task</td>
+            <td><code>/oma:rules</code> injects conditional rule packs per task</td>
           </tr>
           <tr>
             <td>Durable memory management</td>
             <td>Decisions spread across turns and easy to lose</td>
-            <td><code>/omg:memory</code> keeps a compact <code>MEMORY.md</code> index plus topic/rule files</td>
+            <td><code>/oma:memory</code> keeps a compact <code>MEMORY.md</code> index plus topic/rule files</td>
           </tr>
           <tr>
             <td>Status visibility control</td>
             <td>Single fixed output density</td>
-            <td><code>/omg:hud</code> profiles (<code>normal</code>, <code>compact</code>, <code>hidden</code>) adapt status readability</td>
+            <td><code>/oma:hud</code> profiles (<code>normal</code>, <code>compact</code>, <code>hidden</code>) adapt status readability</td>
           </tr>
           <tr>
             <td>Approval policy posture</td>
             <td>Ad-hoc confirmation behavior</td>
-            <td><code>/omg:approval</code> manages <code>suggest/auto/full-auto</code> with risk guardrails</td>
+            <td><code>/oma:approval</code> manages <code>suggest/auto/full-auto</code> with risk guardrails</td>
           </tr>
           <tr>
             <td>Preflight diagnostics</td>
             <td>Manual setup checks</td>
-            <td><code>/omg:doctor</code> provides readiness findings and prioritized remediation</td>
+            <td><code>/oma:doctor</code> provides readiness findings and prioritized remediation</td>
           </tr>
           <tr>
             <td>Hook safety and trigger discipline</td>
             <td>Manual event policing and ad-hoc checks</td>
-            <td><code>/omg:hooks</code> + <code>/omg:hooks-validate</code> enforce deterministic lanes, safety policy, and trigger health checks</td>
+            <td><code>/oma:hooks</code> + <code>/oma:hooks-validate</code> enforce deterministic lanes, safety policy, and trigger health checks</td>
           </tr>
           <tr>
             <td>Long-run alerting</td>
             <td>Manual monitoring or ad-hoc shell notifications</td>
-            <td><code>/omg:notify</code> keeps approvals, blockers, verify failures, checkpoints, and idle drift observable with extension-native policy files</td>
+            <td><code>/oma:notify</code> keeps approvals, blockers, verify failures, checkpoints, and idle drift observable with extension-native policy files</td>
           </tr>
           <tr>
             <td>Usage and quota visibility</td>
             <td>Manual <code>/model</code> or <code>/stats model</code> checks</td>
-            <td>OmG intentionally delegates usage/quota visibility to Gemini CLI native commands instead of printing potentially unavailable hook-derived estimates</td>
+            <td>OmA intentionally delegates usage/quota visibility to Gemini CLI native commands instead of printing potentially unavailable hook-derived estimates</td>
           </tr>
           <tr>
             <td>Startup/discovery weight</td>
@@ -811,11 +811,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td>Orchestration</td><td><code>omg-director</code></td><td>Route messages, resolve conflicts, maintain acceptance focus.</td></tr>
-            <tr><td>Exploration</td><td><code>omg-researcher</code> x3</td><td>Parallel evidence collection across competitor segments.</td></tr>
-            <tr><td>Decision</td><td><code>omg-consultant</code></td><td>Define criteria and recommend strategic direction.</td></tr>
-            <tr><td>Editorial</td><td><code>omg-editor</code></td><td>Deliver concise executive-ready output.</td></tr>
-            <tr><td>Quality</td><td><code>omg-reviewer</code></td><td>Check consistency, unsupported claims, and missing evidence.</td></tr>
+            <tr><td>Orchestration</td><td><code>oma-director</code></td><td>Route messages, resolve conflicts, maintain acceptance focus.</td></tr>
+            <tr><td>Exploration</td><td><code>oma-researcher</code> x3</td><td>Parallel evidence collection across competitor segments.</td></tr>
+            <tr><td>Decision</td><td><code>oma-consultant</code></td><td>Define criteria and recommend strategic direction.</td></tr>
+            <tr><td>Editorial</td><td><code>oma-editor</code></td><td>Deliver concise executive-ready output.</td></tr>
+            <tr><td>Quality</td><td><code>oma-reviewer</code></td><td>Check consistency, unsupported claims, and missing evidence.</td></tr>
           </tbody>
         </table>
       </div>
@@ -835,11 +835,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td><code>/omg:workspace</code></td><td>Track primary root, optional worktree/path lanes, collision boundaries, and lane health.</td></tr>
-            <tr><td><code>/omg:taskboard</code></td><td>Track stable task IDs, owners, dependencies, baseline anchors, verifier-backed completion, and lane-health notes.</td></tr>
-            <tr><td><code>/omg:recall</code></td><td>Recover prior rationale from compact state first, then widen to bounded recent history only when required.</td></tr>
-            <tr><td><code>/omg:checkpoint</code></td><td>Resume from compact state references instead of replaying full chat history.</td></tr>
-            <tr><td><code>/omg:cache</code></td><td>Audit whether compact state anchors are actually keeping cache prefixes stable.</td></tr>
+            <tr><td><code>/oma:workspace</code></td><td>Track primary root, optional worktree/path lanes, collision boundaries, and lane health.</td></tr>
+            <tr><td><code>/oma:taskboard</code></td><td>Track stable task IDs, owners, dependencies, baseline anchors, verifier-backed completion, and lane-health notes.</td></tr>
+            <tr><td><code>/oma:recall</code></td><td>Recover prior rationale from compact state first, then widen to bounded recent history only when required.</td></tr>
+            <tr><td><code>/oma:checkpoint</code></td><td>Resume from compact state references instead of replaying full chat history.</td></tr>
+            <tr><td><code>/oma:cache</code></td><td>Audit whether compact state anchors are actually keeping cache prefixes stable.</td></tr>
           </tbody>
         </table>
       </div>
@@ -859,19 +859,19 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td><code>hooks/hooks.json</code></td><td>Registers the quiet <code>BeforeModel</code> model router and the retained <code>omg-learn-signal-after-agent</code> hook</td></tr>
-            <tr><td><code>hooks/scripts/before-model-banner.js</code></td><td>Silently maps outgoing model requests to the active OmG model strategy without printing a banner</td></tr>
+            <tr><td><code>hooks/hooks.json</code></td><td>Registers the quiet <code>BeforeModel</code> model router and the retained <code>oma-learn-signal-after-agent</code> hook</td></tr>
+            <tr><td><code>hooks/scripts/before-model-banner.js</code></td><td>Silently maps outgoing model requests to the active OmA model strategy without printing a banner</td></tr>
             <tr><td><code>hooks/scripts/learn.js</code></td><td>Filters informational-only learning nudges, deduplicates retries, and sanitizes legacy state before emit</td></tr>
             <tr><td><code>.omg/state/learn-watch.json</code></td><td>Persists learn-signal dedupe key, prompt-once session tracking, and skip reason</td></tr>
             <tr><td><code>.omg/state/deep-interview.json</code></td><td>Lock-state input; when active, learn nudges are suppressed to protect interview flow</td></tr>
           </tbody>
         </table>
-        <p class="sub" style="margin-top:10px;">Boundary: OmG no longer fetches or estimates usage from hooks. Use Gemini CLI native <code>/model</code> or <code>/stats model</code> for remaining quota/limits.</p>
+        <p class="sub" style="margin-top:10px;">Boundary: OmA no longer fetches or estimates usage from hooks. Use Gemini CLI native <code>/model</code> or <code>/stats model</code> for remaining quota/limits.</p>
       </div>
       <div>
         <h2>Retained Hook Output</h2>
         <p class="sub">Only actionable learn-signal nudges are emitted after agent turns.</p>
-        <p class="sub" style="margin-top:10px;">Disable the retained learn hook with <code>hooksConfig.disabled = ["omg-learn-signal-after-agent"]</code>.</p>
+        <p class="sub" style="margin-top:10px;">Disable the retained learn hook with <code>hooksConfig.disabled = ["oma-learn-signal-after-agent"]</code>.</p>
       </div>
     </div>
   </section>
@@ -902,37 +902,37 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td>Command</td><td><code>/omg:status</code></td><td>Snapshot progress, risk, and next actions</td></tr>
-          <tr><td>Command</td><td><code>/omg:doctor</code></td><td>Diagnose extension/team/workspace/hook readiness, including priority and fallback-route drift</td></tr>
-          <tr><td>Command</td><td><code>/omg:hud</code></td><td>Switch status visibility profile (<code>normal</code>/<code>compact</code>/<code>hidden</code>)</td></tr>
-          <tr><td>Command</td><td><code>/omg:hud-on</code></td><td>Quick toggle to full HUD status view</td></tr>
-          <tr><td>Command</td><td><code>/omg:hud-compact</code></td><td>Quick toggle to compact HUD status view</td></tr>
-          <tr><td>Command</td><td><code>/omg:hud-off</code></td><td>Quick toggle to hidden HUD (plain status sections)</td></tr>
-          <tr><td>Command</td><td><code>/omg:hooks</code></td><td>Inspect/switch hook trigger profile, lanes, and safety policy</td></tr>
-          <tr><td>Command</td><td><code>/omg:hooks-init</code></td><td>Bootstrap hook policy files and plugin contract scaffolding</td></tr>
-          <tr><td>Command</td><td><code>/omg:hooks-validate</code></td><td>Validate trigger graph, lifecycle symmetry, ordering, and worker-session safety constraints</td></tr>
-          <tr><td>Command</td><td><code>/omg:hooks-test</code></td><td>Dry-run event sequences and estimate hook efficiency impact</td></tr>
-          <tr><td>Command</td><td><code>/omg:notify</code></td><td>Configure approvals/blockers/verify/checkpoint/idle notification routing</td></tr>
-          <tr><td>Command</td><td><code>/omg:intent</code></td><td>Classify request intent and route to the right stage</td></tr>
-          <tr><td>Command</td><td><code>/omg:workspace</code></td><td>Set primary root, worktree/path lane ownership, and audit lane health</td></tr>
-          <tr><td>Command</td><td><code>/omg:taskboard</code></td><td>Maintain compact task ledger with stable IDs, p0-p3 priority, deterministic next ordering, baseline anchors, and verify state</td></tr>
-          <tr><td>Command</td><td><code>/omg:recall</code></td><td>Recover prior decisions/evidence with state-first search and bounded history fallback</td></tr>
-          <tr><td>Command</td><td><code>/omg:team-assemble</code></td><td>Build a task-fit team roster, fallback map, and request execution approval</td></tr>
-          <tr><td>Command</td><td><code>/omg:deep-init</code></td><td>Build project map and validation baseline before long sessions</td></tr>
-          <tr><td>Command</td><td><code>/omg:blueprint</code></td><td>Define product/UI workflow decisions, interface states, content hierarchy, accessibility, and verification hooks</td></tr>
-          <tr><td>Command</td><td><code>/omg:rules</code></td><td>Activate task-conditional guardrail rule packs</td></tr>
-          <tr><td>Command</td><td><code>/omg:memory</code></td><td>Manage <code>MEMORY.md</code> index, topic notes, and rule packs</td></tr>
-          <tr><td>Command</td><td><code>/omg:reasoning</code></td><td>Set global/teammate reasoning effort profile for depth and cost control</td></tr>
-          <tr><td>Command</td><td><code>/omg:loop</code></td><td>Continue exec/verify/fix cycles until done or blocked</td></tr>
-          <tr><td>Command</td><td><code>/omg:model</code></td><td>Switch model-selection strategy (<code>balanced</code>/<code>auto</code>/<code>custom</code>)</td></tr>
-          <tr><td>Command</td><td><code>/omg:approval</code></td><td>Switch approval posture (<code>suggest</code>/<code>auto</code>/<code>full-auto</code>)</td></tr>
-          <tr><td>Command</td><td><code>/omg:goal</code></td><td>Run a goal-driven autonomous delivery loop until verified, blocked, or max cycles are reached</td></tr>
-          <tr><td>Command</td><td><code>/omg:team</code></td><td>Run full multi-agent lifecycle with optional assembled roster, deterministic queueing, and fallback rerouting</td></tr>
-          <tr><td>Command</td><td><code>/omg:cancel</code></td><td>Harness-style safe cancel alias with resume handoff</td></tr>
-          <tr><td>Command</td><td><code>/omg:optimize</code></td><td>Tune prompt/context quality and cost profile</td></tr>
-          <tr><td>Command</td><td><code>/omg:cache</code></td><td>Inspect cache/context behavior and compact-state anchoring</td></tr>
+          <tr><td>Command</td><td><code>/oma:status</code></td><td>Snapshot progress, risk, and next actions</td></tr>
+          <tr><td>Command</td><td><code>/oma:doctor</code></td><td>Diagnose extension/team/workspace/hook readiness, including priority and fallback-route drift</td></tr>
+          <tr><td>Command</td><td><code>/oma:hud</code></td><td>Switch status visibility profile (<code>normal</code>/<code>compact</code>/<code>hidden</code>)</td></tr>
+          <tr><td>Command</td><td><code>/oma:hud-on</code></td><td>Quick toggle to full HUD status view</td></tr>
+          <tr><td>Command</td><td><code>/oma:hud-compact</code></td><td>Quick toggle to compact HUD status view</td></tr>
+          <tr><td>Command</td><td><code>/oma:hud-off</code></td><td>Quick toggle to hidden HUD (plain status sections)</td></tr>
+          <tr><td>Command</td><td><code>/oma:hooks</code></td><td>Inspect/switch hook trigger profile, lanes, and safety policy</td></tr>
+          <tr><td>Command</td><td><code>/oma:hooks-init</code></td><td>Bootstrap hook policy files and plugin contract scaffolding</td></tr>
+          <tr><td>Command</td><td><code>/oma:hooks-validate</code></td><td>Validate trigger graph, lifecycle symmetry, ordering, and worker-session safety constraints</td></tr>
+          <tr><td>Command</td><td><code>/oma:hooks-test</code></td><td>Dry-run event sequences and estimate hook efficiency impact</td></tr>
+          <tr><td>Command</td><td><code>/oma:notify</code></td><td>Configure approvals/blockers/verify/checkpoint/idle notification routing</td></tr>
+          <tr><td>Command</td><td><code>/oma:intent</code></td><td>Classify request intent and route to the right stage</td></tr>
+          <tr><td>Command</td><td><code>/oma:workspace</code></td><td>Set primary root, worktree/path lane ownership, and audit lane health</td></tr>
+          <tr><td>Command</td><td><code>/oma:taskboard</code></td><td>Maintain compact task ledger with stable IDs, p0-p3 priority, deterministic next ordering, baseline anchors, and verify state</td></tr>
+          <tr><td>Command</td><td><code>/oma:recall</code></td><td>Recover prior decisions/evidence with state-first search and bounded history fallback</td></tr>
+          <tr><td>Command</td><td><code>/oma:team-assemble</code></td><td>Build a task-fit team roster, fallback map, and request execution approval</td></tr>
+          <tr><td>Command</td><td><code>/oma:deep-init</code></td><td>Build project map and validation baseline before long sessions</td></tr>
+          <tr><td>Command</td><td><code>/oma:blueprint</code></td><td>Define product/UI workflow decisions, interface states, content hierarchy, accessibility, and verification hooks</td></tr>
+          <tr><td>Command</td><td><code>/oma:rules</code></td><td>Activate task-conditional guardrail rule packs</td></tr>
+          <tr><td>Command</td><td><code>/oma:memory</code></td><td>Manage <code>MEMORY.md</code> index, topic notes, and rule packs</td></tr>
+          <tr><td>Command</td><td><code>/oma:reasoning</code></td><td>Set global/teammate reasoning effort profile for depth and cost control</td></tr>
+          <tr><td>Command</td><td><code>/oma:loop</code></td><td>Continue exec/verify/fix cycles until done or blocked</td></tr>
+          <tr><td>Command</td><td><code>/oma:model</code></td><td>Switch model-selection strategy (<code>balanced</code>/<code>auto</code>/<code>custom</code>)</td></tr>
+          <tr><td>Command</td><td><code>/oma:approval</code></td><td>Switch approval posture (<code>suggest</code>/<code>auto</code>/<code>full-auto</code>)</td></tr>
+          <tr><td>Command</td><td><code>/oma:goal</code></td><td>Run a goal-driven autonomous delivery loop until verified, blocked, or max cycles are reached</td></tr>
+          <tr><td>Command</td><td><code>/oma:team</code></td><td>Run full multi-agent lifecycle with optional assembled roster, deterministic queueing, and fallback rerouting</td></tr>
+          <tr><td>Command</td><td><code>/oma:cancel</code></td><td>Harness-style safe cancel alias with resume handoff</td></tr>
+          <tr><td>Command</td><td><code>/oma:optimize</code></td><td>Tune prompt/context quality and cost profile</td></tr>
+          <tr><td>Command</td><td><code>/oma:cache</code></td><td>Inspect cache/context behavior and compact-state anchoring</td></tr>
           <tr><td>Skill</td><td><code>$plan</code></td><td>Milestone-level decomposition</td></tr>
-          <tr><td>Skill</td><td><code>$omg-plan</code></td><td>Slash-friendly planning alias that avoids native <code>/plan</code> collision</td></tr>
+          <tr><td>Skill</td><td><code>$oma-plan</code></td><td>Slash-friendly planning alias that avoids native <code>/plan</code> collision</td></tr>
           <tr><td>Skill</td><td><code>$execute</code></td><td>Implementation pass for a scoped slice</td></tr>
           <tr><td>Skill</td><td><code>$prd</code></td><td>Measurable scope and acceptance-criteria drafting</td></tr>
           <tr><td>Skill</td><td><code>$ralplan</code></td><td>Strict staged planning with rollback points</td></tr>
@@ -952,19 +952,19 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td><code>omg-architect</code></td><td>System boundaries and long-term design quality</td><td><code>gemini-3.1-pro-preview</code></td></tr>
-          <tr><td><code>omg-planner</code></td><td>Task slicing, dependencies, execution order</td><td><code>gemini-3.1-pro-preview</code></td></tr>
-          <tr><td><code>omg-product</code></td><td>Scope lock and measurable acceptance criteria</td><td><code>gemini-3.1-pro-preview</code></td></tr>
-          <tr><td><code>omg-executor</code></td><td>Code-level implementation and incremental delivery</td><td><code>gemini-3-flash-preview</code></td></tr>
-          <tr><td><code>omg-reviewer</code></td><td>Regression checks and correctness review</td><td><code>gemini-3.1-pro-preview</code></td></tr>
-          <tr><td><code>omg-verifier</code></td><td>Acceptance-gate evidence checks and release readiness</td><td><code>gemini-3.1-pro-preview</code></td></tr>
-          <tr><td><code>omg-debugger</code></td><td>Root cause analysis and fix strategy</td><td><code>gemini-3.1-pro-preview</code></td></tr>
-          <tr><td><code>omg-consensus</code></td><td>Option convergence and decision scoring</td><td><code>gemini-3.1-pro-preview</code></td></tr>
-          <tr><td><code>omg-researcher</code></td><td>Evidence gathering and decision support</td><td><code>gemini-3.1-pro-preview</code></td></tr>
-          <tr><td><code>omg-director</code></td><td>Lane orchestration, conflict resolution, and handoff control</td><td><code>gemini-3.1-pro-preview</code></td></tr>
-          <tr><td><code>omg-consultant</code></td><td>Decision criteria, strategic analysis, and recommendation framing</td><td><code>gemini-3.1-pro-preview</code></td></tr>
-          <tr><td><code>omg-editor</code></td><td>Final deliverable structure and consistency packaging</td><td><code>gemini-3-flash-preview</code></td></tr>
-          <tr><td><code>omg-quick</code></td><td>Small tactical edits</td><td><code>gemini-3.1-flash-lite-preview</code></td></tr>
+          <tr><td><code>oma-architect</code></td><td>System boundaries and long-term design quality</td><td><code>gemini-3.1-pro-preview</code></td></tr>
+          <tr><td><code>oma-planner</code></td><td>Task slicing, dependencies, execution order</td><td><code>gemini-3.1-pro-preview</code></td></tr>
+          <tr><td><code>oma-product</code></td><td>Scope lock and measurable acceptance criteria</td><td><code>gemini-3.1-pro-preview</code></td></tr>
+          <tr><td><code>oma-executor</code></td><td>Code-level implementation and incremental delivery</td><td><code>gemini-3-flash-preview</code></td></tr>
+          <tr><td><code>oma-reviewer</code></td><td>Regression checks and correctness review</td><td><code>gemini-3.1-pro-preview</code></td></tr>
+          <tr><td><code>oma-verifier</code></td><td>Acceptance-gate evidence checks and release readiness</td><td><code>gemini-3.1-pro-preview</code></td></tr>
+          <tr><td><code>oma-debugger</code></td><td>Root cause analysis and fix strategy</td><td><code>gemini-3.1-pro-preview</code></td></tr>
+          <tr><td><code>oma-consensus</code></td><td>Option convergence and decision scoring</td><td><code>gemini-3.1-pro-preview</code></td></tr>
+          <tr><td><code>oma-researcher</code></td><td>Evidence gathering and decision support</td><td><code>gemini-3.1-pro-preview</code></td></tr>
+          <tr><td><code>oma-director</code></td><td>Lane orchestration, conflict resolution, and handoff control</td><td><code>gemini-3.1-pro-preview</code></td></tr>
+          <tr><td><code>oma-consultant</code></td><td>Decision criteria, strategic analysis, and recommendation framing</td><td><code>gemini-3.1-pro-preview</code></td></tr>
+          <tr><td><code>oma-editor</code></td><td>Final deliverable structure and consistency packaging</td><td><code>gemini-3-flash-preview</code></td></tr>
+          <tr><td><code>oma-quick</code></td><td>Small tactical edits</td><td><code>gemini-3.1-flash-lite-preview</code></td></tr>
         </tbody>
       </table>
     </div>
@@ -999,102 +999,102 @@
           </tr>
           <tr>
             <td>Doctor preflight</td>
-            <td><code>/omg:doctor</code> (or <code>/omg:doctor team</code>)</td>
+            <td><code>/oma:doctor</code> (or <code>/oma:doctor team</code>)</td>
             <td>Readiness findings with prioritized remediation before autonomy</td>
           </tr>
           <tr>
             <td>Set operator posture</td>
-            <td><code>/omg:approval auto</code></td>
+            <td><code>/oma:approval auto</code></td>
             <td>Explicit confirmation policy aligned to task risk</td>
           </tr>
           <tr>
             <td>Set model policy</td>
-            <td><code>/omg:model auto</code> (or <code>/omg:model balanced|custom ...</code>)</td>
+            <td><code>/oma:model auto</code> (or <code>/oma:model balanced|custom ...</code>)</td>
             <td>Default lane model strategy pinned for the session/project, with explicit preview model IDs for deterministic routing</td>
           </tr>
           <tr>
             <td>Set alert posture</td>
-            <td><code>/omg:notify profile watchdog</code></td>
+            <td><code>/oma:notify profile watchdog</code></td>
             <td>Approval, blocker, verify-failure, checkpoint, and idle-watchdog alerts persisted to policy state</td>
           </tr>
           <tr>
             <td>Check usage visibility</td>
             <td><code>/model</code> or <code>/stats model</code></td>
-            <td>Authoritative Gemini CLI runtime usage/quota status without OmG hook-derived estimates</td>
+            <td>Authoritative Gemini CLI runtime usage/quota status without OmA hook-derived estimates</td>
           </tr>
           <tr>
             <td>Learn signal (automatic)</td>
             <td>Built-in <code>AfterAgent</code> learn-signal hook</td>
-            <td><code>/omg:learn</code> nudge appears only for actionable sessions; informational-only turns and deep-interview lock windows are suppressed</td>
+            <td><code>/oma:learn</code> nudge appears only for actionable sessions; informational-only turns and deep-interview lock windows are suppressed</td>
           </tr>
           <tr>
             <td>Start workflow</td>
-            <td><code>/omg:deep-init &lt;task&gt;</code> then <code>/omg:intent &lt;task&gt;</code></td>
+            <td><code>/oma:deep-init &lt;task&gt;</code> then <code>/oma:intent &lt;task&gt;</code></td>
             <td>Project map + stage-routed handoff before coding</td>
           </tr>
           <tr>
             <td>Lock product/UI decisions</td>
-            <td><code>/omg:blueprint &lt;task&gt;</code> or <code>$blueprint</code></td>
+            <td><code>/oma:blueprint &lt;task&gt;</code> or <code>$blueprint</code></td>
             <td>Workflow map, interface decisions, state coverage, accessibility constraints, and verification hooks before implementation</td>
           </tr>
           <tr>
             <td>Set workspace lanes</td>
-            <td><code>/omg:workspace set .</code>, <code>/omg:workspace audit</code>, and optionally <code>/omg:workspace add &lt;path&gt; &lt;owner&gt;</code></td>
+            <td><code>/oma:workspace set .</code>, <code>/oma:workspace audit</code>, and optionally <code>/oma:workspace add &lt;path&gt; &lt;owner&gt;</code></td>
             <td>Explicit root/lane ownership plus lane hygiene before parallel implementation</td>
           </tr>
           <tr>
             <td>Recall prior rationale</td>
-            <td><code>/omg:recall "&lt;keyword&gt;" scope=state</code> (expand to <code>scope=recent</code> only if needed)</td>
+            <td><code>/oma:recall "&lt;keyword&gt;" scope=state</code> (expand to <code>scope=recent</code> only if needed)</td>
             <td>Fast context recovery without replaying full transcript history</td>
           </tr>
           <tr>
             <td>Assemble team</td>
-            <td><code>/omg:team-assemble &lt;task&gt;</code></td>
+            <td><code>/oma:team-assemble &lt;task&gt;</code></td>
             <td>Role-fit roster proposal + approval gate before autonomous execution</td>
           </tr>
           <tr>
             <td>Sync task ledger</td>
-            <td><code>/omg:taskboard sync</code></td>
+            <td><code>/oma:taskboard sync</code></td>
             <td>Compact source of truth for ready, blocked, done, and verified tasks with null-safe default priority plus lane baseline anchors</td>
           </tr>
           <tr>
             <td>Refresh memory</td>
-            <td><code>/omg:memory Sync index and active rules for current task</code></td>
+            <td><code>/oma:memory Sync index and active rules for current task</code></td>
             <td>Compact memory index + task-aware rule activation context</td>
           </tr>
           <tr>
             <td>Bootstrap hooks</td>
-            <td><code>/omg:hooks-init</code> then <code>/omg:hooks profile balanced</code></td>
+            <td><code>/oma:hooks-init</code> then <code>/oma:hooks profile balanced</code></td>
             <td>Deterministic hook lane policy persisted for the session</td>
           </tr>
           <tr>
             <td>Validate hook graph</td>
-            <td><code>/omg:hooks-validate</code> then <code>/omg:hooks-test</code></td>
+            <td><code>/oma:hooks-validate</code> then <code>/oma:hooks-test</code></td>
             <td>Safe-to-run decision, lifecycle symmetry check, and dry-run evidence before high-autonomy loops</td>
           </tr>
           <tr>
             <td>Execute lifecycle</td>
-            <td><code>/omg:team Implement feature X with tests (approved roster)</code></td>
+            <td><code>/oma:team Implement feature X with tests (approved roster)</code></td>
             <td>team-plan -> team-prd -> taskboard -> team-exec -> team-verify -> team-fix progression summary</td>
           </tr>
           <tr>
             <td>Enforce completion loop</td>
-            <td><code>/omg:loop Continue unresolved verify backlog</code></td>
+            <td><code>/oma:loop Continue unresolved verify backlog</code></td>
             <td>Explicit continue/done/blocked status with taskboard coverage and evidence</td>
           </tr>
           <tr>
             <td>Observe state</td>
-            <td><code>/omg:status</code></td>
+            <td><code>/oma:status</code></td>
             <td>Current progress, blockers, and next actions</td>
           </tr>
           <tr>
             <td>Tune visibility</td>
-            <td><code>/omg:hud compact</code> or <code>/omg:hud-off</code></td>
+            <td><code>/oma:hud compact</code> or <code>/oma:hud-off</code></td>
             <td>Status output density aligned to terminal/session style</td>
           </tr>
           <tr>
             <td>Tune context</td>
-            <td><code>/omg:optimize</code> or <code>$context-optimize</code></td>
+            <td><code>/oma:optimize</code> or <code>$context-optimize</code></td>
             <td>Cleaner context with lower drift, stable task anchors, and better cache reuse</td>
           </tr>
         </tbody>
@@ -1120,14 +1120,14 @@
             <td>Update Gemini CLI, uninstall extension, reinstall via extensions command</td>
           </tr>
           <tr>
-            <td><code>/omg:* not found</code></td>
+            <td><code>/oma:* not found</code></td>
             <td>Extension not loaded in current process</td>
             <td>Run <code>gemini extensions list</code> and restart session</td>
           </tr>
           <tr>
             <td>Workspace/sandbox behavior differs from docs</td>
-            <td>Gemini CLI runtime is older than the current OmG compatibility baseline</td>
-            <td>Upgrade Gemini CLI to stable <code>v0.42.0+</code>, then rerun <code>/omg:doctor</code> and <code>/omg:workspace audit</code></td>
+            <td>Gemini CLI runtime is older than the current OmA compatibility baseline</td>
+            <td>Upgrade Gemini CLI to stable <code>v0.42.0+</code>, then rerun <code>/oma:doctor</code> and <code>/oma:workspace audit</code></td>
           </tr>
           <tr>
             <td>Slash command list looks stale after an update</td>
@@ -1135,46 +1135,46 @@
             <td>Run <code>/skills reload</code> on newer builds, or restart Gemini CLI if you are still on an older stable runtime</td>
           </tr>
           <tr>
-            <td><code>/plan</code> opens native plan mode when OmG planning skill was expected</td>
+            <td><code>/plan</code> opens native plan mode when OmA planning skill was expected</td>
             <td>Built-in <code>/plan</code> and skill slash invocation names can collide in newer Gemini CLI versions</td>
-            <td>Use <code>/omg-plan</code> (or <code>$omg-plan</code>) for OmG planning skill behavior, or <code>/omg:team-plan</code> for staged planning</td>
+            <td>Use <code>/oma-plan</code> (or <code>$oma-plan</code>) for OmA planning skill behavior, or <code>/oma:team-plan</code> for staged planning</td>
           </tr>
           <tr>
             <td>You want Gemini Auto selection for every task</td>
             <td>Balanced lane-specific policy is still active</td>
-            <td>Run <code>/omg:model auto</code>; if supported in your Gemini CLI build, also set runtime model mode (<code>/model auto</code> or <code>--model auto</code>).</td>
+            <td>Run <code>/oma:model auto</code>; if supported in your Gemini CLI build, also set runtime model mode (<code>/model auto</code> or <code>--model auto</code>).</td>
           </tr>
           <tr>
             <td>You expected latest-preview routing but keep getting an older alias target</td>
             <td>The runtime is resolving aliases differently than expected, or a stale custom model policy still uses aliases</td>
-            <td>Update OmG and re-run <code>/omg:model balanced</code> so the explicit preview model map is written again</td>
+            <td>Update OmA and re-run <code>/oma:model balanced</code> so the explicit preview model map is written again</td>
           </tr>
           <tr>
             <td>Autonomous flow confirms too often or too little</td>
             <td>Approval posture not aligned with risk profile</td>
-            <td>Run <code>/omg:approval suggest|auto|full-auto</code> and re-check policy</td>
+            <td>Run <code>/oma:approval suggest|auto|full-auto</code> and re-check policy</td>
           </tr>
 
           <tr>
             <td>Review or automation is about to run on a dirty or untrusted lane</td>
             <td>Shared worktree hygiene is unclear</td>
-            <td>Run <code>/omg:workspace audit</code>, isolate the lane if needed, and only then continue verify/review steps</td>
+            <td>Run <code>/oma:workspace audit</code>, isolate the lane if needed, and only then continue verify/review steps</td>
           </tr>
 
           <tr>
             <td>Hooks seem to miss terminal events or fire twice after continuation</td>
             <td>Hook lifecycle symmetry is not explicit</td>
-            <td>Run <code>/omg:hooks-validate</code>, then fix lifecycle policy before re-enabling autonomous loops</td>
+            <td>Run <code>/oma:hooks-validate</code>, then fix lifecycle policy before re-enabling autonomous loops</td>
           </tr>
           <tr>
             <td>Usage or learn-hook messages appear twice</td>
-            <td>OmG hooks may be registered through both extension-managed and manual hook paths</td>
-            <td>Run <code>/omg:hooks status</code> and <code>/omg:hooks-validate</code>, then keep one authoritative OmG hook registration path per event</td>
+            <td>OmA hooks may be registered through both extension-managed and manual hook paths</td>
+            <td>Run <code>/oma:hooks status</code> and <code>/oma:hooks-validate</code>, then keep one authoritative OmA hook registration path per event</td>
           </tr>
           <tr>
             <td>Hook output suddenly becomes quiet</td>
             <td>Runtime hook controls were set in the current shell or session</td>
-            <td>Check <code>OMG_HOOK_PROFILE</code> and <code>OMG_DISABLED_HOOKS</code> before editing hook files or deleting OmG state</td>
+            <td>Check <code>OMG_HOOK_PROFILE</code> and <code>OMG_DISABLED_HOOKS</code> before editing hook files or deleting OmA state</td>
           </tr>
           <tr>
             <td>A retained skill suddenly stops loading cleanly</td>
@@ -1184,32 +1184,32 @@
           <tr>
             <td>Output feels generic or repetitive</td>
             <td>Reasoning posture and quality gate too weak for target artifact</td>
-            <td>Raise <code>/omg:reasoning</code> (optionally teammate overrides) and rerun <code>/omg:team-verify</code></td>
+            <td>Raise <code>/oma:reasoning</code> (optionally teammate overrides) and rerun <code>/oma:team-verify</code></td>
           </tr>
           <tr>
             <td>Team assembly keeps proposing but not executing</td>
             <td>No explicit approval token after roster proposal</td>
-            <td>Reply with <code>yes</code>, <code>approve</code>, <code>go</code>, or <code>run</code> and re-run <code>/omg:team-assemble</code></td>
+            <td>Reply with <code>yes</code>, <code>approve</code>, <code>go</code>, or <code>run</code> and re-run <code>/oma:team-assemble</code></td>
           </tr>
           <tr>
             <td>Done status keeps drifting after long loops</td>
             <td>No compact task source of truth or missing verifier signoff</td>
-            <td>Run <code>/omg:taskboard sync</code>, then rerun <code>/omg:team-verify</code> to close remaining task IDs</td>
+            <td>Run <code>/oma:taskboard sync</code>, then rerun <code>/oma:team-verify</code> to close remaining task IDs</td>
           </tr>
           <tr>
             <td><code>taskboard next</code> keeps switching targets unexpectedly</td>
             <td>Missing task priority values or unstable queue ordering assumptions</td>
-            <td>Run <code>/omg:taskboard sync</code> (fills default <code>p2</code>) then <code>/omg:taskboard rebalance</code></td>
+            <td>Run <code>/oma:taskboard sync</code> (fills default <code>p2</code>) then <code>/oma:taskboard rebalance</code></td>
           </tr>
           <tr>
             <td>Execution is happening on the wrong branch or HEAD</td>
             <td>Lane baseline drifted after planning, handoff, or resume</td>
-            <td>Run <code>/omg:workspace audit</code>, confirm the intended baseline anchor, then realign the lane or refresh <code>/omg:team-plan</code> before continuing</td>
+            <td>Run <code>/oma:workspace audit</code>, confirm the intended baseline anchor, then realign the lane or refresh <code>/oma:team-plan</code> before continuing</td>
           </tr>
           <tr>
             <td>Setup health is unclear before a long run</td>
             <td>State/config drift accumulated across sessions</td>
-            <td>Run <code>/omg:doctor</code> and apply remediation list</td>
+            <td>Run <code>/oma:doctor</code> and apply remediation list</td>
           </tr>
           <tr>
             <td>Skills not triggering</td>

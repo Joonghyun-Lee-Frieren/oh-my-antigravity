@@ -1,0 +1,106 @@
+description = "Inspect or configure OmA hook pipeline profiles, triggers, and safety policy."
+prompt = """
+Run OmA hook pipeline manager.
+
+Input:
+$ARGUMENTS
+
+Protocol:
+1. Parse requested action:
+   - `status`
+   - `on` / `off`
+   - `profile <strict|balanced|fast>`
+   - `events`
+2. Manage native event triggers:
+   - `SessionStart`
+   - `SessionEnd`
+   - `BeforeAgent`
+   - `AfterAgent`
+   - `BeforeModel`
+   - `AfterModel`
+   - `BeforeToolSelection`
+   - `BeforeTool`
+   - `AfterTool`
+   - `PreCompress`
+   - `Notification`
+3. Manage derived signals (opt-in, state-driven mapping):
+   - `stage-transition` (from AfterAgent)
+   - `blocker-raised` (from AfterAgent)
+   - `agent-blocked` (from AfterAgent)
+   - `agent-finished-early` (from AfterAgent)
+   - `pre-verify` (from BeforeTool)
+   - `post-verify` (from AfterTool)
+   - `checkpoint-save` (from AfterTool)
+   - `blocker-repeat` (from Notification)
+   - `loop-stall` (from Notification/AfterAgent)
+   - `risk-spike` (from Notification/AfterAgent)
+   - `context-drift` (from PreCompress)
+   - `token-burst` (from AfterModel)
+4. Build deterministic execution lanes:
+   - `P0-safety` (permission/risk guardrails)
+   - `P1-quality` (tests/docs/acceptance checks)
+   - `P2-optimization` (context compaction/perf hints)
+5. Enforce efficiency controls:
+   - idempotency key per event
+   - debounce window for repeated triggers
+   - timeout budget per lane
+   - cooldown after repeated failures
+   - runtime profile overrides via environment when operators need fast/noisy-session adjustments without editing hook files
+6. Enforce lifecycle symmetry for agent-bound triggers:
+   - every before/enter path must have exactly one terminal outcome (`completed`, `blocked`, or `stopped`)
+   - blocked continuations must re-enter `P0-safety` once before `P1` or `P2`
+   - terminal hooks must not double-fire after continuation or retry
+7. Detect duplicate delivery risk:
+   - if the same OmA hook appears to be registered through both extension-managed hooks and a manual/user-maintained hook file, call out the coexistence risk explicitly
+   - prefer one authoritative registration path per event to avoid duplicate AfterAgent output
+   - do not recommend editing shipped hook files first when env/runtime controls or extension-managed settings can solve the issue safely
+8. Enforce team-safety: side-effect hooks must be disabled in delegated sub-agent turns unless user explicitly allows them.
+9. Read `.omg/state/session-lock.json` before mutating shared hook-policy state.
+10. If filesystem tools are available:
+   - if the current orchestration session owns the lock, write/update `.omg/state/hooks.json`
+   - otherwise write `.omg/state/sessions/[session-slug]/hooks.json` instead and report the ownership conflict
+
+Suggested `hooks.json` shape:
+{
+  "enabled": true,
+  "profile": "balanced",
+  "native_events": ["SessionStart", "SessionEnd", "BeforeAgent", "AfterAgent", "BeforeModel", "AfterModel", "BeforeToolSelection", "BeforeTool", "AfterTool", "PreCompress", "Notification"],
+  "derived_signals": {
+    "context-drift": true,
+    "risk-spike": true,
+    "loop-stall": true,
+    "token-burst": false,
+    "blocker-repeat": true,
+    "agent-blocked": true,
+    "agent-finished-early": true,
+    "stage-transition": true,
+    "pre-verify": true,
+    "post-verify": true,
+    "checkpoint-save": true,
+    "blocker-raised": true
+  },
+  "lanes": {
+    "P0-safety": { "timeout_ms": 400, "debounce_ms": 0 },
+    "P1-quality": { "timeout_ms": 800, "debounce_ms": 200 },
+    "P2-optimization": { "timeout_ms": 600, "debounce_ms": 500 }
+  },
+  "lifecycle_policy": {
+    "before_after_symmetry": true,
+    "continuation_reenters_safety_lane": true,
+    "terminal_states": ["completed", "blocked", "stopped"]
+  },
+  "runtime_controls": {
+    "hook_profile_env": "OMG_HOOK_PROFILE=minimal|balanced|strict",
+    "disabled_hooks_env": "OMG_DISABLED_HOOKS=learn,model-routing",
+    "plans_dir_env": "GEMINI_PLANS_DIR when provided by Gemini CLI"
+  },
+  "team_safety": {
+    "disable_side_effects_for_worker_sessions": true
+  },
+  "source": "oma:hooks"
+}
+
+Response:
+- Keep it concise and operator-facing.
+- Include `Hook Status`, `Active Lanes`, `Trigger Matrix`, `Lifecycle Policy`, and `Next Command`.
+"""

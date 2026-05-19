@@ -1,5 +1,5 @@
 ---
-name: omg-quick
+name: oma-quick
 description: Use for very small, low-risk edits like typo fixes, tiny refactors, and formatting.
 ---
 

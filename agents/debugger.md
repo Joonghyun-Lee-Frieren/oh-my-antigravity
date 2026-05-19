@@ -1,5 +1,5 @@
 ---
-name: omg-debugger
+name: oma-debugger
 description: Use for failures, flaky behavior, stack traces, and root-cause analysis.
 ---
 

@@ -1,0 +1,23 @@
+description = "Quick toggle: set OmA HUD visibility profile to hidden."
+prompt = """
+Set OmA HUD visibility profile to `hidden`.
+
+Protocol:
+1. Apply `visibility = hidden`.
+2. Read `.omg/state/session-lock.json` before mutating shared HUD state.
+3. If filesystem tools are available:
+   - if the current orchestration session owns the lock, write/update `.omg/state/hud.json` with source `oma:hud-off`
+   - otherwise write `.omg/state/sessions/[session-slug]/hud.json` with source `oma:hud-off` and report the ownership conflict
+4. Confirm that future `/oma:status` calls should avoid visual HUD code blocks.
+
+Output format:
+## HUD
+- applied: hidden
+- persisted:
+
+## Effect
+- `/oma:status` should return plain sections without HUD code block.
+
+## Next Command
+- /oma:status
+"""

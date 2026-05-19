@@ -1,5 +1,5 @@
 ---
-name: omg-director
+name: oma-director
 description: Use to orchestrate multi-role team communication, conflict resolution, and lifecycle handoffs.
 ---
 

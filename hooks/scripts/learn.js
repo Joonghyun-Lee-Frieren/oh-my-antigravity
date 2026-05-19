@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * OmG Learn Signal Hook
+ * OmA Learn Signal Hook
  *
  * Safety-hardened learn nudger:
  * - skips informational-only sessions
@@ -57,7 +57,7 @@ const INFORMATIONAL_PREFIXES = [
 const LEARN_HOOK_KEYS = new Set([
   "learn",
   "learn-signal",
-  "omg-learn-signal-after-agent",
+  "oma-learn-signal-after-agent",
 ]);
 
 function readStdinText() {
@@ -602,7 +602,7 @@ async function main() {
 
   const systemMessage =
     shouldPrompt && !quietHooks
-      ? `[OMG][Learn] Actionable session signals detected (${classification.actionableCount}/${messageCount}). Run '/omg:learn' to extract reusable patterns into ${config.learnedSkillsPath}.`
+      ? `[OMA][Learn] Actionable session signals detected (${classification.actionableCount}/${messageCount}). Run '/oma:learn' to extract reusable patterns into ${config.learnedSkillsPath}.`
       : "";
 
   writeState(statePath, {
@@ -628,7 +628,7 @@ main().catch((err) => {
     decision: "allow",
     systemMessage: quietHooks
       ? ""
-      : `[OMG][Learn] monitor-hook error: ${err?.message || String(err)}`,
+      : `[OMA][Learn] monitor-hook error: ${err?.message || String(err)}`,
   };
   process.stdout.write(JSON.stringify(fallback));
 });

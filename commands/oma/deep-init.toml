@@ -1,0 +1,22 @@
+description = "Run deep repository initialization to create durable project-map context for long sessions."
+prompt = """
+Run OmA `deep-init`.
+
+Objective:
+$ARGUMENTS
+
+Protocol:
+1. Scan repository structure, entry points, build/test commands, and key config files.
+2. Summarize architecture boundaries and high-risk zones.
+3. Build a project map with modules, responsibilities, and dependency hotspots.
+4. Record validation commands and known constraints before coding.
+5. Do not implement features in this step unless explicitly asked.
+6. If filesystem tools are available, create/update:
+   - `.omg/state/deep-init.md`
+   - `.omg/state/project-map.md`
+   - `.omg/state/validation.md`
+
+Response:
+- Keep it concise and operator-facing.
+- Include `Deep Init Summary`, `Project Map`, `Guardrails`, and `Recommended Next Command`.
+"""

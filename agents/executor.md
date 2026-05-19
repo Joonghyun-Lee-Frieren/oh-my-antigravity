@@ -1,5 +1,5 @@
 ---
-name: omg-executor
+name: oma-executor
 description: Use for focused implementation, refactoring, and test updates once a plan exists.
 ---
 

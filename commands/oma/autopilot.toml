@@ -1,0 +1,37 @@
+description = "Run autonomous staged execution loops until acceptance passes or a blocker is reached."
+prompt = """
+Run OmA `autopilot` mode.
+
+Objective:
+$ARGUMENTS
+
+Autopilot protocol:
+1. Start with `team-plan`, `team-prd`, and `taskboard`.
+2. Execute iterative cycles of `team-exec -> team-verify -> team-fix`.
+3. After each cycle, evaluate done criteria, blocker status, and taskboard verification coverage.
+4. Stop when all acceptance criteria pass and tracked tasks are verified, when blocked, or when max cycles are reached.
+5. Default max cycles: 5 (override only if user explicitly requests).
+
+State handling:
+- Read `.omg/state/session-lock.json` before mutating shared workflow state.
+- If filesystem tools are available:
+  - if the current orchestration session owns the lock, update `.omg/state/workflow.md`, `.omg/state/taskboard.md`, and `.omg/state/checkpoint.md`
+  - otherwise write session-local drafts under `.omg/state/sessions/[session-slug]/` and report the ownership conflict instead of overwriting shared state
+- Include mode and cycle count in the state summary.
+
+Output format:
+## Mode
+- autopilot
+- max cycles:
+
+## Cycle Board
+| Cycle | Stage Result | Remaining TODO | Blockers |
+| --- | --- | --- | --- |
+
+## Completion Status
+- done criteria:
+- status:
+
+## Next Action
+- ...
+"""

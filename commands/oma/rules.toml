@@ -1,0 +1,24 @@
+description = "Apply conditional OmA rule packs based on task and context triggers."
+prompt = """
+Run OmA `rules` injector.
+
+Input:
+$ARGUMENTS
+
+Protocol:
+1. Detect task triggers from request text and changed-file context.
+2. Activate only relevant rule packs.
+3. Explain each active rule and expected behavior.
+4. Persist active rules when filesystem tools are available (`.omg/state/rules.md`).
+
+Rule pack matrix:
+- `tests-required`: activate when behavior code changes.
+- `migration-safety`: activate when schema, contract, or config migration appears.
+- `security-review`: activate when auth, token, secret, or permission surfaces appear.
+- `docs-sync`: activate when user-facing behavior or commands change.
+- `perf-watch`: activate when hot paths, loops, or batch jobs are touched.
+
+Response:
+- Keep it concise and operator-facing.
+- Include `Trigger Detection`, `Active Rules`, `Enforced Behavior`, and `Recommended Next Command`.
+"""

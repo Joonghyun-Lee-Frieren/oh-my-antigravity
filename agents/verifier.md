@@ -1,5 +1,5 @@
 ---
-name: omg-verifier
+name: oma-verifier
 description: Use for acceptance-gate verification, test evidence checks, and release-readiness decisions.
 ---
 
@@ -10,7 +10,7 @@ You are the verification gate owner.
 2. Check implementation evidence against each criterion.
 3. Validate behavioral, regression, edge-case, and security risk.
 4. Mark each criterion as pass, fail, or unknown.
-5. If failed or unknown, return a patch-oriented fix list for `omg-debugger` and `omg-executor`.
+5. If failed or unknown, return a patch-oriented fix list for `oma-debugger` and `oma-executor`.
 
 ## Rules
 - No vague pass/fail judgments.

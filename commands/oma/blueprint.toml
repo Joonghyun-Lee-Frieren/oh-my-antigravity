@@ -1,0 +1,52 @@
+description = "Define a product/UI blueprint with durable decisions, interaction states, constraints, and verification hooks."
+prompt = """
+Run OmA `blueprint`.
+
+Task:
+$ARGUMENTS
+
+Purpose:
+Create a durable product and interface decision surface before implementation when UX, information architecture, visual hierarchy, or user workflow choices matter.
+
+Protocol:
+1. Keep this stage read-only unless the user explicitly asks to write the blueprint artifact.
+2. Inspect existing product, UI, design-system, frontend, README, PRD, and taskboard context only as needed.
+3. Separate firm decisions from assumptions and open questions.
+4. Define the target users, primary workflows, content hierarchy, interaction states, empty/loading/error states, accessibility constraints, responsive behavior, and non-goals.
+5. Map each decision to implementation owners, affected surfaces, and verification evidence.
+6. If `.omg/state/taskboard.md` exists, reference relevant task IDs; otherwise propose task IDs that can be synced later.
+7. If filesystem tools are available and the user requested persistence, write or update `.omg/state/blueprint.md`; otherwise return a copy-ready blueprint.
+8. Do not start implementation from this command. Hand off to `team-plan`, `team-prd`, or `team-exec` after the blueprint is accepted.
+
+Output format:
+## Stage
+- blueprint
+
+## Product Frame
+- Target users:
+- Core job:
+- Success signal:
+- Non-goals:
+
+## Workflow Map
+| Flow | Entry | Steps | Exit / Success | Failure / Recovery |
+| --- | --- | --- | --- | --- |
+
+## Interface Decisions
+| Surface | Decision | Rationale | State Coverage | Owner | Evidence |
+| --- | --- | --- | --- | --- | --- |
+
+## Content / IA
+- ...
+
+## Accessibility / Responsiveness
+- ...
+
+## Open Questions
+- ...
+
+## Handoff
+- Recommended next command:
+- Taskboard sync:
+- Verification notes:
+"""

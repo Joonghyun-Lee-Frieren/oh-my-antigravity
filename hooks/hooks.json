@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "name": "omg-model-router",
+            "name": "oma-model-router",
             "command": "node \"${extensionPath}/hooks/scripts/hook-bootstrap.js\" \"${extensionPath}/hooks/scripts/before-model-banner.js\"",
             "timeout": 5000
           }
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "name": "omg-learn-signal-after-agent",
+            "name": "oma-learn-signal-after-agent",
             "command": "node \"${extensionPath}/hooks/scripts/hook-bootstrap.js\" \"${extensionPath}/hooks/scripts/learn.js\"",
             "timeout": 8000
           }

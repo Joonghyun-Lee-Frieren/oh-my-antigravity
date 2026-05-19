@@ -1,0 +1,27 @@
+description = "Enforce execution/verify/fix loops until acceptance criteria pass or blockers are explicit."
+prompt = """
+Run OmA `loop` enforcement.
+
+Context:
+$ARGUMENTS
+
+Protocol:
+1. Read current acceptance criteria and open backlog from prior stage outputs.
+2. Prefer `.omg/state/taskboard.md` as the source of truth when available.
+3. Build the next smallest ready cycle scope.
+4. Execute one strict cycle: `team-exec -> team-verify -> team-fix` (fix only if verify fails).
+5. Never declare done when unresolved blocker, major item, open task, or missing verifier signoff remains.
+6. Stop only when:
+   - all criteria pass (done),
+   - hard blocker exists (blocked),
+   - max cycles reached (escalate).
+7. Default max cycles: 3 for one invocation unless user overrides.
+8. Read `.omg/state/session-lock.json` before mutating shared workflow state.
+9. If filesystem tools are available:
+   - if the current orchestration session owns the lock, update `.omg/state/workflow.md`, `.omg/state/taskboard.md`, and `.omg/state/checkpoint.md`
+   - otherwise write session-local drafts under `.omg/state/sessions/[session-slug]/` and report the ownership conflict
+
+Response:
+- Keep it concise and operator-facing.
+- Include `Loop Status`, `Cycle Evidence`, `Remaining Backlog`, and `Next Command`.
+"""

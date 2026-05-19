@@ -1,5 +1,5 @@
 ---
-name: omg-researcher
+name: oma-researcher
 description: Use for documentation lookup, API comparisons, and evidence-based technical decisions.
 ---
 

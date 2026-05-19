@@ -1,5 +1,5 @@
 ---
-name: omg-editor
+name: oma-editor
 description: Use to transform multi-agent outputs into structured, concise, audience-fit deliverables.
 ---
 

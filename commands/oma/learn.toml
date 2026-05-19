@@ -1,0 +1,40 @@
+# REFACTORED: Implementation of interactive selective saving for pattern extraction.
+# Default behavior is to save all identified high-signal patterns.
+# Users can provide specific IDs to save only chosen patterns.
+# Focus shifted from saving all conversations to extracting common reusable patterns (errors, workarounds, conventions).
+description = "Manually trigger session evaluation and pattern extraction."
+prompt = """
+Run OmA `learn`.
+
+Task:
+$ARGUMENTS
+
+Protocol:
+1. Load session history from the transcript.
+2. Identify high-signal reusable patterns across the entire session:
+   - Common error resolutions (why it failed, how it was fixed)
+   - Reusable workarounds for environment/tool quirks
+   - Project-specific conventions, styles, or patterns identified by the user
+   - User-corrected agent behaviors (avoiding the same mistake)
+3. **DO NOT** save simple one-time fixes or conversational fluff. Focus on patterns that repeat or are likely to recur.
+4. **Interactive Selection Phase**:
+   - List the identified patterns with IDs (e.g., 1, 2, 3...).
+   - Ask the user: "Would you like to save ALL of these, or just specific ones (e.g., '1, 3')? (Default is ALL)"
+   - If the user responds "all" (or just presses enter/affirms), proceed with all.
+   - If the user provides specific IDs, only save those.
+5. Extraction & Saving:
+   - For each selected pattern, extract it into a markdown file with frontmatter:
+     - `name`: unique identifier
+     - `description`: what this pattern covers
+     - `globs`: file patterns where this applies (optional)
+   - Save to `.omg/rules/learned/` (or configured learned_skills_path).
+6. Update `MEMORY.md` if a pattern is project-critical.
+
+Configuration:
+- Respect rules from `.omg/rules/learn.json` if available.
+
+Response:
+- Confirm which patterns were saved.
+- Provide file paths for the new rules.
+- Suggest how these rules will be applied in future sessions.
+"""
