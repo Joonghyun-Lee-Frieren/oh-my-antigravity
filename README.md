@@ -73,12 +73,12 @@ Run a goal-style autonomous delivery loop:
 
 Note: extension install/update commands run in terminal mode (`gemini extensions ...`), not in interactive slash-command mode.
 
-## What's New in v0.9.1
+## What's New in v0.9.2
 
-- **Durable Multi-Goal Workflows (Ultragoal)**: Adds `/oma:ultragoal` and `$ultragoal` to decompose complex tasks into sequential repo-native micro-goals.
-- **Fail-Closed Checkpointing**: Keeps checkpoint state fail-closed under `.omg/ultragoal/`, blocking downstream goals until the active goal has validation evidence.
-- **Diagnostics Hardening**: Updated `/oma:doctor` to validate `$ultragoal` skill metadata.
-- **Version Bump**: Bumped project and extension version to `v0.9.1`.
+- **Orbit Router Diagnostics**: The quiet `BeforeModel` router can now write an opt-in last-decision trace to `.omg/state/model-router-last.json`.
+- **Trace Without Noise**: Set `OMG_MODEL_ROUTING_TRACE=1` to capture selected lane, model, strategy, and match reason without restoring the old per-request banner.
+- **Doctor/Status Visibility**: `/oma:doctor`, `/oma:status`, `/oma:model`, and hook validation guidance now account for router trace freshness and missing custom lane mappings.
+- **Version Bump**: Bumped project and extension version to `v0.9.2`.
 
 ## Extension Boundary and Upgrade Safety
 
@@ -216,6 +216,7 @@ OmA ships a quiet model-routing hook. The previous `AfterAgent` quota-watch usag
 - Behavior: silently maps outgoing model requests to the active OmA strategy (`balanced`, `auto`, or `custom`) without printing a model banner
 - Default balanced routing: planning/review -> `gemini-3.1-pro-preview`, execution -> `gemini-3-flash-preview`, quick edits -> `gemini-3.1-flash-lite-preview`
 - Optional disable: `OMG_DISABLED_HOOKS=model-routing` or `OMG_MODEL_ROUTING=off`
+- Optional trace: `OMG_MODEL_ROUTING_TRACE=1` writes the latest lane/model decision to `.omg/state/model-router-last.json`
 
 Usage/quota visibility:
 
@@ -427,7 +428,6 @@ Extension behavior is manifest-driven through Gemini CLI extension primitives.
 ## Inspiration
 
 - [Gemini CLI](https://github.com/google-gemini/gemini-cli) - Google's open-source AI terminal agent
-- [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex) - Codex CLI harness
 - [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) - Claude Code CLI harness
 - [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) - OpenAgent CLI harness
 - [Claude Code Prompt Caching](https://news.hada.io/topic?id=26835) - Context engineering principles

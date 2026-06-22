@@ -12,6 +12,7 @@ import path from "node:path";
 const STATE_ROOT_ENV = "OMG_STATE_ROOT";
 const DISABLED_HOOKS_ENV = "OMG_DISABLED_HOOKS";
 const MODEL_ROUTING_ENV = "OMG_MODEL_ROUTING";
+const MODEL_ROUTING_TRACE_ENV = "OMG_MODEL_ROUTING_TRACE";
 const MODEL_HOOK_KEYS = new Set([
   "model",
   "model-routing",
@@ -32,6 +33,7 @@ const DEFAULT_LANE_MODELS = {
 const LANE_PATTERNS = [
   {
     lane: "quick_edit",
+    label: "quick-edit",
     patterns: [
       /\boma-quick\b/i,
       /\bquick[_ -]?edit\b/i,
@@ -41,6 +43,7 @@ const LANE_PATTERNS = [
   },
   {
     lane: "execution",
+    label: "execution",
     patterns: [
       /\boma-executor\b/i,
       /\/oma:team-exec\b/i,
@@ -53,6 +56,7 @@ const LANE_PATTERNS = [
   },
   {
     lane: "review_verify",
+    label: "review-verify",
     patterns: [
       /\boma-reviewer\b/i,
       /\boma-verifier\b/i,
@@ -68,6 +72,7 @@ const LANE_PATTERNS = [
   },
   {
     lane: "planning",
+    label: "planning",
     patterns: [
       /\boma-director\b/i,
       /\boma-architect\b/i,
@@ -118,6 +123,10 @@ function isObject(value) {
 
 function isOff(value) {
   return typeof value === "string" && ["0", "false", "no", "off"].includes(value.trim().toLowerCase());
+}
+
+function isOn(value) {
+  return typeof value === "string" && ["1", "true", "yes", "on", "trace"].includes(value.trim().toLowerCase());
 }
 
 function parseCsvEnv(value) {
@@ -237,12 +246,19 @@ function detectLane(hookInput) {
     request.system_instruction,
   ]).join("\n");
 
-  for (const { lane, patterns } of LANE_PATTERNS) {
-    if (patterns.some((pattern) => pattern.test(text))) {
-      return lane;
+  for (const { lane, label, patterns } of LANE_PATTERNS) {
+    const matchedPattern = patterns.find((pattern) => pattern.test(text));
+    if (matchedPattern) {
+      return {
+        lane,
+        reason: `${label}:${matchedPattern.source}`,
+      };
     }
   }
-  return "planning";
+  return {
+    lane: "planning",
+    reason: "fallback:planning-default",
+  };
 }
 
 function buildOutput(model) {
@@ -265,6 +281,23 @@ function buildOutput(model) {
   };
 }
 
+function writeRouterTrace(stateRoot, trace) {
+  if (!stateRoot || !isOn(process.env[MODEL_ROUTING_TRACE_ENV])) {
+    return;
+  }
+
+  try {
+    fs.mkdirSync(stateRoot, { recursive: true });
+    fs.writeFileSync(
+      path.join(stateRoot, "model-router-last.json"),
+      `${JSON.stringify(trace, null, 2)}\n`,
+      "utf8",
+    );
+  } catch {
+    // Trace writes are best-effort and must never affect model routing.
+  }
+}
+
 async function main() {
   const rawInput = await readStdinText();
   const hookInput = safeJsonParse(rawInput, {});
@@ -278,9 +311,21 @@ async function main() {
   }
 
   const cwd = resolveSessionCwd(hookInput);
+  const stateRoot = resolveStateRoot(cwd);
   const policy = readModelPolicy(cwd);
-  const lane = detectLane(hookInput);
+  const laneDecision = detectLane(hookInput);
+  const lane = laneDecision.lane;
   const model = policy.strategy === "auto" ? "auto" : policy.laneModels[lane] || DEFAULT_LANE_MODELS[lane];
+
+  writeRouterTrace(stateRoot, {
+    updated_at: new Date().toISOString(),
+    cwd,
+    strategy: policy.strategy,
+    lane,
+    model,
+    reason: laneDecision.reason,
+    source: "oma-model-router",
+  });
 
   process.stdout.write(JSON.stringify(buildOutput(model)));
 }

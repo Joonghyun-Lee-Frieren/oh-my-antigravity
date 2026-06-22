@@ -1,6 +1,6 @@
 {
   "name": "oh-my-antigravity",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Extension-first context engineering and multi-agent workflow pack for Gemini CLI.",
   "keywords": [
     "gemini",

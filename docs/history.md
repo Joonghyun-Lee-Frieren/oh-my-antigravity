@@ -2,6 +2,19 @@
 
 All notable changes to oh-my-antigravity are documented here.
 
+## v0.9.2 - Orbit Router Diagnostics (2026-06-23)
+
+### Added
+
+- Added opt-in model-router tracing with `OMG_MODEL_ROUTING_TRACE=1`.
+- Added `.omg/state/model-router-last.json` as a lightweight last-decision diagnostic artifact containing the selected lane, model, strategy, match reason, and timestamp.
+
+### Changed
+
+- Kept `BeforeModel` routing silent by default while making lane-selection troubleshooting available on demand.
+- Updated `/oma:doctor`, `/oma:status`, `/oma:model`, and `/oma:hooks-validate` guidance to surface router trace freshness, stdout-schema safety, and missing custom lane mappings.
+- Bumped package and extension metadata to `v0.9.2`.
+
 ## v0.9.1 - Durable Multi-Goal Workflows (2026-05-21)
 
 ### Added
@@ -111,6 +124,8 @@ All notable changes to oh-my-antigravity are documented here.
 
 | Version | Date | Theme | Outcome |
 | --- | --- | --- | --- |
+| `v0.9.2` | 2026-06-23 | Orbit router diagnostics | Added opt-in last-decision model-router tracing, kept hook output quiet, and taught doctor/status/model guidance to inspect trace freshness and lane mappings |
+| `v0.9.1` | 2026-05-21 | Durable multi-goal workflows | Added `/oma:ultragoal`, `$ultragoal`, and repo-native checkpoint files under `.omg/ultragoal/` for sequential fail-closed goal execution |
 | `v0.9.0` | 2026-05-20 | Project rename | Renamed the project and extension package to `oh-my-antigravity`, changed shorthand to `OmA`, moved commands to `/oma:*`, updated public docs and install links, and bumped metadata to `v0.9.0` |
 | `v0.8.6` | 2026-05-18 | Blueprint workflow | Added `/oma:blueprint` and `$blueprint` for product/UI workflow decisions, interface states, content hierarchy, accessibility, responsive constraints, and verification hooks before implementation |
 | `v0.8.5` | 2026-05-04 | Goal mode autonomous delivery | Added `/oma:goal` for routine-approved plan/PRD/taskboard/exec/verify/fix loops while keeping Gemini CLI runtime approval, sandbox, and policy limits explicit |

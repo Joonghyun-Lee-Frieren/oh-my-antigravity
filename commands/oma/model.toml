@@ -16,6 +16,8 @@ Protocol:
    - `auto`: defer lane model selection to Gemini runtime auto-model policy across all lanes
    - `custom`: operator-provided lane map with concrete model names or Gemini CLI aliases
 3. If no strategy is provided, show current policy from `.omg/state/model.json` when available.
+   - Also show `.omg/state/model-router-last.json` when it exists so operators can see the last selected lane, model, and match reason.
+   - If the operator passes `trace on`, explain that `OMG_MODEL_ROUTING_TRACE=1` enables the lightweight last-decision trace without reintroducing a per-request banner.
 4. Produce an effective lane map for:
    - planning
    - execution
@@ -36,7 +38,11 @@ Suggested `model.json` shape:
     "review_verify": "gemini-3.1-pro-preview|auto|<custom>"
   },
   "updated_at": "<ISO-8601>",
-  "source": "oma:model"
+  "source": "oma:model",
+  "diagnostics": {
+    "trace_env": "OMG_MODEL_ROUTING_TRACE=1",
+    "last_trace_file": ".omg/state/model-router-last.json"
+  }
 }
 
 Response:

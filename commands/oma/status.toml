@@ -9,7 +9,7 @@ Checklist:
 1. Inspect current repository state and changed files.
 2. Detect active mode (`balanced/speed/deep/autopilot/ralph/ultrawork`) from context or `.omg/state/mode.json` if available.
 3. Detect HUD visibility profile from `.omg/state/hud.json` if available (`normal`, `compact`, `hidden`).
-4. Read `.omg/state/model.json`, workspace `.gemini/settings.json`, `.omg/state/taskboard.md`, `.omg/state/workspace.json`, and `.omg/state/hooks.json` when available.
+4. Read `.omg/state/model.json`, `.omg/state/model-router-last.json`, workspace `.gemini/settings.json`, `.omg/state/taskboard.md`, `.omg/state/workspace.json`, and `.omg/state/hooks.json` when available.
 5. Summarize completed work vs remaining work by pipeline stage (`team-plan`, `team-prd`, `team-exec`, `team-verify`, `team-fix`).
 6. Highlight current priority queue (`p0` -> `p3`) and the top deterministic `next` candidate when taskboard data exists.
 7. Identify blockers, verification queue, lane-health issues, baseline-anchor drift risks, and hook lifecycle risks.
@@ -20,6 +20,7 @@ HUD policy:
 - `compact`: include one-line HUD plus concise bullets.
 - `hidden`: skip the visual HUD code block and provide plain sections only.
 - In visible HUD modes, make the active model strategy visually prominent by showing strategy, lane model IDs, and preview-features status near the front of the HUD line.
+- When a router trace exists, include the last lane/model/reason in the `Model` section; if routing looks suspect and no trace exists, suggest `OMG_MODEL_ROUTING_TRACE=1` for the next diagnostic run.
 
 If no HUD profile is found, default to `normal`.
 

@@ -74,12 +74,12 @@ Goal-style autonomous delivery loop:
 
 참고: 설치/업데이트 명령은 대화형 슬래시 명령 모드가 아니라 터미널 모드(`gemini extensions ...`)에서 실행합니다.
 
-## What's New in v0.9.1
+## What's New in v0.9.2
 
-- **영속적 다중 목표 워크플로우 (Ultragoal)**: `/oma:ultragoal` 명령과 `$ultragoal` 스킬을 사용하여 복잡한 요구사항을 저장소 기반의 단계별 마이크로 목표로 분해하고 실행합니다.
-- **Fail-Closed 체크포인팅**: `.omg/ultragoal/` 디렉터리에 실행 상태를 영속적으로 기록하며, 활성화된 마이크로 목표에 검증 근거가 수집되어 완료되기 전에는 후속 목표 진행을 차단하는 Fail-Closed 안전장치를 적용했습니다.
-- **진단 기능 강화**: `/oma:doctor` 진단 목록에 `$ultragoal` 스킬 메타데이터 무결성 검사를 추가했습니다.
-- **버전 범프**: 프로젝트 버전과 확장 매니페스트 버전을 `v0.9.1`로 갱신했습니다.
+- **Orbit Router Diagnostics**: 조용한 `BeforeModel` 라우터가 이제 선택적으로 `.omg/state/model-router-last.json`에 마지막 라우팅 결정을 기록합니다.
+- **Trace Without Noise**: `OMG_MODEL_ROUTING_TRACE=1`을 설정하면 기존처럼 매 요청마다 배너를 출력하지 않고도 lane, model, strategy, match reason을 확인할 수 있습니다.
+- **Doctor/Status Visibility**: `/oma:doctor`, `/oma:status`, `/oma:model`, `/oma:hooks-validate` 안내가 라우터 trace freshness와 custom lane mapping 누락을 함께 점검합니다.
+- **버전 범프**: 프로젝트 버전과 확장 매니페스트 버전을 `v0.9.2`로 갱신했습니다.
 
 ## 공유 워크플로우 상태
 
@@ -187,6 +187,12 @@ Retained hooks:
 
 - `BeforeModel` -> `oma-model-router`: silently routes outgoing model requests according to the active OmA model strategy.
 - `AfterAgent` -> `oma-learn-signal-after-agent`: shows `/oma:learn` nudges only for actionable sessions and suppresses them during deep-interview lock windows.
+
+Router diagnostics:
+
+- `OMG_MODEL_ROUTING_TRACE=1` enables a quiet last-decision trace at `.omg/state/model-router-last.json`.
+- The trace records lane, model, strategy, match reason, timestamp, and source without adding visible hook output.
+- Use `/oma:doctor model` or `/oma:status` when a session appears to be using the wrong lane.
 
 Usage and quota visibility:
 
@@ -375,7 +381,6 @@ oh-my-antigravity/
 ## 영감을 받은 프로젝트
 
 - [Gemini CLI](https://github.com/google-gemini/gemini-cli) - Google의 오픈소스 AI 터미널 에이전트
-- [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex) - Codex CLI 하네스
 - [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) - Claude Code CLI 하네스
 - [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) - OpenAgent CLI 하네스
 - [Claude Code 프롬프트 캐싱 교훈](https://news.hada.io/topic?id=26835) - 컨텍스트 엔지니어링 원리

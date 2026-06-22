@@ -10,6 +10,7 @@ Supported scopes:
 - `team`: multi-agent/team-pipeline readiness diagnostics
 - `workspace`: lane/worktree hygiene and drift diagnostics
 - `hooks`: hook-policy safety and trigger-health diagnostics
+- `model`: model-router lane selection and trace diagnostics
 
 Diagnostic protocol:
 1. Detect requested scope and run matching checks.
@@ -19,7 +20,12 @@ Diagnostic protocol:
 3. Verify command readiness for core flows (`team`, `intent`, `workspace`, `taskboard`, `loop`, `rules`, `memory`, `hooks`, `notify`, `reasoning`, `approval`).
 4. Verify retained deep-work skills (`plan`, `oma-plan`, `execute`, `prd`, `ralplan`, `research`, `deep-dive`, `context-optimize`, `ultragoal`) and their metadata integrity.
 5. Check state artifacts and drift risks under `.omg/state/` when available, including lane health, trust notes, and hook lifecycle policy.
-6. Detect common failure patterns:
+6. Inspect model-router diagnostics:
+   - read `.omg/state/model.json` and `.omg/state/model-router-last.json` when present
+   - confirm the selected lane, strategy, model, and reason match the current task type
+   - if no trace exists and routing is unclear, recommend rerunning with `OMG_MODEL_ROUTING_TRACE=1`
+   - treat stale trace timestamps, unknown lanes, or missing lane model mappings as actionable findings
+7. Detect common failure patterns:
    - extension not loaded in current session
    - Gemini CLI runtime too old for current OmA assumptions (recommend `v0.38.0+`)
    - missing or stale root `GEMINI.md` import chain
@@ -49,15 +55,18 @@ Diagnostic protocol:
    - hook lifecycle asymmetry (start without terminal outcome, blocked continuation skipping safety re-entry)
    - duplicate OmA hook registration causing repeated AfterAgent output or mixed manual/extension hook paths
    - runtime hook profile/disable env vars producing unexpected silence or reduced hook coverage
+   - model router trace disabled during routing investigations
+   - stale `.omg/state/model-router-last.json` causing wrong assumptions about the active lane
+   - custom model strategy missing one of `planning`, `execution`, `quick_edit`, or `review_verify`
    - hook plans or plan-session state not accounting for `GEMINI_PLANS_DIR` when the runtime provides it
    - repeated learn nudges due missing cooldown policy in `.omg/rules/learn.json`
    - repeated denied tool calls without escalation path
-7. Produce concrete remediation actions in priority order.
-8. Prefer extension-managed recovery paths first:
+8. Produce concrete remediation actions in priority order.
+9. Prefer extension-managed recovery paths first:
    - `gemini extensions list`
    - reinstall/update via `gemini extensions ...` when the active extension root looks stale
    - keep one authoritative OmA hook registration path per event before editing shipped assets
-9. If filesystem tools are available, write/update `.omg/state/doctor.md`.
+10. If filesystem tools are available, write/update `.omg/state/doctor.md`.
 
 Response:
 - Keep it concise and operator-facing.

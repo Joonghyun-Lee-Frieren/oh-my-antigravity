@@ -20,6 +20,8 @@ Validation checklist:
 7. Verify runtime control consistency:
    - `OMG_HOOK_PROFILE=minimal|balanced|strict` semantics stay consistent with current hook surfaces
    - `OMG_DISABLED_HOOKS` values do not silently disable more than the operator intended
+   - `OMG_MODEL_ROUTING_TRACE=1` is treated as diagnostics-only and does not add user-visible hook output
+   - BeforeModel hook stdout remains a single JSON decision payload even when trace writing fails
 8. Verify team-safety policy:
    - side-effect hooks disabled in worker/delegated sessions
    - high-risk hooks require explicit user confirmation context

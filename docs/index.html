@@ -519,7 +519,7 @@
   <header>
     <div class="wrap">
       <div class="hero-top">
-        <span class="badge">Latest Update v0.9.1</span>
+        <span class="badge">Latest Update v0.9.2</span>
         <div class="top-actions">
           <a class="btn btn-link btn-github" href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity" target="_blank" rel="noreferrer noopener">
             <svg class="btn-icon" viewBox="0 0 16 16" aria-hidden="true">
@@ -572,8 +572,8 @@
 
   <section>
     <div class="wrap">
-      <h2>Latest Update (Ultragoal Workflow)</h2>
-      <p class="sub">OmA v0.9.1 introduces the durable multi-goal workflow (Ultragoal), providing repository-native tracking, checkpointing, and fail-closed safety for complex requirements.</p>
+      <h2>Latest Update (Orbit Router Diagnostics)</h2>
+      <p class="sub">OmA v0.9.2 adds opt-in model-router tracing so operators can diagnose lane selection without bringing back noisy per-request hook output.</p>
       <table>
         <thead>
           <tr>
@@ -583,28 +583,28 @@
         </thead>
         <tbody>
           <tr>
-            <td>New command</td>
-            <td><code>/oma:ultragoal</code> runs a durable multi-goal workflow, decomposing large requirements into sequential micro-goals.</td>
+            <td>Router trace</td>
+            <td><code>OMG_MODEL_ROUTING_TRACE=1</code> writes the latest lane/model decision to <code>.omg/state/model-router-last.json</code>.</td>
           </tr>
           <tr>
-            <td>New skill</td>
-            <td><code>$ultragoal</code> manages the durable goal map, status tracking, and ledger log generation under <code>.omg/ultragoal/</code>.</td>
+            <td>Quiet default</td>
+            <td>The <code>BeforeModel</code> hook still returns a single JSON decision payload and does not print a visible banner.</td>
           </tr>
           <tr>
-            <td>Checkpointing</td>
-            <td>State is fail-closed, blocking downstream goals until the active micro-goal is completed with validation evidence.</td>
+            <td>Trace fields</td>
+            <td>The trace records timestamp, working directory, strategy, lane, model, match reason, and source.</td>
           </tr>
           <tr>
-            <td>Handoff</td>
-            <td>Generates structured handoff instructions using the <code>--intent</code> pin pattern for safe step-by-step execution.</td>
+            <td>Operator checks</td>
+            <td><code>/oma:doctor</code>, <code>/oma:status</code>, and <code>/oma:model</code> now call out stale traces and missing custom lane mappings.</td>
           </tr>
           <tr>
             <td>Diagnostics</td>
-            <td>Updated <code>/oma:doctor</code> diagnostics to validate the <code>$ultragoal</code> skill metadata.</td>
+            <td><code>/oma:hooks-validate</code> now treats router trace as diagnostics-only and checks stdout schema safety.</td>
           </tr>
           <tr>
             <td>Release metadata</td>
-            <td>Package and extension metadata were bumped to <code>v0.9.1</code>.</td>
+            <td>Package and extension metadata were bumped to <code>v0.9.2</code>.</td>
           </tr>
         </tbody>
       </table>
@@ -852,7 +852,7 @@
           </thead>
           <tbody>
             <tr><td><code>hooks/hooks.json</code></td><td>Registers the quiet <code>BeforeModel</code> model router and the retained <code>oma-learn-signal-after-agent</code> hook</td></tr>
-            <tr><td><code>hooks/scripts/before-model-banner.js</code></td><td>Silently maps outgoing model requests to the active OmA model strategy without printing a banner</td></tr>
+            <tr><td><code>hooks/scripts/before-model-banner.js</code></td><td>Silently maps outgoing model requests to the active OmA model strategy and optionally writes <code>.omg/state/model-router-last.json</code> when <code>OMG_MODEL_ROUTING_TRACE=1</code></td></tr>
             <tr><td><code>hooks/scripts/learn.js</code></td><td>Filters informational-only learning nudges, deduplicates retries, and sanitizes legacy state before emit</td></tr>
             <tr><td><code>.omg/state/learn-watch.json</code></td><td>Persists learn-signal dedupe key, prompt-once session tracking, and skip reason</td></tr>
             <tr><td><code>.omg/state/deep-interview.json</code></td><td>Lock-state input; when active, learn nudges are suppressed to protect interview flow</td></tr>

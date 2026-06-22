@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/google-gemini/gemini-cli/main/packages/cli/schemas/gemini-extension.json",
   "name": "oh-my-antigravity",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Context engineering and multi-agent workflow extension for Gemini CLI.",
   "author": "Joonghyun-Lee-Frieren",
   "license": "MIT",
