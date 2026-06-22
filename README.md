@@ -428,6 +428,7 @@ Extension behavior is manifest-driven through Gemini CLI extension primitives.
 ## Inspiration
 
 - [Gemini CLI](https://github.com/google-gemini/gemini-cli) - Google's open-source AI terminal agent
+- [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex) - Codex CLI harness
 - [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) - Claude Code CLI harness
 - [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) - OpenAgent CLI harness
 - [Claude Code Prompt Caching](https://news.hada.io/topic?id=26835) - Context engineering principles

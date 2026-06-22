@@ -381,6 +381,7 @@ oh-my-antigravity/
 ## 영감을 받은 프로젝트
 
 - [Gemini CLI](https://github.com/google-gemini/gemini-cli) - Google의 오픈소스 AI 터미널 에이전트
+- [oh-my-codex](https://github.com/Yeachan-Heo/oh-my-codex) - Codex CLI 하네스
 - [oh-my-claudecode](https://github.com/Yeachan-Heo/oh-my-claudecode) - Claude Code CLI 하네스
 - [oh-my-openagent](https://github.com/code-yeongyu/oh-my-openagent) - OpenAgent CLI 하네스
 - [Claude Code 프롬프트 캐싱 교훈](https://news.hada.io/topic?id=26835) - 컨텍스트 엔지니어링 원리
