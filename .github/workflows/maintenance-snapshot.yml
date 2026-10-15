@@ -1,0 +1,20 @@
+name: Maintenance source snapshot
+on:
+  push:
+    branches: [maintenance/antigravity-native-0.10]
+    paths: [.github/workflows/maintenance-snapshot.yml]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - run: git archive HEAD -o /tmp/oma-source.tar
+      - uses: actions/upload-artifact@v4
+        with:
+          name: oma-source
+          path: /tmp/oma-source.tar
+          retention-days: 1
