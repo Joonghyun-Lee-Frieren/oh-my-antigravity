@@ -26,52 +26,57 @@ OmA 将 Gemini CLI 从单会话助手扩展为结构化、角色驱动的工程�
   <img src="../resources/image/oma_logo_02.png" alt="OmA Logo" width="420" />
 </p>
 
-## 快速开始
+## Antigravity 原生支持 · v0.10.0
 
-### 安装
+Antigravity CLI 是主要运行环境，同时保留独立的 Gemini CLI 兼容入口。原生命令使用 `/oma <command>`，Gemini 使用 `/oma:<command>`。默认 `auto` 保留宿主选择的模型。`balanced` 为所有任务推荐 Flash；`quality` 为规划和审查推荐 Argon，为实现推荐 Flash。原生配置不会暗中覆盖 `/model`。请在宿主模型选择器中确认账户权限。
 
-使用官方 Gemini Extensions 命令从 GitHub 安装：
+```bash
+agy plugin install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
+agy plugin list --json
+```
+
+```text
+/oma status
+/oma model auto
+/oma goal implement the approved change and verify acceptance criteria
+```
+
+```bash
+agy --model gemini-3.8-flash --effort medium
+agy --model gemini-4-argon --effort high
+```
+
+Gemini CLI:
 
 ```bash
 gemini extensions install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
 ```
 
-交互模式验证：
-
-```text
-/extensions list
-```
-
-终端模式验证：
-
-```bash
-gemini extensions list
-```
-
-冒烟测试：
-
 ```text
 /oma:status
+/oma:model auto
 ```
 
-注意：扩展安装/更新命令应在终端模式 (`gemini extensions ...`) 下执行，而不是在交互式 slash-command 模式中执行。
+Node.js 22+ · Antigravity CLI 1.3.5 · 2026-10-15
 
-## v0.9.0 Updates
+[Installation](guide/installation.md) · [Models](guide/models.md) · [Hooks](guide/hook-engineering.md)
 
-- Project and extension package name changed from `oh-my-gemini-cli` to `oh-my-antigravity`.
-- GitHub, GitHub Pages, extension gallery, install/uninstall commands, badges, and Star History links were updated for the new repository name.
-- Extension/package metadata was bumped to `0.9.0`, with README, Korean README, landing page, installation guide, localized docs, and history refreshed.
+## v0.10.0
+
+Antigravity CLI 是主要运行环境，同时保留独立的 Gemini CLI 兼容入口。原生命令使用 `/oma <command>`，Gemini 使用 `/oma:<command>`。默认 `auto` 保留宿主选择的模型。`balanced` 为所有任务推荐 Flash；`quality` 为规划和审查推荐 Argon，为实现推荐 Flash。原生配置不会暗中覆盖 `/model`。请在宿主模型选择器中确认账户权限。
+
+原生钩子观察工具结果，在权限拒绝或重复失败后提供一次必要提醒，不会在停止后强制继续。工具完成不等于测试通过。正式事件名称是 `PostToolUse`，而不是 `PostToolCalling`。Gemini 使用独立的 `AfterTool` 适配器并保留原有 `AfterAgent` 过滤器。
 
 ## 扩展边界与升级安全
 
 - 通过 `gemini extensions ...` 安装和更新 OmA；不要把复制出来的 command/skill 目录当作主要 runtime 路径。
 - 每个事件只保留一条权威 OmA hook 注册路径。混用 extension 管理的 hook 与手工重复注册，最容易导致 AfterAgent 输出重复或行为陈旧。
-- 如果更新后 OmA 看起来仍然陈旧，请先检查 `gemini extensions list`，然后刷新或重装扩展，再考虑编辑随扩展发布的文件。
-- 对于长任务或 multi-lane 工作，在 review、automation 或 `team-exec` 前，将 `/oma:workspace audit` 作为默认 preflight。
+- 如果更新后 OmA 看起来仍然陈旧，请先检查 `agy plugin list --json`，然后刷新或重装扩展，再考虑编辑随扩展发布的文件。
+- 对于长任务或 multi-lane 工作，在 review、automation 或 `team-exec` 前，将 `/oma workspace audit` 作为默认 preflight。
 
 ## 访谈会话存储
 
-- `/oma:interview` 的会话状态现在建议存放在 `.omg/state/interviews/[slug]/` 下，而不是一个共享访谈文件中。
+- `/oma interview` 的会话状态现在建议存放在 `.omg/state/interviews/[slug]/` 下，而不是一个共享访谈文件中。
 - `.omg/state/interviews/active.json` 记录当前访谈，使 resume/status 命令保持确定性，而不会混合多个需求发现线程。
 - 这样同一项目中的多次需求发现过程就能分开保存，也更便于归档。
 
@@ -89,8 +94,8 @@ gemini extensions list
 | 交付形态 | 官方 Gemini CLI 扩展（`gemini-extension.json`） |
 | 核心构件 | `GEMINI.md`, `agents/`, `commands/`, `skills/`, `context/` |
 | 主要场景 | 需要 plan -> execute -> review 循环的复杂实现任务 |
-| 控制面 | slash-command-first 的 `/oma:*` 控制面 + 8 个 deep-work `$skills`（含 `oma-plan` 别名）+ sub-agent 委派 |
-| 默认模型策略 | 可通过 `/oma:model` 配置（`balanced` lane 默认使用 `pro` / `flash` / `flash-lite` alias，并可选用 `auto` 或 `custom` 覆盖） |
+| 控制面 | slash-command-first 的 `/oma *` 控制面 + 8 个 deep-work `$skills`（含 `oma-plan` 别名）+ sub-agent 委派 |
+| 默认模型策略 | `auto` → host; `balanced` → Flash; `quality` → Argon / Flash |
 
 ## 为什么选择 OmA
 
@@ -116,9 +121,9 @@ flowchart TD
     AGENTS["agents/*.md (role prompts)"] --> ORCH
     SKILLS["skills/*/SKILL.md (retained deep-work skills)"] --> ORCH
 
-    ORCH --> I["/oma:intent"]
-    I --> W["/oma:workspace (+ audit when needed)"]
-    W --> A["/oma:team-assemble (optional approval gate)"]
+    ORCH --> I["/oma intent"]
+    I --> W["/oma workspace (+ audit when needed)"]
+    W --> A["/oma team-assemble (optional approval gate)"]
     A --> P["team-plan -> team-prd -> taskboard sync"]
     P --> E["team-exec"]
     E --> V["team-verify"]
@@ -195,7 +200,7 @@ sequenceDiagram
 示例流程：
 
 ```text
-/oma:team-assemble "Compare 3 competitors and produce an exec report"
+/oma team-assemble "Compare 3 competitors and produce an exec report"
 -> proposes: researcher x3 + consultant + editor + director
 -> asks: Proceed with this team? (yes/no)
 -> after approval: team-plan -> team-prd -> taskboard -> team-exec -> team-verify -> team-fix
@@ -203,36 +208,36 @@ sequenceDiagram
 
 激活说明：
 - OmA 不需要单独的 research-preview 设置。
-- 只要扩展已加载，`/oma:team-assemble` 即可立即使用。
+- 只要扩展已加载，`/oma team-assemble` 即可立即使用。
 
 ## Workspace 与 Taskboard 控制
 
 当工作跨多个根目录、多个实现 lane，或长周期 verify/fix 循环时，使用 `workspace` 与 `taskboard`。
 
-- `/oma:workspace` 在 `.omg/state/workspace.json` 中维护主根目录与可选 worktree/path lanes。
-- `/oma:workspace audit` 在并行执行、评审或自动化前检查 lane 清洁度、信任状态与交接准备度。
-- `/oma:taskboard` 在 `.omg/state/taskboard.md` 中维护稳定任务 ID、owner、依赖、状态（`todo`, `ready`, `in-progress`, `blocked`, `done`, `verified`）、lane-health 注记与证据指针。
+- `/oma workspace` 在 `.omg/state/workspace.json` 中维护主根目录与可选 worktree/path lanes。
+- `/oma workspace audit` 在并行执行、评审或自动化前检查 lane 清洁度、信任状态与交接准备度。
+- `/oma taskboard` 在 `.omg/state/taskboard.md` 中维护稳定任务 ID、owner、依赖、状态（`todo`, `ready`, `in-progress`, `blocked`, `done`, `verified`）、lane-health 注记与证据指针。
 - `team-plan` 写入稳定任务 ID 与 lane 假设，`team-exec` 在明确 lane/subagent 上下文下提取最小 ready slice，`team-verify` 仅在有证据且 lane 状态安全时标记 verified。
 - `checkpoint` 与 `status` 可直接引用这些状态文件而不是重放整段对话，可提升缓存稳定性并减少 token 浪费。
-- `/oma:recall "<query>"` 采用 state-first 回溯与有界 fallback 搜索，帮助你在不重放完整 transcript 的情况下找回历史决策依据。
+- `/oma recall "<query>"` 采用 state-first 回溯与有界 fallback 搜索，帮助你在不重放完整 transcript 的情况下找回历史决策依据。
 
 示例流程：
 
 ```text
-/oma:workspace set .
-/oma:workspace audit
-/oma:workspace add ../feature-auth oma-executor
-/oma:taskboard sync
-/oma:taskboard next
-/oma:recall "why was auth lane blocked" scope=state
+/oma workspace set .
+/oma workspace audit
+/oma workspace add ../feature-auth oma-executor
+/oma taskboard sync
+/oma taskboard next
+/oma recall "why was auth lane blocked" scope=state
 ```
 
 ## Workspace 卫生与 Hook 对称性
 
 当长会话出现漂移，导致 lane ownership、委派执行或 hook continuation 行为不再清晰时，使用这些控制。
 
-- `/oma:workspace audit` 会暴露脏共享 worktree、不可信评审路径，以及 handoff-ready 与 handoff-blocked lanes。
-- `/oma:hooks` 与 `/oma:hooks-validate` 现在成对建模代理生命周期结果（`completed`, `blocked`, `stopped`），使 blocked continuation 会先回到安全 lane 一次，再恢复下游 hooks。
+- `/oma workspace audit` 会暴露脏共享 worktree、不可信评审路径，以及 handoff-ready 与 handoff-blocked lanes。
+- `/oma hooks` 与 `/oma hooks-validate` 现在成对建模代理生命周期结果（`completed`, `blocked`, `stopped`），使 blocked continuation 会先回到安全 lane 一次，再恢复下游 hooks。
 - `team-exec`、`team`、`team-verify`、`stop`、`cancel` 会将委派 lane/subagent 上下文保持为紧凑且显式，仅在提前停止或遇到 blocker 时展开详细信息。
 
 ## 通知路由
@@ -256,79 +261,29 @@ sequenceDiagram
 示例流程：
 
 ```text
-/oma:notify profile watchdog
+/oma notify profile watchdog
 -> enables: approval-needed, verify-failed, blocker-raised, checkpoint-saved, idle-watchdog, session-stop
 -> suggests channels: terminal-bell + file by default
 -> persists policy: .omg/state/notify.json
 ```
 
-## 自动用量监控（AfterAgent Hook）
+## Lifecycle Hooks
 
-OmA 现在内置了一个扩展 hook，会在每次代理回合完成后输出一行紧凑的 token 用量信息。
+原生钩子观察工具结果，在权限拒绝或重复失败后提供一次必要提醒，不会在停止后强制继续。工具完成不等于测试通过。正式事件名称是 `PostToolUse`，而不是 `PostToolCalling`。Gemini 使用独立的 `AfterTool` 适配器并保留原有 `AfterAgent` 过滤器。
 
-- Hook entrypoint：`hooks/hooks.json`（`AfterAgent` -> `oma-quota-watch-after-agent`）
-- Script：`hooks/scripts/after-agent-usage.js`
-- 状态产物：`.omg/state/quota-watch.json`（回合计数、最新用量快照、上次处理 transcript 指纹）
-- 可选状态根目录覆盖：`OMG_STATE_ROOT=<dir>`（绝对路径或相对 session `cwd`）
-- 可选静默输出：`OMG_HOOKS_QUIET=1`
-- 可选 cwd 提示模式：`OMG_USAGE_CWD_MODE=off|leaf|parent-leaf|full`（默认：`parent-leaf`）
-- 可选 hook profile：`OMG_HOOK_PROFILE=minimal|balanced|strict`（`minimal` 抑制用量行输出但保留状态快照）
-- 可选单 hook 禁用：`OMG_DISABLED_HOOKS=usage`，仅通过环境变量禁用用量监控
-- 当 hook 没有收到可靠的 session `cwd` 时会跳过状态写入，避免不同项目退回到同一个共享 `process.cwd()` 状态文件。
+`PostToolUse` → `PreInvocation` → `Stop`
 
-自动显示内容：
+`OMG_TOOL_CYCLE=off` · `OMG_MODEL_ROUTING_TRACE=1`
 
-- 最新回合 token 总量（input/output/cached/total）
-- 会话累计 token
-- 最新活跃模型的累计 token
+`.omg/state/sessions/hooks-<session-key>/model-router-last.json`
 
-边界：
+## Model Policy
 
-- 该 hook 本身无法读取账户权威剩余额度。
-- 真实剩余额度/限制请运行 `/stats model(~0.37.2) or /model(0.38.0+)`。
-- 若 Gemini 重试同一 transcript 快照，hook 会视为已投递并抑制重复输出。
-
-示例（静默 hook 输出但保留状态快照）：
-
-```bash
-export OMG_HOOKS_QUIET=1
-```
-
-示例（将监控状态存到默认 `.omg/state` 之外）：
-
-```bash
-export OMG_STATE_ROOT=.omg/state-local
-```
-
-仅禁用此 hook：
-
-```json
-{
-  "hooksConfig": {
-    "disabled": ["oma-quota-watch-after-agent"]
-  }
-}
-```
-
-## 模型可见性 Hooks
-
-OmA 现在还提供 `BeforeModel` banner，使 Gemini CLI 发送模型请求前可以看到当前模型策略。
-
-- Hook entrypoint：`hooks/hooks.json`（`BeforeModel` -> `oma-before-model-banner`）
-- Script：`hooks/scripts/before-model-banner.js`
-- 显示内容：可用时显示请求的 runtime 模型、当前 OmA 模型策略、lane alias，以及 workspace 的 `general.previewFeatures` 状态
-- 默认 banner 形式：
-
-```text
-[OMA][MODEL][NEXT] preview=on strategy=balanced requested=pro plan=pro exec=flash quick=flash-lite review=pro
-```
-
-- 可用 `OMG_DISABLED_HOOKS=model-preview`（或 `model-banner`）仅禁用此 banner
-- `/oma:status` 与 HUD preview 现在也更突出地显示相同的模型策略摘要
+Antigravity CLI 是主要运行环境，同时保留独立的 Gemini CLI 兼容入口。原生命令使用 `/oma <command>`，Gemini 使用 `/oma:<command>`。默认 `auto` 保留宿主选择的模型。`balanced` 为所有任务推荐 Flash；`quality` 为规划和审查推荐 Argon，为实现推荐 Flash。原生配置不会暗中覆盖 `/model`。请在宿主模型选择器中确认账户权限。
 
 ## Learn-Signal 安全过滤器（AfterAgent Hook）
 
-OmA 同时内置了安全加固的 learn-signal hook，使 `/oma:learn` 提示仅在会话具有可执行实现意图时才出现。
+OmA 同时内置了安全加固的 learn-signal hook，使 `/oma learn` 提示仅在会话具有可执行实现意图时才出现。
 
 - Hook entrypoint：`hooks/hooks.json`（`AfterAgent` -> `oma-learn-signal-after-agent`）
 - Script：`hooks/scripts/learn.js`
@@ -358,22 +313,11 @@ OmA 同时内置了安全加固的 learn-signal hook，使 `/oma:learn` 提示�
 }
 ```
 
-## Gemini CLI 兼容性说明（审阅日期：2026-04-16）
+## Compatibility · 2026-10-15
 
-- 模型 alias 策略已在 2026-04-20 对照 Gemini CLI 文档复核：
-  - 当前 Gemini CLI alias 为 `auto`、`pro`、`flash` 和 `flash-lite`
-  - 启用 preview features 时，`auto` 与 `pro` 会解析到 preview-backed Gemini 3 Pro；否则回退到稳定 Gemini 2.5 Pro
-  - OmA 现在推荐 alias，而不是固定具体 preview 模型名，以便 Gemini CLI alias routing 未来升级时无需 OmA release
-- 本 workspace 默认随 `.gemini/settings.json` 设置 `general.previewFeatures=true`。
-- 推荐最低验证 baseline：Gemini CLI `v0.37.0+`。
-- OmA 现在将 Gemini CLI subagents 视为一等支持能力。
-- 当前 post-GA subagent 使用结论：跨项目 hook state 避免不安全共享 fallback，委派 subagent hook turn 默认跳过除非显式允许，共享 workflow state 使用 single-writer lock，非持有者并行 session 在 `.omg/state/sessions/[session-slug]/` 写草稿。
-- OmA 不要求 preview-only 功能即可运行 subagent。
-- 保留自 `v0.34.0-preview.0+` 起的 UX 兼容：通过 `/skill-name` 直接调用 skill，通过 `/footer` 自定义 footer。
-- 想避免与原生 `/plan` 冲突时，使用 `/oma-plan`（或 `$oma-plan`）调用 OmA planning skill。
-- 如果 runtime 更新后 skill 或 slash alias 看起来陈旧，请在新版中运行 `/skills reload`，或重启 session。
-- 若 wrapper scripts 仍传 `--allowed-tools`，请迁移到 `--policy` profiles。
-- 原生 `/plan` 与 OmA 的自动化流程（`/oma:team-assemble` 或 `/oma:team`）或手动分阶段流程（`/oma:team-plan`、`/oma:team-prd` 等）可以共存。
+Antigravity CLI 是主要运行环境，同时保留独立的 Gemini CLI 兼容入口。原生命令使用 `/oma <command>`，Gemini 使用 `/oma:<command>`。默认 `auto` 保留宿主选择的模型。`balanced` 为所有任务推荐 Flash；`quality` 为规划和审查推荐 Argon，为实现推荐 Flash。原生配置不会暗中覆盖 `/model`。请在宿主模型选择器中确认账户权限。
+
+原生钩子观察工具结果，在权限拒绝或重复失败后提供一次必要提醒，不会在停止后强制继续。工具完成不等于测试通过。正式事件名称是 `PostToolUse`，而不是 `PostToolCalling`。Gemini 使用独立的 `AfterTool` 适配器并保留原有 `AfterAgent` 过滤器。
 
 ## 接口地图
 
@@ -381,47 +325,47 @@ OmA 同时内置了安全加固的 learn-signal hook，使 `/oma:learn` 提示�
 
 | 命令 | 作用 | 典型时机 |
 | --- | --- | --- |
-| `/oma:status` | 汇总进度、风险与下一步 | 工作会话开始/结束 |
-| `/oma:doctor` | 执行扩展/团队/workspace/hook 就绪诊断与修复计划 | 长时自主运行前，或配置疑似异常时 |
-| `/oma:hud` | 查看或切换 HUD 显示配置（`normal`, `compact`, `hidden`） | 长会话前，或终端信息密度变化时 |
-| `/oma:hud-on` | 快速切到完整可视 HUD | 回到完整状态看板时 |
-| `/oma:hud-compact` | 快速切到紧凑 HUD | 高密度实现循环期间 |
-| `/oma:hud-off` | 快速切到隐藏 HUD（纯文本状态区） | 视觉块干扰注意力时 |
-| `/oma:hooks` | 查看/切换 hook pipeline 配置与触发策略 | 自主循环前，或 hook 行为漂移时 |
-| `/oma:hooks-init` | 初始化 hook 配置与插件契约脚手架 | 项目启动或首次采用 hook 时 |
-| `/oma:hooks-validate` | 校验 hook 顺序、生命周期对称性、安全性与预算约束 | 启用高自治流程前 |
-| `/oma:hooks-test` | dry-run hook 事件序列并估算效率 | 策略调整后，或循环卡顿反复发生时 |
-| `/oma:notify` | 配置审批、阻塞、验证结果、checkpoint、idle watchdog 的通知路由 | 无人值守 `autopilot`/`loop` 前，或需要调整告警噪声时 |
-| `/oma:intent` | 分类任务意图并路由到正确阶段/命令 | 请求意图不明确时进入规划/编码前 |
-| `/oma:rules` | 启用按任务条件触发的 guardrail 规则包 | 涉及迁移/安全/性能敏感实现前 |
-| `/oma:memory` | 维护 MEMORY 索引、主题文件与路径感知规则包 | 长会话期间，或决策/规则出现漂移时 |
-| `/oma:workspace` | 查看、审计或设置主根目录、worktree/path lanes 与冲突边界 | 并行实现或多根目录工作前 |
-| `/oma:taskboard` | 维护紧凑任务账本（稳定 ID + verifier 认可的完成状态） | 规划后到长期 exec/verify 循环全过程 |
-| `/oma:recall` | 通过 state-first 检索 + 有界历史回退恢复过往决策/证据 | 需要快速找回依据但不想重放完整 transcript 时 |
-| `/oma:reasoning` | 设定全局 reasoning effort 与 teammate override（`low/medium/high/xhigh`） | 高成本规划/评审循环前，或需按角色控制深度时 |
-| `/oma:deep-init` | 构建项目深层地图与验证 baseline | 项目启动或首次接手陌生代码库时 |
-| `/oma:team-assemble` | 动态组装匹配任务的角色团队，并附审批门与 lane 级 reasoning map | 跨领域或非常规任务中，执行 `/oma:team` 前 |
-| `/oma:team` | 执行完整分阶段流水线（`team-assemble? -> plan -> prd -> taskboard -> exec -> verify -> fix`） | 复杂功能或重构交付 |
-| `/oma:team-assemble` | 动态组建任务适配团队 | 规划前 |
-| `/oma:team-plan` | 生成依赖感知执行计划 | 实现前 |
-| `/oma:team-prd` | 锁定可度量验收标准与约束 | 规划后、编码前 |
-| `/oma:team-exec` | 在明确 lane/subagent 交接下实现一段范围明确的交付切片 | 主实现循环 |
-| `/oma:team-verify` | 验证验收标准、回归与 anti-slop 质量门 | 每个执行切片之后 |
-| `/oma:team-fix` | 仅修复已验证失败项 | 验证失败时 |
-| `/oma:loop` | 强制重复 `exec -> verify -> fix` 直到 done/blocker | 交付中后期仍有未闭合发现项时 |
-| `/oma:mode` | 查看或切换运行配置（`balanced/speed/deep/autopilot/ralph/ultrawork`） | 会话开始或姿态切换时 |
-| `/oma:model` | 查看或切换模型选择策略（`balanced/auto/custom`） | 需要设置默认模型策略时，例如所有任务使用 Gemini Auto |
-| `/oma:approval` | 查看或切换审批姿态（`suggest/auto/full-auto`） | 自主交付循环前，或策略变化时 |
-| `/oma:autopilot` | 带 checkpoint 执行迭代自主循环 | 复杂自主交付 |
-| `/oma:ralph` | 启用严格质量门控编排 | 发布关键任务 |
-| `/oma:ultrawork` | 面向批量独立任务的高吞吐模式 | 大型 backlog |
-| `/oma:consensus` | 在多个方案中收敛到一个选项 | 决策密集阶段 |
-| `/oma:launch` | 为长任务初始化持久生命周期状态 | 长会话起始 |
-| `/oma:checkpoint` | 保存紧凑 checkpoint 与恢复提示（含 taskboard/workspace 引用） | 会话中段交接 |
-| `/oma:stop` | 安全停止自主模式并保留进展 | 暂停/中断时 |
-| `/oma:cancel` | harness 风格取消别名：安全停止并返回恢复交接信息 | 中断自主/团队流程时 |
-| `/oma:optimize` | 优化 prompt/context 质量与 token 效率 | 会话嘈杂或成本较高后 |
-| `/oma:cache` | 查看缓存/上下文行为与紧凑状态锚定 | 长时高上下文任务 |
+| `/oma status` | 汇总进度、风险与下一步 | 工作会话开始/结束 |
+| `/oma doctor` | 执行扩展/团队/workspace/hook 就绪诊断与修复计划 | 长时自主运行前，或配置疑似异常时 |
+| `/oma hud` | 查看或切换 HUD 显示配置（`normal`, `compact`, `hidden`） | 长会话前，或终端信息密度变化时 |
+| `/oma hud-on` | 快速切到完整可视 HUD | 回到完整状态看板时 |
+| `/oma hud-compact` | 快速切到紧凑 HUD | 高密度实现循环期间 |
+| `/oma hud-off` | 快速切到隐藏 HUD（纯文本状态区） | 视觉块干扰注意力时 |
+| `/oma hooks` | 查看/切换 hook pipeline 配置与触发策略 | 自主循环前，或 hook 行为漂移时 |
+| `/oma hooks-init` | 初始化 hook 配置与插件契约脚手架 | 项目启动或首次采用 hook 时 |
+| `/oma hooks-validate` | 校验 hook 顺序、生命周期对称性、安全性与预算约束 | 启用高自治流程前 |
+| `/oma hooks-test` | dry-run hook 事件序列并估算效率 | 策略调整后，或循环卡顿反复发生时 |
+| `/oma notify` | 配置审批、阻塞、验证结果、checkpoint、idle watchdog 的通知路由 | 无人值守 `autopilot`/`loop` 前，或需要调整告警噪声时 |
+| `/oma intent` | 分类任务意图并路由到正确阶段/命令 | 请求意图不明确时进入规划/编码前 |
+| `/oma rules` | 启用按任务条件触发的 guardrail 规则包 | 涉及迁移/安全/性能敏感实现前 |
+| `/oma memory` | 维护 MEMORY 索引、主题文件与路径感知规则包 | 长会话期间，或决策/规则出现漂移时 |
+| `/oma workspace` | 查看、审计或设置主根目录、worktree/path lanes 与冲突边界 | 并行实现或多根目录工作前 |
+| `/oma taskboard` | 维护紧凑任务账本（稳定 ID + verifier 认可的完成状态） | 规划后到长期 exec/verify 循环全过程 |
+| `/oma recall` | 通过 state-first 检索 + 有界历史回退恢复过往决策/证据 | 需要快速找回依据但不想重放完整 transcript 时 |
+| `/oma reasoning` | 设定全局 reasoning effort 与 teammate override（`low/medium/high`） | 高成本规划/评审循环前，或需按角色控制深度时 |
+| `/oma deep-init` | 构建项目深层地图与验证 baseline | 项目启动或首次接手陌生代码库时 |
+| `/oma team-assemble` | 动态组装匹配任务的角色团队，并附审批门与 lane 级 reasoning map | 跨领域或非常规任务中，执行 `/oma team` 前 |
+| `/oma team` | 执行完整分阶段流水线（`team-assemble? -> plan -> prd -> taskboard -> exec -> verify -> fix`） | 复杂功能或重构交付 |
+| `/oma team-assemble` | 动态组建任务适配团队 | 规划前 |
+| `/oma team-plan` | 生成依赖感知执行计划 | 实现前 |
+| `/oma team-prd` | 锁定可度量验收标准与约束 | 规划后、编码前 |
+| `/oma team-exec` | 在明确 lane/subagent 交接下实现一段范围明确的交付切片 | 主实现循环 |
+| `/oma team-verify` | 验证验收标准、回归与 anti-slop 质量门 | 每个执行切片之后 |
+| `/oma team-fix` | 仅修复已验证失败项 | 验证失败时 |
+| `/oma loop` | 强制重复 `exec -> verify -> fix` 直到 done/blocker | 交付中后期仍有未闭合发现项时 |
+| `/oma mode` | 查看或切换运行配置（`balanced/speed/deep/autopilot/ralph/ultrawork`） | 会话开始或姿态切换时 |
+| `/oma model` | 查看或切换模型选择策略（`auto/balanced/quality/custom`） | 需要设置默认模型策略时，例如所有任务使用 Gemini Auto |
+| `/oma approval` | 查看或切换审批姿态（`suggest/auto/full-auto`） | 自主交付循环前，或策略变化时 |
+| `/oma autopilot` | 带 checkpoint 执行迭代自主循环 | 复杂自主交付 |
+| `/oma ralph` | 启用严格质量门控编排 | 发布关键任务 |
+| `/oma ultrawork` | 面向批量独立任务的高吞吐模式 | 大型 backlog |
+| `/oma consensus` | 在多个方案中收敛到一个选项 | 决策密集阶段 |
+| `/oma launch` | 为长任务初始化持久生命周期状态 | 长会话起始 |
+| `/oma checkpoint` | 保存紧凑 checkpoint 与恢复提示（含 taskboard/workspace 引用） | 会话中段交接 |
+| `/oma stop` | 安全停止自主模式并保留进展 | 暂停/中断时 |
+| `/oma cancel` | harness 风格取消别名：安全停止并返回恢复交接信息 | 中断自主/团队流程时 |
+| `/oma optimize` | 优化 prompt/context 质量与 token 效率 | 会话嘈杂或成本较高后 |
+| `/oma cache` | 查看缓存/上下文行为与紧凑状态锚定 | 长时高上下文任务 |
 
 ### Skills
 
@@ -497,23 +441,9 @@ oh-my-antigravity/
 
 ## 故障排查
 
-| 症状 | 可能原因 | 操作 |
-| --- | --- | --- |
-| 安装时报 `settings.filter is not a function` | Gemini CLI 运行时过旧，或扩展缓存元数据陈旧 | 升级 Gemini CLI，卸载扩展后再从仓库 URL 重装 |
-| 找不到 `/oma:*` 命令 | 当前会话未加载扩展 | 运行 `gemini extensions list` 后重启 Gemini CLI 会话 |
-| 你想使用一个全局模型（例如 `flash`、`pro` 或 Gemini Auto），但 OmA 仍像旧的固定模型策略一样运行 | 较旧安装或陈旧的扩展元数据仍带有旧模型指引或缓存命令元数据 | 更新/重装 OmA；如果想使用 preview-backed alias routing，请启用 `general.previewFeatures=true`，然后设置 `/oma:model auto` 或你的 runtime 模型；当前 agents 会继承 Gemini CLI 当前激活模型，而不是强制固定某个模型 |
-| 你想用 OmA 规划 skill，却被 `/plan` 打开原生规划模式 | 内置 `/plan` 与 skill slash 调用发生命名冲突 | 使用 `/oma-plan`（或 `$oma-plan`）调用 OmA 规划 skill，或使用 `/oma:team-assemble` 或 `/oma:team-plan` 执行分阶段规划 |
-| Skill 无法触发 | 仅保留 retained deep-work skills，或扩展元数据已过期 | 重新核对 README 中 retained skill 列表并重载扩展/会话 |
-| Team assembly 一直提案但不执行 | 请求中缺少批准 token | 明确回复批准（`yes`、`approve`、`go` 或 `run`） |
-| 并行执行频繁冲突或重复规划同一批文件 | Workspace lanes 未明确 | 运行 `/oma:workspace status`，或通过 `/oma:workspace` 设置 lane/path ownership |
-| 评审或自动化即将在脏/不可信 lane 上运行 | 共享 worktree 卫生状态不清晰 | 先运行 `/oma:workspace audit`，必要时隔离 lane，再继续 verify/review |
-| 长循环后 done 状态持续漂移 | 缺少紧凑“单一事实源”或 verifier 签收缺失 | 运行 `/oma:taskboard sync`，再执行 `/oma:team-verify` 收敛剩余任务 ID |
-| 记不清早先为何做出某个决定 | 之前依据淹没在长会话历史中 | 先执行 `/oma:recall "<keyword>" scope=state`，必要时再扩大到 `scope=recent` |
-| continuation 之后 hooks 漏掉终态事件或重复触发 | hook 生命周期对称性不明确 | 运行 `/oma:hooks-validate`，修正 lifecycle policy 后再恢复自主循环 |
-| 输出冗长、泛化或重复 | 针对目标产物的 reasoning/gate 姿态不足 | 提高 `/oma:reasoning`（可选按 teammate 覆盖），再执行 `/oma:team-verify` |
-| 现有 launch 脚本仍在用 `--allowed-tools` | 新版 Gemini CLI 已弃用该参数 | 改为 `--policy` profile 后重跑 |
-| 自主流程确认过于频繁（或过少） | 审批姿态与任务风险不匹配 | 运行 `/oma:approval suggest|auto|full-auto` 并复核 guardrail |
-| 长跑前 setup 健康度不明确 | 状态/配置漂移累积 | 运行 `/oma:doctor`（或 `/oma:doctor team`）并执行修复清单 |
+`agy plugin list --json` · `/agents` · `/skills` · `/hooks`
+
+[Installation and diagnostics](guide/installation.md)
 
 ## 迁移说明
 

@@ -3,7 +3,7 @@ prompt = """
 Run OmA `goal` mode.
 
 Objective:
-$ARGUMENTS
+{{args}}
 
 Goal protocol:
 1. Treat this invocation as explicitly approved for routine, non-destructive work.

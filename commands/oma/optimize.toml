@@ -3,7 +3,7 @@ prompt = """
 Run the OmA context optimization workflow.
 
 User context:
-$ARGUMENTS
+{{args}}
 
 Tasks:
 1. Identify avoidable context bloat and repeated payload.

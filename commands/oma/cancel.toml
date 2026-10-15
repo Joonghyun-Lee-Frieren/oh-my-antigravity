@@ -3,7 +3,7 @@ prompt = """
 Run OmA cancel flow.
 
 Context:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Detect active mode/lifecycle from context or `.omg/state/*` when available.

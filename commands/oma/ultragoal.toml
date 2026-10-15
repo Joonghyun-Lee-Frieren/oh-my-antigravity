@@ -3,7 +3,7 @@ prompt = """
 Run OmA `ultragoal` mode.
 
 Objective:
-$ARGUMENTS
+{{args}}
 
 Ultragoal protocol:
 1. Initialize or Load:

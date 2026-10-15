@@ -7,7 +7,7 @@ prompt = """
 Run OmA `learn`.
 
 Task:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Load session history from the transcript.

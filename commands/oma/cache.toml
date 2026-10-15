@@ -3,13 +3,14 @@ prompt = """
 Run a cache-focused OmA audit.
 
 User context:
-$ARGUMENTS
+{{args}}
 
 Tasks:
 1. Evaluate prefix stability risks.
 2. Identify volatile instructions or tool changes causing misses.
 3. Check whether `.omg/state/taskboard.md` and `.omg/state/workspace.json` are being used as compact state anchors.
-4. Recommend concrete fixes to improve cache hit consistency.
+4. Check config/models.json: Argon does not support explicit cached-content creation. Prefer stable prefixes and host-managed implicit caching; do not invent measured savings.
+5. Recommend concrete fixes to improve cache hit consistency.
 
 Output format:
 ## Cache Audit

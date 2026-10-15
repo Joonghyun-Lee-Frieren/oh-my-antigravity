@@ -1,6 +1,6 @@
 ---
-name = "research"
-description = "Run source-backed technical research and convert findings into implementation-ready guidance."
+name: "research"
+description: "Run source-backed technical research and convert findings into implementation-ready guidance."
 ---
 
 ## Purpose

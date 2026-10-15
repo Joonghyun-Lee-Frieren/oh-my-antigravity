@@ -23,6 +23,19 @@
           }
         ]
       }
+    ],
+    "AfterTool": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "name": "oma-tool-cycle",
+            "command": "node \"${extensionPath}/hooks/scripts/hook-bootstrap.js\" \"${extensionPath}/hooks/scripts/after-tool.js\"",
+            "timeout": 5000
+          }
+        ]
+      }
     ]
   }
 }

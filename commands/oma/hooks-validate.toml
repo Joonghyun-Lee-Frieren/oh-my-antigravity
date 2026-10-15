@@ -1,50 +1,25 @@
-description = "Validate OmA hook trigger graph, ordering, and safety constraints."
+description = "Inspect and validate host-specific lifecycle hooks."
 prompt = """
-Run OmA hook validation.
+Input: {{args}}
+Read docs/guide/hook-engineering.md and identify the active host first.
+Antigravity uses root hooks.json: PostToolUse (observation only), PreInvocation
+(one bounded pending reminder), Stop (allow termination). Timeout is 5 seconds.
+Gemini uses hooks/hooks.json: BeforeModel, AfterTool, AfterAgent; timeouts in ms.
+PostToolCalling is an informal label, not a registered event. Never mix manifests
+or duplicate plugin registrations in manual settings. Hooks do not execute tests,
+prove acceptance, bypass permissions, or force continuation after stopping.
 
-Input:
-$ARGUMENTS
+Inspect /hooks and the installed plugin root. For nonstandard native installs,
+set OMG_PLUGIN_ROOT before launching the host. New state is isolated under
+.omg/state/sessions/hooks-<session-key>/; no raw tool arguments/errors are stored.
+With approved shell access run npm run check from the plugin repo. These are
+fixture checks, not authenticated model/delegation tests. Native package validation
+uses agy plugin validate . when the CLI is installed.
 
-Validation checklist:
-1. Verify all enabled events map to exactly one primary lane (`P0/P1/P2`).
-2. Detect cyclic trigger chains (event -> hook -> event loops).
-3. Check ordering determinism and idempotency-key coverage.
-4. Check timeout and debounce budgets per lane against current profile.
-5. Verify lifecycle symmetry:
-   - each agent-entry path has one terminal outcome (`completed`, `blocked`, or `stopped`)
-   - blocked continuations re-enter `P0-safety` before `P1` or `P2`
-   - terminal hooks do not double-fire after retry or continuation
-6. Detect duplicate registration risk:
-   - extension-managed hook commands duplicated by manual/user hook config
-   - multiple AfterAgent registrations that would emit the same OmA signal twice
-7. Verify runtime control consistency:
-   - `OMG_HOOK_PROFILE=minimal|balanced|strict` semantics stay consistent with current hook surfaces
-   - `OMG_DISABLED_HOOKS` values do not silently disable more than the operator intended
-   - `OMG_MODEL_ROUTING_TRACE=1` is treated as diagnostics-only and does not add user-visible hook output
-   - BeforeModel hook stdout remains a single JSON decision payload even when trace writing fails
-8. Verify team-safety policy:
-   - side-effect hooks disabled in worker/delegated sessions
-   - high-risk hooks require explicit user confirmation context
-9. Report failures by severity (`critical`, `major`, `minor`).
-10. If filesystem tools are available, write/update `.omg/state/hooks-validation.md`.
-
-Output format:
-## Validation Result
-- overall: pass | fail
-- profile:
-- lifecycle:
-- critical:
-- major:
-- minor:
-
-## Findings
-| Severity | Finding | Evidence | Fix |
-| --- | --- | --- | --- |
-
-## Safe-to-Run Decision
-- yes/no:
-- rationale:
-
-## Next Command
-- ...
+For on/off, change enabled in .omg/state/hooks.json only as the owning orchestration
+session; otherwise produce a draft. This toggles the new lifecycle adapter, not
+the legacy Gemini learn filter. Controls: OMG_TOOL_CYCLE=off,
+OMG_DISABLED_HOOKS=tool-cycle, OMG_MODEL_ROUTING=off, OMG_MODEL_ROUTING_TRACE=1.
+Do not create an unbounded loop or alter host permissions as a side effect.
+Return Host, Registered Events, Executed Checks, Findings and one Next Command.
 """

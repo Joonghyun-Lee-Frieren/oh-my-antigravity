@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "reference_date": "2026-10-15",
+  "antigravity_reference": "1.3.5",
+  "default_strategy": "auto",
+  "models": {
+    "gemini-3.8-flash": {
+      "thinking_levels": ["low", "medium", "high"],
+      "explicit_caching": true,
+      "source": "https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash"
+    },
+    "gemini-4-argon": {
+      "thinking_levels": ["low", "medium", "high"],
+      "explicit_caching": false,
+      "source": "https://ai.google.dev/gemini-api/docs/models/gemini-4-argon"
+    }
+  },
+  "profiles": {
+    "balanced": {
+      "planning": "gemini-3.8-flash",
+      "execution": "gemini-3.8-flash",
+      "quick_edit": "gemini-3.8-flash",
+      "review_verify": "gemini-3.8-flash"
+    },
+    "quality": {
+      "planning": "gemini-4-argon",
+      "execution": "gemini-3.8-flash",
+      "quick_edit": "gemini-3.8-flash",
+      "review_verify": "gemini-4-argon"
+    }
+  },
+  "lane_effort": {
+    "planning": "high",
+    "execution": "medium",
+    "quick_edit": "low",
+    "review_verify": "high"
+  }
+}

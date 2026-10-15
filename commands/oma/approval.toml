@@ -3,7 +3,7 @@ prompt = """
 Run OmA approval-posture manager.
 
 Input:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Parse requested approval posture.

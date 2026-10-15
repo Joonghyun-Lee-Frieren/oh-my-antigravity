@@ -3,7 +3,7 @@ prompt = """
 Run OmA `blueprint`.
 
 Task:
-$ARGUMENTS
+{{args}}
 
 Purpose:
 Create a durable product and interface decision surface before implementation when UX, information architecture, visual hierarchy, or user workflow choices matter.

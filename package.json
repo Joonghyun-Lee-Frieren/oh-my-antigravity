@@ -1,8 +1,10 @@
 {
   "name": "oh-my-antigravity",
-  "version": "0.9.2",
-  "description": "Extension-first context engineering and multi-agent workflow pack for Gemini CLI.",
+  "version": "0.10.0",
+  "description": "Native Antigravity workflows, current Gemini profiles, and bounded agent verification.",
   "keywords": [
+    "antigravity",
+    "antigravity-cli",
     "gemini",
     "gemini-cli",
     "extension",
@@ -21,7 +23,12 @@
   "scripts": {
     "test:version": "node scripts/check-version.js",
     "test:skills": "node scripts/check-skill-metadata.js",
-    "sync:version": "node scripts/sync-version.js"
+    "sync:version": "node scripts/sync-version.js",
+    "test": "node --test tests/*.test.mjs",
+    "build:hooks": "node scripts/build-native-hooks.mjs",
+    "check:hooks": "node scripts/build-native-hooks.mjs --check",
+    "test:package": "node scripts/check-package.mjs",
+    "check": "npm test && npm run test:version && npm run test:skills && npm run check:hooks && npm run test:package"
   },
   "files": [
     "GEMINI.md",
@@ -33,6 +40,16 @@
     "context/",
     "README.md",
     "docs/",
-    "LICENSE"
-  ]
+    "LICENSE",
+    "plugin.json",
+    "hooks.json",
+    "config/",
+    "rules/",
+    "scripts/",
+    "tests/",
+    "resources/"
+  ],
+  "engines": {
+    "node": ">=22"
+  }
 }

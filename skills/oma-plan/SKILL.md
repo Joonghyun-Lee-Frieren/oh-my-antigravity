@@ -1,6 +1,6 @@
 ---
-name = "oma-plan"
-description = "Create a phased implementation plan with risks, dependencies, and validation checkpoints."
+name: "oma-plan"
+description: "Create a phased implementation plan with risks, dependencies, and validation checkpoints."
 ---
 
 ## Purpose

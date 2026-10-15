@@ -1,0 +1,30 @@
+{
+  "oma-tool-cycle": {
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "node -e \"const fs=require('node:fs'),p=require('node:path'),os=require('node:os'),u=require('node:url');let b='',n=0;process.stdin.setEncoding('utf8');process.stdin.on('data',c=>{n+=Buffer.byteLength(c);if(n<=2097152)b+=c});process.stdin.on('end',async()=>{let out={};try{const i=n<=2097152?JSON.parse(b.replace(/^\\uFEFF/,'')):{};if(!i||typeof i!=='object'||Array.isArray(i))throw 0;const h=os.homedir(),name='oh-my-antigravity',roots=[process.env.OMG_PLUGIN_ROOT,process.cwd(),p.join(h,'.gemini','antigravity-cli','plugins',name),p.join(h,'.gemini','config','plugins',name),...(Array.isArray(i.workspacePaths)?i.workspacePaths.filter(w=>typeof w==='string'):[]).flatMap(w=>[p.join(w,'.agents','plugins',name),p.join(w,'_agents','plugins',name)])];for(const r of roots){if(!r)continue;try{if(JSON.parse(fs.readFileSync(p.join(r,'plugin.json'),'utf8')).name!==name)continue}catch{continue}out=(await import(u.pathToFileURL(p.join(r,'hooks','lib','lifecycle.mjs')).href)).handleNative(i,'PreInvocation');break}}catch{}process.stdout.write(JSON.stringify(out))});\"",
+        "timeout": 5
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node -e \"const fs=require('node:fs'),p=require('node:path'),os=require('node:os'),u=require('node:url');let b='',n=0;process.stdin.setEncoding('utf8');process.stdin.on('data',c=>{n+=Buffer.byteLength(c);if(n<=2097152)b+=c});process.stdin.on('end',async()=>{let out={};try{const i=n<=2097152?JSON.parse(b.replace(/^\\uFEFF/,'')):{};if(!i||typeof i!=='object'||Array.isArray(i))throw 0;const h=os.homedir(),name='oh-my-antigravity',roots=[process.env.OMG_PLUGIN_ROOT,process.cwd(),p.join(h,'.gemini','antigravity-cli','plugins',name),p.join(h,'.gemini','config','plugins',name),...(Array.isArray(i.workspacePaths)?i.workspacePaths.filter(w=>typeof w==='string'):[]).flatMap(w=>[p.join(w,'.agents','plugins',name),p.join(w,'_agents','plugins',name)])];for(const r of roots){if(!r)continue;try{if(JSON.parse(fs.readFileSync(p.join(r,'plugin.json'),'utf8')).name!==name)continue}catch{continue}out=(await import(u.pathToFileURL(p.join(r,'hooks','lib','lifecycle.mjs')).href)).handleNative(i,'PostToolUse');break}}catch{}process.stdout.write(JSON.stringify(out))});\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "node -e \"const fs=require('node:fs'),p=require('node:path'),os=require('node:os'),u=require('node:url');let b='',n=0;process.stdin.setEncoding('utf8');process.stdin.on('data',c=>{n+=Buffer.byteLength(c);if(n<=2097152)b+=c});process.stdin.on('end',async()=>{let out={};try{const i=n<=2097152?JSON.parse(b.replace(/^\\uFEFF/,'')):{};if(!i||typeof i!=='object'||Array.isArray(i))throw 0;const h=os.homedir(),name='oh-my-antigravity',roots=[process.env.OMG_PLUGIN_ROOT,process.cwd(),p.join(h,'.gemini','antigravity-cli','plugins',name),p.join(h,'.gemini','config','plugins',name),...(Array.isArray(i.workspacePaths)?i.workspacePaths.filter(w=>typeof w==='string'):[]).flatMap(w=>[p.join(w,'.agents','plugins',name),p.join(w,'_agents','plugins',name)])];for(const r of roots){if(!r)continue;try{if(JSON.parse(fs.readFileSync(p.join(r,'plugin.json'),'utf8')).name!==name)continue}catch{continue}out=(await import(u.pathToFileURL(p.join(r,'hooks','lib','lifecycle.mjs')).href)).handleNative(i,'Stop');break}}catch{}process.stdout.write(JSON.stringify(out))});\"",
+        "timeout": 5
+      }
+    ]
+  }
+}

@@ -1,6 +1,6 @@
 ---
-name = "context-optimize"
-description = "Improve context efficiency and cache stability for long or complex sessions."
+name: "context-optimize"
+description: "Improve context efficiency and cache stability for long or complex sessions."
 ---
 
 ## Purpose

@@ -1,6 +1,6 @@
 ---
-name = "ultragoal"
-description = "Manage durable multi-goal workflows with sequential execution, repo-native checkpointing, and fail-closed safety."
+name: "ultragoal"
+description: "Manage durable multi-goal workflows with sequential execution, repo-native checkpointing, and fail-closed safety."
 ---
 
 ## Purpose

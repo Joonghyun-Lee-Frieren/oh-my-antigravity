@@ -1,6 +1,6 @@
 ---
-name = "prd"
-description = "Convert a request into PRD-quality scope, measurable acceptance criteria, and delivery constraints."
+name: "prd"
+description: "Convert a request into PRD-quality scope, measurable acceptance criteria, and delivery constraints."
 ---
 
 ## Purpose

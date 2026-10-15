@@ -3,7 +3,7 @@ prompt = """
 Run OmA `interview` command.
 
 Input:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Subcommand Handling (Optional):

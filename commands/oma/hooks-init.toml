@@ -1,42 +1,25 @@
-description = "Bootstrap OmA hook scaffolding and default event policy files."
+description = "Inspect and validate host-specific lifecycle hooks."
 prompt = """
-Initialize OmA hooks.
+Input: {{args}}
+Read docs/guide/hook-engineering.md and identify the active host first.
+Antigravity uses root hooks.json: PostToolUse (observation only), PreInvocation
+(one bounded pending reminder), Stop (allow termination). Timeout is 5 seconds.
+Gemini uses hooks/hooks.json: BeforeModel, AfterTool, AfterAgent; timeouts in ms.
+PostToolCalling is an informal label, not a registered event. Never mix manifests
+or duplicate plugin registrations in manual settings. Hooks do not execute tests,
+prove acceptance, bypass permissions, or force continuation after stopping.
 
-Task context:
-$ARGUMENTS
+Inspect /hooks and the installed plugin root. For nonstandard native installs,
+set OMG_PLUGIN_ROOT before launching the host. New state is isolated under
+.omg/state/sessions/hooks-<session-key>/; no raw tool arguments/errors are stored.
+With approved shell access run npm run check from the plugin repo. These are
+fixture checks, not authenticated model/delegation tests. Native package validation
+uses agy plugin validate . when the CLI is installed.
 
-Bootstrap protocol:
-1. Create a default hook profile (`balanced`) with deterministic event lanes and lifecycle symmetry enabled.
-2. Read `.omg/state/session-lock.json` before mutating shared hook scaffolding.
-3. If filesystem tools are available:
-   - if the current orchestration session owns the lock, create/update `.omg/state/hooks.json`, `.omg/hooks/README.md`, and `.omg/hooks/plugins/*`
-   - otherwise write `.omg/state/sessions/[session-slug]/hooks.json` plus session-local hook notes under `.omg/state/sessions/[session-slug]/hooks/` and report the ownership conflict
-4. Document plugin contract for runtime adapters:
-   - `onHookEvent(event, sdk)`
-   - `event` envelope: `event`, `source`, `session_id`, `task_id`, `lane`, `subagent`, `termination_reason`, `metadata`
-   - `sdk` capabilities: `log`, `state.get`, `state.set`, optional runtime bridge methods
-5. Add default guardrails:
-   - side-effect hooks off for worker sessions
-   - fail-open for non-critical lanes (`P2-optimization`)
-   - fail-closed for explicit safety violations (`P0-safety`)
-   - blocked continuations re-enter the safety lane before quality/optimization lanes
-   - terminal hook outcomes are recorded once per agent turn
-   - persisted hook state should avoid timestamps or other volatile churn unless operator-visible
-6. Recommend immediate validation with `/oma:hooks-validate`.
-
-Output format:
-## Hook Bootstrap
-- status:
-- profile:
-- files initialized:
-
-## Default Event Matrix
-| Event | Lane | Enabled | Side Effects |
-| --- | --- | --- | --- |
-
-## Contract Notes
-- ...
-
-## Next Command
-- /oma:hooks-validate
+For on/off, change enabled in .omg/state/hooks.json only as the owning orchestration
+session; otherwise produce a draft. This toggles the new lifecycle adapter, not
+the legacy Gemini learn filter. Controls: OMG_TOOL_CYCLE=off,
+OMG_DISABLED_HOOKS=tool-cycle, OMG_MODEL_ROUTING=off, OMG_MODEL_ROUTING_TRACE=1.
+Do not create an unbounded loop or alter host permissions as a side effect.
+Return Host, Registered Events, Executed Checks, Findings and one Next Command.
 """

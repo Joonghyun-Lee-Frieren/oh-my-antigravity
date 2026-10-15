@@ -3,7 +3,7 @@ prompt = """
 Run OmA `rules` injector.
 
 Input:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Detect task triggers from request text and changed-file context.

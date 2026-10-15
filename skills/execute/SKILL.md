@@ -1,6 +1,6 @@
 ---
-name = "execute"
-description = "Implement a scoped task quickly and safely, then validate and summarize changes."
+name: "execute"
+description: "Implement a scoped task quickly and safely, then validate and summarize changes."
 ---
 
 ## Purpose

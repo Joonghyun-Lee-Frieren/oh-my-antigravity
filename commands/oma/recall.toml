@@ -3,7 +3,7 @@ prompt = """
 Run an OmA recall search to recover prior decisions without replaying full chat history.
 
 Input:
-$ARGUMENTS
+{{args}}
 
 Intent:
 - Find relevant prior context quickly with minimal token/runtime cost.

@@ -10,17 +10,6 @@
 
 [한국어](docs/README_ko.md) | [日本語](docs/README_ja.md) | [Français](docs/README_fr.md) | [中文](docs/README_zh.md) | [Español](docs/README_es.md)
 
-> [!IMPORTANT]
-> **Antigravity CLI:** Gemini CLI will be replaced by Antigravity CLI on June 18th.
->
-> If you previously installed `oh-my-gemini-cli` in Gemini CLI, Antigravity CLI will ask whether to import plugins during installation. Check that option to bring your plugin over.
->
-> You can also install OmA directly with:
->
-> ```bash
-> agy plugin install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
-> ```
-
 Context-engineering-powered multi-agent workflow pack for Antigravity CLI.
 
 > "Claude Code's core competitiveness isn't the Opus or Sonnet engine. It's Claude Code itself. Surprisingly, Gemini works well too when attached to Claude Code."
@@ -37,59 +26,57 @@ OmA extends Gemini CLI from a single-session assistant into a structured, role-d
   <img src="resources/image/oma_logo_02.png" alt="OmA Logo" width="420" />
 </p>
 
-## Quick Start
+## Native Antigravity support · v0.10.0
 
-### Installation
+Antigravity CLI is the primary host; Gemini CLI keeps a separate compatibility entry point. Native commands use `/oma <command>` and Gemini commands use `/oma:<command>`. The default `auto` policy preserves the host model. `balanced` recommends Flash throughout; `quality` recommends Argon for planning/review and Flash for implementation. Native profiles do not silently override `/model`. Check your account access in the host model picker.
 
-Install from GitHub using the official Gemini Extensions command:
+```bash
+agy plugin install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
+agy plugin list --json
+```
+
+```text
+/oma status
+/oma model auto
+/oma goal implement the approved change and verify acceptance criteria
+```
+
+```bash
+agy --model gemini-3.8-flash --effort medium
+agy --model gemini-4-argon --effort high
+```
+
+Gemini CLI:
 
 ```bash
 gemini extensions install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
 ```
 
-Verify in interactive mode:
-
-```text
-/extensions list
-```
-
-Verify in terminal mode:
-
-```bash
-gemini extensions list
-```
-
-Run a smoke test:
-
 ```text
 /oma:status
+/oma:model auto
 ```
 
-Run a goal-style autonomous delivery loop:
+Node.js 22+ · Antigravity CLI 1.3.5 · 2026-10-15
 
-```text
-/oma:goal "Implement the requested change, update tests, and verify acceptance criteria"
-```
+[Installation](docs/guide/installation.md) · [Models](docs/guide/models.md) · [Hooks](docs/guide/hook-engineering.md)
 
-Note: extension install/update commands run in terminal mode (`gemini extensions ...`), not in interactive slash-command mode.
+## v0.10.0
 
-## What's New in v0.9.2
+Antigravity CLI is the primary host; Gemini CLI keeps a separate compatibility entry point. Native commands use `/oma <command>` and Gemini commands use `/oma:<command>`. The default `auto` policy preserves the host model. `balanced` recommends Flash throughout; `quality` recommends Argon for planning/review and Flash for implementation. Native profiles do not silently override `/model`. Check your account access in the host model picker.
 
-- **Orbit Router Diagnostics**: The quiet `BeforeModel` router can now write an opt-in last-decision trace to `.omg/state/model-router-last.json`.
-- **Trace Without Noise**: Set `OMG_MODEL_ROUTING_TRACE=1` to capture selected lane, model, strategy, and match reason without restoring the old per-request banner.
-- **Doctor/Status Visibility**: `/oma:doctor`, `/oma:status`, `/oma:model`, and hook validation guidance now account for router trace freshness and missing custom lane mappings.
-- **Version Bump**: Bumped project and extension version to `v0.9.2`.
+Native hooks observe tool outcomes, remind once after a denial or repeated failure, and never force continuation after stopping. A completed tool call is not a passed test. The official post-tool event is `PostToolUse`, not `PostToolCalling`. Gemini uses its separate `AfterTool` adapter and retains the `AfterAgent` learn filter.
 
 ## Extension Boundary and Upgrade Safety
 
 - Install and update OmA through `gemini extensions ...`; do not rely on copied command/skill folders as the primary runtime path.
 - Keep one authoritative OmA hook registration path per event. Mixing extension-managed hooks with manual duplicates is the fastest way to get repeated AfterAgent output or stale behavior.
-- When OmA feels stale after an update, check `gemini extensions list` first, then refresh or reinstall the extension before editing shipped files.
-- For long or multi-lane work, treat `/oma:workspace audit` as the default preflight before review, automation, or `team-exec`.
+- When OmA feels stale after an update, check `agy plugin list --json` first, then refresh or reinstall the extension before editing shipped files.
+- For long or multi-lane work, treat `/oma workspace audit` as the default preflight before review, automation, or `team-exec`.
 
 ## Interview Session Storage
 
-- `/oma:interview` session state is now intended to live under `.omg/state/interviews/[slug]/` instead of one shared interview file.
+- `/oma interview` session state is now intended to live under `.omg/state/interviews/[slug]/` instead of one shared interview file.
 - `.omg/state/interviews/active.json` tracks the current interview so resume/status commands stay deterministic without mixing separate requirement threads.
 - This keeps multiple requirement-discovery passes in the same project distinguishable and archive-friendly.
 
@@ -107,8 +94,8 @@ Note: extension install/update commands run in terminal mode (`gemini extensions
 | Delivery model | Official Gemini CLI extension (`gemini-extension.json`) |
 | Core building blocks | `GEMINI.md`, `agents/`, `commands/`, `skills/`, `context/` |
 | Main use case | Complex implementation tasks that need plan -> execute -> review loops |
-| Control surface | Slash-command-first `/oma:*` control plane + 11 retained `$skills` (including `oma-plan` alias) + sub-agent delegation |
-| Default model strategy | Configurable via `/oma:model` (`balanced` lane split uses `gemini-3.1-pro-preview` / `gemini-3-flash-preview` / `gemini-3.1-flash-lite-preview` by default, with optional `auto` or `custom` overrides) |
+| Control surface | Slash-command-first `/oma *` control plane + 12 skills, including the native `/oma` dispatcher (including `oma-plan` alias) + sub-agent delegation |
+| Default model strategy | `auto` → host; `balanced` → Flash; `quality` → Argon / Flash |
 
 ## Why OmA
 
@@ -139,7 +126,7 @@ Use `team-assemble` when a fixed engineering roster is not enough.
 Example flow:
 
 ```text
-/oma:team-assemble "Compare 3 competitors and produce an exec report"
+/oma team-assemble "Compare 3 competitors and produce an exec report"
 -> proposes: researcher x3 + consultant + editor + director
 -> asks: Proceed with this team? (yes/no)
 -> after approval: team-plan -> team-prd -> taskboard -> team-exec -> team-verify -> team-fix
@@ -147,37 +134,37 @@ Example flow:
 
 Activation note:
 - No separate research-preview setting is required in OmA.
-- If the extension is loaded, `/oma:team-assemble` is immediately available.
+- If the extension is loaded, `/oma team-assemble` is immediately available.
 
 ## Workspace and Taskboard Control
 
 Use `workspace` and `taskboard` when work spans multiple roots, multiple implementation lanes, or long verify/fix loops.
 
-- `/oma:workspace` keeps the primary root plus optional worktree/path lanes in `.omg/state/workspace.json`.
+- `/oma workspace` keeps the primary root plus optional worktree/path lanes in `.omg/state/workspace.json`.
 - Each lane can also carry a compact baseline branch/HEAD anchor so handoffs and resume flows can detect unexpected branch drift before implementation or review.
-- `/oma:workspace audit` checks lane cleanliness, trust status, and handoff readiness before parallel execution, review, or automation.
-- `/oma:taskboard` keeps stable task IDs, owners, dependencies, statuses (`todo`, `ready`, `in-progress`, `blocked`, `done`, `verified`), baseline anchors, lane-health notes, and evidence pointers in `.omg/state/taskboard.md`.
+- `/oma workspace audit` checks lane cleanliness, trust status, and handoff readiness before parallel execution, review, or automation.
+- `/oma taskboard` keeps stable task IDs, owners, dependencies, statuses (`todo`, `ready`, `in-progress`, `blocked`, `done`, `verified`), baseline anchors, lane-health notes, and evidence pointers in `.omg/state/taskboard.md`.
 - `team-plan` seeds stable task IDs plus lane assumptions and baseline anchors, `team-exec` pulls the smallest ready slice with explicit lane/subagent context and baseline checks, and `team-verify` marks tasks verified only with evidence plus safe lane state.
 - `checkpoint` and `status` can reference these files instead of replaying the whole chat, which improves cache stability and reduces token waste.
-- `/oma:recall "<query>"` performs state-first recall and bounded fallback search, so you can recover prior rationale without replaying full transcripts.
+- `/oma recall "<query>"` performs state-first recall and bounded fallback search, so you can recover prior rationale without replaying full transcripts.
 
 Example flow:
 
 ```text
-/oma:workspace set .
-/oma:workspace audit
-/oma:workspace add ../feature-auth oma-executor
-/oma:taskboard sync
-/oma:taskboard next
-/oma:recall "why was auth lane blocked" scope=state
+/oma workspace set .
+/oma workspace audit
+/oma workspace add ../feature-auth oma-executor
+/oma taskboard sync
+/oma taskboard next
+/oma recall "why was auth lane blocked" scope=state
 ```
 
 ## Workspace Hygiene and Hook Symmetry
 
 Use these controls when long sessions start drifting because lane ownership, delegated execution, or hook continuation behavior is no longer obvious.
 
-- `/oma:workspace audit` surfaces dirty shared worktrees, untrusted review paths, and handoff-ready vs handoff-blocked lanes.
-- `/oma:hooks` and `/oma:hooks-validate` now model paired agent lifecycle outcomes (`completed`, `blocked`, `stopped`) so blocked continuations re-enter the safety lane once before downstream hooks resume.
+- `/oma workspace audit` surfaces dirty shared worktrees, untrusted review paths, and handoff-ready vs handoff-blocked lanes.
+- `/oma hooks` and `/oma hooks-validate` now model paired agent lifecycle outcomes (`completed`, `blocked`, `stopped`) so blocked continuations re-enter the safety lane once before downstream hooks resume.
 - `team-exec`, `team`, `team-verify`, `stop`, and `cancel` keep delegated lane/subagent context compact and explicit, expanding details only when execution stops early or hits a blocker.
 
 ## Notification Routing
@@ -201,32 +188,25 @@ Use `notify` when a long-running OmA session needs explicit signals for approval
 Example flow:
 
 ```text
-/oma:notify profile watchdog
+/oma notify profile watchdog
 -> enables: approval-needed, verify-failed, blocker-raised, checkpoint-saved, idle-watchdog, session-stop
 -> suggests channels: terminal-bell + file by default
 -> persists policy: .omg/state/notify.json
 ```
 
-## Model Router (BeforeModel Hook)
+## Lifecycle Hooks
 
-OmA ships a quiet model-routing hook. The previous `AfterAgent` quota-watch usage monitor was removed in `v0.8.4` because Gemini CLI can report usage as unavailable, which created noisy low-value output.
+Native hooks observe tool outcomes, remind once after a denial or repeated failure, and never force continuation after stopping. A completed tool call is not a passed test. The official post-tool event is `PostToolUse`, not `PostToolCalling`. Gemini uses its separate `AfterTool` adapter and retains the `AfterAgent` learn filter.
 
-- Hook entrypoint: `hooks/hooks.json` (`BeforeModel` -> `oma-model-router`)
-- Script: `hooks/scripts/before-model-banner.js`
-- Behavior: silently maps outgoing model requests to the active OmA strategy (`balanced`, `auto`, or `custom`) without printing a model banner
-- Default balanced routing: planning/review -> `gemini-3.1-pro-preview`, execution -> `gemini-3-flash-preview`, quick edits -> `gemini-3.1-flash-lite-preview`
-- Optional disable: `OMG_DISABLED_HOOKS=model-routing` or `OMG_MODEL_ROUTING=off`
-- Optional trace: `OMG_MODEL_ROUTING_TRACE=1` writes the latest lane/model decision to `.omg/state/model-router-last.json`
+`PostToolUse` → `PreInvocation` → `Stop`
 
-Usage/quota visibility:
+`OMG_TOOL_CYCLE=off` · `OMG_MODEL_ROUTING_TRACE=1`
 
-- OmA no longer estimates or prints token usage after each turn.
-- Use Gemini CLI native `/model` or `/stats model` for authoritative usage and quota status.
-- Legacy `.omg/state/quota-watch.json` files can be ignored; new OmA releases no longer update them.
+`.omg/state/sessions/hooks-<session-key>/model-router-last.json`
 
 ## Learn-Signal Safety Filter (AfterAgent Hook)
 
-OmA now also ships a safety-hardened learn-signal hook so `/oma:learn` nudges appear only when a session has actionable implementation intent.
+OmA now also ships a safety-hardened learn-signal hook so `/oma learn` nudges appear only when a session has actionable implementation intent.
 
 - Hook entrypoint: `hooks/hooks.json` (`AfterAgent` -> `oma-learn-signal-after-agent`)
 - Script: `hooks/scripts/learn.js`
@@ -269,49 +249,49 @@ export OMG_DISABLED_HOOKS=learn
 
 | Command | Purpose | Typical timing |
 | --- | --- | --- |
-| `/oma:status` | Summarize progress, risks, and next actions | Start/end of a work session |
-| `/oma:doctor` | Run extension/team/workspace/hook readiness diagnostics, including priority/fallback-route drift checks | Before long autonomous runs or when setup seems broken |
-| `/oma:hud` | Inspect or switch visual HUD profile (`normal`, `compact`, `hidden`) | Before long sessions or when terminal density changes |
-| `/oma:hud-on` | Quick toggle HUD to full visual mode | When returning to full status boards |
-| `/oma:hud-compact` | Quick toggle HUD to compact mode | During dense implementation loops |
-| `/oma:hud-off` | Quick toggle HUD to hidden mode (plain status sections) | When visual blocks are distracting |
-| `/oma:hooks` | Inspect/switch hook pipeline profile and trigger policy | Before autonomous loops or when hook behavior drifts |
-| `/oma:hooks-init` | Bootstrap hook config and plugin contract scaffolding | At project kickoff or first hook adoption |
-| `/oma:hooks-validate` | Validate hook ordering, lifecycle symmetry, safety, and budget constraints | Before enabling high-autonomy workflows |
-| `/oma:hooks-test` | Dry-run hook event sequence and efficiency estimates | After policy changes or repeated loop stalls |
-| `/oma:notify` | Configure notification routing for approvals, blockers, verify results, checkpoints, and idle watchdog alerts | Before unattended `autopilot`/`loop` runs or when alert noise needs tuning |
-| `/oma:intent` | Classify task intent and route to the correct stage/command | Before planning or coding when request intent is ambiguous |
-| `/oma:rules` | Activate task-conditional guardrail rule packs | Before implementation on migration/security/performance-sensitive work |
-| `/oma:memory` | Maintain MEMORY index, topic files, and path-aware rule packs | During long sessions or when decisions/rules drift |
-| `/oma:workspace` | Inspect, audit, or set primary root, worktree/path lanes, and collision boundaries | Before parallel implementation or multi-root work |
-| `/oma:taskboard` | Maintain a compact task ledger with stable IDs, `p0-p3` priority, deterministic `next`, baseline anchors, and verifier-backed completion state | After planning and throughout long exec/verify loops |
-| `/oma:recall` | Recover prior decisions/evidence with state-first search and bounded history fallback | When you need past rationale quickly without replaying full transcripts |
-| `/oma:reasoning` | Set global reasoning effort and teammate overrides (`low/medium/high/xhigh`) | Before expensive planning/review loops or when depth is role-dependent |
-| `/oma:deep-init` | Build deep project map and validation baseline for long sessions | At project kickoff or when onboarding into unfamiliar codebases |
-| `/oma:blueprint` | Define product/UI workflow decisions, interface states, content hierarchy, accessibility, and verification hooks | Before planning or coding user-facing flows |
-| `/oma:team-assemble` | Dynamically compose a role-fit team with approval gate, lane-specific reasoning map, and fallback routing hints | Before `/oma:team` on cross-domain or non-standard tasks |
-| `/oma:team` | Execute full stage pipeline (`team-assemble? -> plan -> prd -> taskboard -> exec -> verify -> fix`) | Complex feature or refactor delivery |
-| `/oma:team-plan` | Build dependency-aware execution plan | Before implementation |
-| `/oma:team-prd` | Lock measurable acceptance criteria and constraints | After planning, before coding |
-| `/oma:team-exec` | Implement one highest-priority ready slice with explicit lane/subagent handoff and single-shot fallback reroute | Main implementation loop |
-| `/oma:team-verify` | Validate acceptance criteria, regressions, and anti-slop quality gate, then emit priority-ordered fix backlog | After each execution slice |
-| `/oma:team-fix` | Patch only verified failures | When verification fails |
-| `/oma:loop` | Enforce repeated `exec -> verify -> fix` cycles until done/blocker | Mid/late delivery when unresolved findings remain |
-| `/oma:mode` | Inspect or switch operating profile (`balanced/speed/deep/autopilot/ralph/ultrawork`) | At session start or posture change |
-| `/oma:model` | Inspect or switch model-selection strategy (`balanced/auto/custom`) | When setting one default model policy (for example Gemini Auto across all tasks) |
-| `/oma:approval` | Inspect or switch approval posture (`suggest/auto/full-auto`) | Before autonomous delivery loops or policy changes |
-| `/oma:goal` | Run a goal-driven autonomous delivery loop with routine work pre-approved and runtime-boundary blockers explicit | When you want `/goal`-style hands-off delivery until verified, blocked, or max cycles |
-| `/oma:ultragoal` | Run a durable multi-goal workflow (Ultragoal) persisting checkpoints and progress in repository-native files | Decomposing large, complex requirements into sequential micro-goals that survive session restarts |
-| `/oma:autopilot` | Run iterative autonomous cycles with checkpoints | Complex autonomous delivery |
-| `/oma:ralph` | Enforce strict quality-gated orchestration | Release-critical tasks |
-| `/oma:ultrawork` | Throughput mode for batched independent tasks | Large backlogs |
-| `/oma:consensus` | Converge on one option from multiple designs | Decision-heavy moments |
-| `/oma:launch` | Initialize persistent lifecycle state for long tasks | Beginning of long sessions |
-| `/oma:checkpoint` | Save compact checkpoint and resume hint with taskboard/workspace references | Mid-session handoff |
-| `/oma:stop` | Gracefully stop autonomous mode and preserve progress | Pause/interrupt moments |
-| `/oma:cancel` | Harness-style cancel alias that stops safely and returns resume handoff | When interrupting autonomous/team flow |
-| `/oma:optimize` | Improve prompts/context for quality and token efficiency | After a noisy or expensive session |
-| `/oma:cache` | Inspect cache/context behavior and compact-state anchoring | Long-running context-heavy tasks |
+| `/oma status` | Summarize progress, risks, and next actions | Start/end of a work session |
+| `/oma doctor` | Run extension/team/workspace/hook readiness diagnostics, including priority/fallback-route drift checks | Before long autonomous runs or when setup seems broken |
+| `/oma hud` | Inspect or switch visual HUD profile (`normal`, `compact`, `hidden`) | Before long sessions or when terminal density changes |
+| `/oma hud-on` | Quick toggle HUD to full visual mode | When returning to full status boards |
+| `/oma hud-compact` | Quick toggle HUD to compact mode | During dense implementation loops |
+| `/oma hud-off` | Quick toggle HUD to hidden mode (plain status sections) | When visual blocks are distracting |
+| `/oma hooks` | Inspect/switch hook pipeline profile and trigger policy | Before autonomous loops or when hook behavior drifts |
+| `/oma hooks-init` | Bootstrap hook config and plugin contract scaffolding | At project kickoff or first hook adoption |
+| `/oma hooks-validate` | Validate hook ordering, lifecycle symmetry, safety, and budget constraints | Before enabling high-autonomy workflows |
+| `/oma hooks-test` | Dry-run hook event sequence and efficiency estimates | After policy changes or repeated loop stalls |
+| `/oma notify` | Configure notification routing for approvals, blockers, verify results, checkpoints, and idle watchdog alerts | Before unattended `autopilot`/`loop` runs or when alert noise needs tuning |
+| `/oma intent` | Classify task intent and route to the correct stage/command | Before planning or coding when request intent is ambiguous |
+| `/oma rules` | Activate task-conditional guardrail rule packs | Before implementation on migration/security/performance-sensitive work |
+| `/oma memory` | Maintain MEMORY index, topic files, and path-aware rule packs | During long sessions or when decisions/rules drift |
+| `/oma workspace` | Inspect, audit, or set primary root, worktree/path lanes, and collision boundaries | Before parallel implementation or multi-root work |
+| `/oma taskboard` | Maintain a compact task ledger with stable IDs, `p0-p3` priority, deterministic `next`, baseline anchors, and verifier-backed completion state | After planning and throughout long exec/verify loops |
+| `/oma recall` | Recover prior decisions/evidence with state-first search and bounded history fallback | When you need past rationale quickly without replaying full transcripts |
+| `/oma reasoning` | Set global reasoning effort and teammate overrides (`low/medium/high`) | Before expensive planning/review loops or when depth is role-dependent |
+| `/oma deep-init` | Build deep project map and validation baseline for long sessions | At project kickoff or when onboarding into unfamiliar codebases |
+| `/oma blueprint` | Define product/UI workflow decisions, interface states, content hierarchy, accessibility, and verification hooks | Before planning or coding user-facing flows |
+| `/oma team-assemble` | Dynamically compose a role-fit team with approval gate, lane-specific reasoning map, and fallback routing hints | Before `/oma team` on cross-domain or non-standard tasks |
+| `/oma team` | Execute full stage pipeline (`team-assemble? -> plan -> prd -> taskboard -> exec -> verify -> fix`) | Complex feature or refactor delivery |
+| `/oma team-plan` | Build dependency-aware execution plan | Before implementation |
+| `/oma team-prd` | Lock measurable acceptance criteria and constraints | After planning, before coding |
+| `/oma team-exec` | Implement one highest-priority ready slice with explicit lane/subagent handoff and single-shot fallback reroute | Main implementation loop |
+| `/oma team-verify` | Validate acceptance criteria, regressions, and anti-slop quality gate, then emit priority-ordered fix backlog | After each execution slice |
+| `/oma team-fix` | Patch only verified failures | When verification fails |
+| `/oma loop` | Enforce repeated `exec -> verify -> fix` cycles until done/blocker | Mid/late delivery when unresolved findings remain |
+| `/oma mode` | Inspect or switch operating profile (`balanced/speed/deep/autopilot/ralph/ultrawork`) | At session start or posture change |
+| `/oma model` | Inspect or switch model-selection strategy (`auto/balanced/quality/custom`) | When setting one default model policy (for example Gemini Auto across all tasks) |
+| `/oma approval` | Inspect or switch approval posture (`suggest/auto/full-auto`) | Before autonomous delivery loops or policy changes |
+| `/oma goal` | Run a goal-driven autonomous delivery loop with routine work pre-approved and runtime-boundary blockers explicit | When you want `/goal`-style hands-off delivery until verified, blocked, or max cycles |
+| `/oma ultragoal` | Run a durable multi-goal workflow (Ultragoal) persisting checkpoints and progress in repository-native files | Decomposing large, complex requirements into sequential micro-goals that survive session restarts |
+| `/oma autopilot` | Run iterative autonomous cycles with checkpoints | Complex autonomous delivery |
+| `/oma ralph` | Enforce strict quality-gated orchestration | Release-critical tasks |
+| `/oma ultrawork` | Throughput mode for batched independent tasks | Large backlogs |
+| `/oma consensus` | Converge on one option from multiple designs | Decision-heavy moments |
+| `/oma launch` | Initialize persistent lifecycle state for long tasks | Beginning of long sessions |
+| `/oma checkpoint` | Save compact checkpoint and resume hint with taskboard/workspace references | Mid-session handoff |
+| `/oma stop` | Gracefully stop autonomous mode and preserve progress | Pause/interrupt moments |
+| `/oma cancel` | Harness-style cancel alias that stops safely and returns resume handoff | When interrupting autonomous/team flow |
+| `/oma optimize` | Improve prompts/context for quality and token efficiency | After a noisy or expensive session |
+| `/oma cache` | Inspect cache/context behavior and compact-state anchoring | Long-running context-heavy tasks |
 
 ### Skills
 
@@ -335,19 +315,19 @@ Retained skills are intentionally limited to a compact set so the extension load
 
 | Agent | Primary responsibility | Preferred model profile |
 | --- | --- | --- |
-| `oma-architect` | System boundaries, interfaces, long-term maintainability | `gemini-3.1-pro-preview` |
-| `oma-planner` | Task decomposition and sequencing | `gemini-3.1-pro-preview` |
-| `oma-product` | Scope lock, non-goals, and measurable acceptance criteria | `gemini-3.1-pro-preview` |
-| `oma-executor` | Fast implementation cycles | `gemini-3-flash-preview` |
-| `oma-reviewer` | Correctness and regression risk checks | `gemini-3.1-pro-preview` |
-| `oma-verifier` | Acceptance-gate evidence and release-readiness checks | `gemini-3.1-pro-preview` |
-| `oma-debugger` | Root-cause analysis and patch strategy | `gemini-3.1-pro-preview` |
-| `oma-consensus` | Option scoring and decision convergence | `gemini-3.1-pro-preview` |
-| `oma-researcher` | External option analysis and synthesis | `gemini-3.1-pro-preview` |
-| `oma-director` | Team message routing, conflict resolution, and lifecycle orchestration | `gemini-3.1-pro-preview` |
-| `oma-consultant` | Strategic analysis criteria and recommendation framing | `gemini-3.1-pro-preview` |
-| `oma-editor` | Final deliverable structure, consistency, and audience fit | `gemini-3-flash-preview` |
-| `oma-quick` | Small, tactical fixes | `gemini-3.1-flash-lite-preview` |
+| `oma-architect` | System boundaries, interfaces, long-term maintainability | `inherit` |
+| `oma-planner` | Task decomposition and sequencing | `inherit` |
+| `oma-product` | Scope lock, non-goals, and measurable acceptance criteria | `inherit` |
+| `oma-executor` | Fast implementation cycles | `inherit` |
+| `oma-reviewer` | Correctness and regression risk checks | `inherit` |
+| `oma-verifier` | Acceptance-gate evidence and release-readiness checks | `inherit` |
+| `oma-debugger` | Root-cause analysis and patch strategy | `inherit` |
+| `oma-consensus` | Option scoring and decision convergence | `inherit` |
+| `oma-researcher` | External option analysis and synthesis | `inherit` |
+| `oma-director` | Team message routing, conflict resolution, and lifecycle orchestration | `inherit` |
+| `oma-consultant` | Strategic analysis criteria and recommendation framing | `inherit` |
+| `oma-editor` | Final deliverable structure, consistency, and audience fit | `inherit` |
+| `oma-quick` | Small, tactical fixes | `inherit` |
 
 ## Context Layer Model
 
@@ -390,30 +370,9 @@ oh-my-antigravity/
 
 ## Troubleshooting
 
-| Symptom | Likely cause | Action |
-| --- | --- | --- |
-| `settings.filter is not a function` during install | Stale Gemini CLI runtime or stale cached extension metadata | Update Gemini CLI, uninstall extension, then reinstall from repository URL |
-| `/oma:*` command not found | Extension not loaded in current session | Run `gemini extensions list`, then restart Gemini CLI session |
-| Slash command or skill list looks stale after runtime/extension refresh | Interactive registry was not refreshed after update | Run `/skills reload` on newer Gemini CLI builds, or restart the session if the runtime is still on older stable |
-| `/plan` opens native plan mode when you wanted OmA planning skill | Name collision between built-in `/plan` and skill-slash invocation | Use `/oma-plan` (or `$oma-plan`) for the OmA planning skill, or use `/oma:team-assemble` or `/oma:team-plan` for staged workflow planning |
-| You want one global model or Gemini Auto but OmA still behaves like an older pinned model policy | Older installs or stale extension metadata may still carry older model guidance or cached command metadata | Update/reinstall OmA, then set `/oma:model balanced` for explicit preview routing or `/oma:model auto` for runtime auto selection |
-| Skill does not trigger | Only the retained deep-work skills are still shipped, or extension metadata is stale | Recheck the retained skill list in the README and reload the extension/session |
-| Windows skill linking or extension reload behaves differently across machines | Different Gemini CLI builds handle skill links differently | Prefer stable `v0.42.0+`; if you track preview/nightly, verify skill-link behavior separately before publishing docs or support guidance |
-| Team assembly keeps proposing but does not execute | Approval token missing in request | Reply with explicit approval (`yes`, `approve`, `go`, or `run`) |
-| Parallel execution keeps colliding or re-planning the same files | Workspace lanes are not explicit | Run `/oma:workspace status` or set lane/path ownership with `/oma:workspace` |
-| `taskboard next` keeps jumping between tasks unpredictably | Missing priority values or unstable queue ordering | Run `/oma:taskboard sync` (fills default `p2`), then `/oma:taskboard rebalance` |
-| Review or automation is about to run on a dirty/untrusted lane | Shared worktree hygiene is unclear | Run `/oma:workspace audit`, isolate the lane if needed, and only then continue verify/review steps |
-| Execution slice looks correct but the lane is on the wrong branch/HEAD | Baseline anchor drifted since planning or handoff | Re-run `/oma:workspace audit`, confirm the intended baseline, then realign the lane or refresh `/oma:team-plan` before continuing |
-| Done status keeps drifting after long loops | No compact task source of truth or missing verifier signoff | Run `/oma:taskboard sync`, then rerun `/oma:team-verify` to close remaining IDs |
-| You cannot remember why a decision was made earlier | Prior rationale is buried in long session history | Run `/oma:recall "<keyword>" scope=state` first, then widen to `scope=recent` only if needed |
-| Hooks seem to miss terminal events or fire twice after continuation | Hook lifecycle symmetry is not explicit | Run `/oma:hooks-validate`, then fix lifecycle policy before re-enabling autonomous loops |
-| Usage hook or learn hook appears to fire twice | OmA hook registration may be duplicated across extension-managed and manual hook paths | Run `/oma:hooks status` and `/oma:hooks-validate`, then keep one authoritative OmA hook registration path per event |
-| Hook output suddenly becomes quiet or a learn nudge disappears | Runtime hook controls were set for the current shell/session | Check `OMG_HOOK_PROFILE` and `OMG_DISABLED_HOOKS` before changing hook files or deleting state |
-| A retained skill stops loading or behaves inconsistently after edits | `SKILL.md` frontmatter drifted or duplicated a name | Run `npm run test:skills` and fix malformed frontmatter, duplicate names, or folder/name mismatches before publishing |
-| Output is verbose, generic, or repetitive | Reasoning/gate posture too weak for the target artifact | Raise `/oma:reasoning` effort (optionally teammate overrides) and rerun `/oma:team-verify` |
-| Existing launch scripts use `--allowed-tools` | Flag deprecated in newer Gemini CLI | Replace with policy profiles via `--policy` and re-run |
-| Autonomous flow confirms too often (or too little) | Approval posture not aligned to task risk | Run `/oma:approval suggest|auto|full-auto` and recheck guardrails |
-| Setup health is unclear before long run | State/config drift accumulated | Run `/oma:doctor` (or `/oma:doctor team`) and apply remediation list |
+`agy plugin list --json` · `/agents` · `/skills` · `/hooks`
+
+[Installation and diagnostics](docs/guide/installation.md)
 
 ## Migration Notes
 

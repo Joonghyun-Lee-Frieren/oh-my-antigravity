@@ -3,7 +3,7 @@ prompt = """
 Run OmA `team-plan`.
 
 Task:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Load `.omg/state/workspace.json` when available and respect active lane/path scope plus lane health/trust notes.

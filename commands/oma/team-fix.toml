@@ -3,7 +3,7 @@ prompt = """
 Run OmA `team-fix`.
 
 Task:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Consume fix backlog from `team-verify`.

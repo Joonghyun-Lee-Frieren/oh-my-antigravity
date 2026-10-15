@@ -3,7 +3,7 @@ prompt = """
 Create an OmA checkpoint snapshot.
 
 Context:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Summarize objective, active stage, and current mode.

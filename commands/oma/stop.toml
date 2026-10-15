@@ -3,7 +3,7 @@ prompt = """
 Stop active OmA autonomous workflow.
 
 Context:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Determine active mode/lifecycle state from context or `.omg/state/*` if available.

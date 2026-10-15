@@ -1,6 +1,6 @@
 ---
-name = "deep-dive"
-description = "Run a trace-to-interview discovery pass to remove ambiguity before planning and execution."
+name: "deep-dive"
+description: "Run a trace-to-interview discovery pass to remove ambiguity before planning and execution."
 ---
 
 ## Purpose

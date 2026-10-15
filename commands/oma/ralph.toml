@@ -3,7 +3,7 @@ prompt = """
 Run OmA `ralph` mode.
 
 Objective:
-$ARGUMENTS
+{{args}}
 
 Ralph protocol:
 1. Enforce full staged pipeline: `team-plan -> team-prd -> team-exec -> team-verify -> team-fix`.

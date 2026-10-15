@@ -3,7 +3,7 @@ prompt = """
 Run OmA `team-verify`.
 
 Task:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Read `.omg/state/taskboard.md` and `.omg/state/workspace.json` when available, then identify the active verification queue and lane health.

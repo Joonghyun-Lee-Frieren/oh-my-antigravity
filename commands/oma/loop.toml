@@ -3,7 +3,7 @@ prompt = """
 Run OmA `loop` enforcement.
 
 Context:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Read current acceptance criteria and open backlog from prior stage outputs.

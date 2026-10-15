@@ -3,7 +3,7 @@ prompt = """
 Run OmA `autopilot` mode.
 
 Objective:
-$ARGUMENTS
+{{args}}
 
 Autopilot protocol:
 1. Start with `team-plan`, `team-prd`, and `taskboard`.

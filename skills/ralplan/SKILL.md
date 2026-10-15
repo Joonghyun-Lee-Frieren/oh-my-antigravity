@@ -1,6 +1,6 @@
 ---
-name = "ralplan"
-description = "Create a strict, quality-first execution plan with explicit gates and rollback-ready sequencing."
+name: "ralplan"
+description: "Create a strict, quality-first execution plan with explicit gates and rollback-ready sequencing."
 ---
 
 ## Purpose

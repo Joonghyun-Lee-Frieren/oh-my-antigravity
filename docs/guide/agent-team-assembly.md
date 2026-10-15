@@ -64,11 +64,11 @@ Orchestration lane:
 
 Default role-to-model policy:
 
-- judgment and acceptance gates: `pro`
-- implementation-heavy execution: `flash`
-- broad low-risk exploration: `flash-lite`
+- judgment and acceptance gates: `gemini-4-argon`
+- implementation-heavy execution: `gemini-3.8-flash`
+- broad low-risk exploration: `gemini-3.8-flash`
 
-With Gemini CLI preview features enabled, `pro` can resolve to the latest preview-capable Pro route without OmA hard-pinning an aging concrete model name.
+With Gemini CLI preview features enabled, `gemini-4-argon` can resolve to the latest preview-capable Pro route without OmA hard-pinning an aging concrete model name.
 
 ## Approval Gate
 
@@ -142,3 +142,13 @@ If the team stalls:
 3. Force verification-first loop via `/oma:team-verify`.
 4. Use `/oma:consensus` when strategy lanes disagree.
 
+
+## Native boundary
+
+Use `/oma team-assemble` on Antigravity; the colon form is Gemini compatibility.
+Default native agents inherit the host model. Concrete model allocations above
+are quality-profile recommendations, not guaranteed automatic rewrites. Check
+/model for account availability. Delegate with invoke_subagent only when tasks
+are independent, provide a scope/evidence/stop contract, isolate conflicting write
+lanes with branch workspaces, and keep final integration in the parent. Stop at
+the approved cycle budget (default five), on cancellation or on a blocker.

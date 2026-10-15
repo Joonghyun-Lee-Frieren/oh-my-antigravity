@@ -3,7 +3,7 @@ prompt = """
 Coordinate the request with OmA agents.
 
 Task:
-$ARGUMENTS
+{{args}}
 
 Execution protocol (staged):
 1. If team composition is unclear or task is non-standard, run `team-assemble` first.

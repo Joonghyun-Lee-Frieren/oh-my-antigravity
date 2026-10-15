@@ -3,7 +3,7 @@ prompt = """
 Run OmA `deep-init`.
 
 Objective:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Scan repository structure, entry points, build/test commands, and key config files.

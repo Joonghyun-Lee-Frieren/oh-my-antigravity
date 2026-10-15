@@ -3,7 +3,7 @@ prompt = """
 Run OmA `workspace` manager.
 
 Input:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Parse requested action:

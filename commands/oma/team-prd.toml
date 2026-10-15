@@ -3,7 +3,7 @@ prompt = """
 Run OmA `team-prd`.
 
 Task:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Delegate scope definition to `oma-product`.

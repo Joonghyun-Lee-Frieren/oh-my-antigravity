@@ -3,7 +3,7 @@ prompt = """
 Launch OmA workflow lifecycle.
 
 Task:
-$ARGUMENTS
+{{args}}
 
 Launch protocol:
 1. Initialize lifecycle metadata (mode, objective, acceptance criteria, owner assumptions).

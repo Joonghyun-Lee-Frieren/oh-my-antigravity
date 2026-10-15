@@ -3,7 +3,7 @@ prompt = """
 Run OmA `intent` gate.
 
 Input:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. [Pre-check] Detect depth keywords:

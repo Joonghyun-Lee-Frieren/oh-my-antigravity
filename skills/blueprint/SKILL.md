@@ -1,6 +1,6 @@
 ---
-name = "blueprint"
-description = "Create a product/UI blueprint with durable interface decisions, states, constraints, and verification hooks."
+name: "blueprint"
+description: "Create a product/UI blueprint with durable interface decisions, states, constraints, and verification hooks."
 ---
 
 ## Purpose

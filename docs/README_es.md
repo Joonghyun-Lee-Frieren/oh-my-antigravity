@@ -26,52 +26,57 @@ OmA amplía Gemini CLI desde un asistente de sesión única hacia un flujo de in
   <img src="../resources/image/oma_logo_02.png" alt="OmA Logo" width="420" />
 </p>
 
-## Inicio rápido
+## Soporte nativo de Antigravity · v0.10.0
 
-### Instalación
+Antigravity CLI es el entorno principal; Gemini CLI conserva una entrada de compatibilidad separada. Usa `/oma <command>` en modo nativo y `/oma:<command>` con Gemini. La política predeterminada `auto` conserva el modelo del entorno. `balanced` recomienda Flash para todas las tareas; `quality` recomienda Argon para planificación y revisión, y Flash para implementación. Los perfiles nativos no reemplazan `/model`. Comprueba el acceso de tu cuenta en el selector de modelos.
 
-Instálalo desde GitHub con el comando oficial de Gemini Extensions:
+```bash
+agy plugin install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
+agy plugin list --json
+```
+
+```text
+/oma status
+/oma model auto
+/oma goal implement the approved change and verify acceptance criteria
+```
+
+```bash
+agy --model gemini-3.8-flash --effort medium
+agy --model gemini-4-argon --effort high
+```
+
+Gemini CLI:
 
 ```bash
 gemini extensions install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
 ```
 
-Verificación en modo interactivo:
-
-```text
-/extensions list
-```
-
-Verificación en modo terminal:
-
-```bash
-gemini extensions list
-```
-
-Prueba rápida (smoke test):
-
 ```text
 /oma:status
+/oma:model auto
 ```
 
-Nota: los comandos de instalación/actualización de extensiones se ejecutan en modo terminal (`gemini extensions ...`), no en modo interactivo de comandos slash.
+Node.js 22+ · Antigravity CLI 1.3.5 · 2026-10-15
 
-## Novedades en v0.9.0
+[Installation](guide/installation.md) · [Models](guide/models.md) · [Hooks](guide/hook-engineering.md)
 
-- Project and extension package name changed from `oh-my-gemini-cli` to `oh-my-antigravity`.
-- GitHub, GitHub Pages, extension gallery, install/uninstall commands, badges, and Star History links were updated for the new repository name.
-- Extension/package metadata was bumped to `0.9.0`, with README, Korean README, landing page, installation guide, localized docs, and history refreshed.
+## v0.10.0
+
+Antigravity CLI es el entorno principal; Gemini CLI conserva una entrada de compatibilidad separada. Usa `/oma <command>` en modo nativo y `/oma:<command>` con Gemini. La política predeterminada `auto` conserva el modelo del entorno. `balanced` recomienda Flash para todas las tareas; `quality` recomienda Argon para planificación y revisión, y Flash para implementación. Los perfiles nativos no reemplazan `/model`. Comprueba el acceso de tu cuenta en el selector de modelos.
+
+Los hooks nativos observan los resultados y añaden un aviso limitado tras una denegación o fallos repetidos, sin forzar la continuación después de detenerse. Terminar una herramienta no equivale a superar una prueba. El evento oficial es `PostToolUse`, no `PostToolCalling`. Gemini usa un adaptador `AfterTool` separado y mantiene el filtro `AfterAgent`.
 
 ## Límite de extensión y seguridad de actualización
 
 - Instala y actualiza OmA con `gemini extensions ...`; no dependas de carpetas copiadas de comandos/skills como ruta principal de runtime.
 - Mantén una sola ruta autoritativa de registro de hooks OmA por evento. Mezclar hooks gestionados por extensión con duplicados manuales provoca salidas AfterAgent repetidas o comportamiento obsoleto.
-- Si OmA parece desactualizado tras una actualización, revisa primero `gemini extensions list`; luego refresca o reinstala la extensión antes de editar archivos distribuidos.
-- Para trabajos largos o con múltiples lanes, trata `/oma:workspace audit` como preflight por defecto antes de review, automatización o `team-exec`.
+- Si OmA parece desactualizado tras una actualización, revisa primero `agy plugin list --json`; luego refresca o reinstala la extensión antes de editar archivos distribuidos.
+- Para trabajos largos o con múltiples lanes, trata `/oma workspace audit` como preflight por defecto antes de review, automatización o `team-exec`.
 
 ## Almacenamiento de sesiones de entrevista
 
-- El estado de sesión de `/oma:interview` ahora está pensado para vivir bajo `.omg/state/interviews/[slug]/` en vez de un único archivo compartido.
+- El estado de sesión de `/oma interview` ahora está pensado para vivir bajo `.omg/state/interviews/[slug]/` en vez de un único archivo compartido.
 - `.omg/state/interviews/active.json` rastrea la entrevista actual para que resume/status sean deterministas sin mezclar hilos de requisitos.
 - Esto mantiene distinguibles y archivables varias pasadas de descubrimiento de requisitos en el mismo proyecto.
 
@@ -89,8 +94,8 @@ Nota: los comandos de instalación/actualización de extensiones se ejecutan en 
 | Modelo de entrega | Extensión oficial de Gemini CLI (`gemini-extension.json`) |
 | Bloques principales | `GEMINI.md`, `agents/`, `commands/`, `skills/`, `context/` |
 | Caso de uso principal | Tareas complejas que requieren bucles planificar -> ejecutar -> revisar |
-| Superficie de control | Plano de control slash-command-first `/oma:*` + 8 `$skills` de deep-work (incluye alias `oma-plan`) + delegación a sub-agentes |
-| Estrategia de modelo por defecto | Configurable con `/oma:model` (la división `balanced` usa por defecto los alias `pro` / `flash` / `flash-lite`, con overrides opcionales `auto` o `custom`) |
+| Superficie de control | Plano de control slash-command-first `/oma *` + 8 `$skills` de deep-work (incluye alias `oma-plan`) + delegación a sub-agentes |
+| Estrategia de modelo por defecto | `auto` → host; `balanced` → Flash; `quality` → Argon / Flash |
 
 ## Por qué OmA
 
@@ -116,9 +121,9 @@ flowchart TD
     AGENTS["agents/*.md (role prompts)"] --> ORCH
     SKILLS["skills/*/SKILL.md (retained deep-work skills)"] --> ORCH
 
-    ORCH --> I["/oma:intent"]
-    I --> W["/oma:workspace (+ audit when needed)"]
-    W --> A["/oma:team-assemble (optional approval gate)"]
+    ORCH --> I["/oma intent"]
+    I --> W["/oma workspace (+ audit when needed)"]
+    W --> A["/oma team-assemble (optional approval gate)"]
     A --> P["team-plan -> team-prd -> taskboard sync"]
     P --> E["team-exec"]
     E --> V["team-verify"]
@@ -195,7 +200,7 @@ Usa `team-assemble` cuando un roster fijo de ingeniería no sea suficiente.
 Flujo de ejemplo:
 
 ```text
-/oma:team-assemble "Compara 3 competidores y genera un informe ejecutivo"
+/oma team-assemble "Compara 3 competidores y genera un informe ejecutivo"
 -> propone: researcher x3 + consultant + editor + director
 -> pregunta: ¿Proceed with this team? (yes/no)
 -> tras aprobar: team-plan -> team-prd -> taskboard -> team-exec -> team-verify -> team-fix
@@ -203,36 +208,36 @@ Flujo de ejemplo:
 
 Nota de activación:
 - OmA no requiere una configuración separada de research-preview.
-- Si la extensión está cargada, `/oma:team-assemble` queda disponible de inmediato.
+- Si la extensión está cargada, `/oma team-assemble` queda disponible de inmediato.
 
 ## Control de Workspace y Taskboard
 
 Usa `workspace` y `taskboard` cuando el trabajo abarque múltiples raíces, múltiples lanes de implementación o ciclos largos de verify/fix.
 
-- `/oma:workspace` mantiene la raíz principal y lanes opcionales worktree/path en `.omg/state/workspace.json`.
-- `/oma:workspace audit` revisa limpieza de lanes, estado de confianza y preparación de handoff antes de ejecución paralela, review o automatización.
-- `/oma:taskboard` mantiene IDs estables, owners, dependencias, estados (`todo`, `ready`, `in-progress`, `blocked`, `done`, `verified`), notas de salud de lane y punteros de evidencia en `.omg/state/taskboard.md`.
+- `/oma workspace` mantiene la raíz principal y lanes opcionales worktree/path en `.omg/state/workspace.json`.
+- `/oma workspace audit` revisa limpieza de lanes, estado de confianza y preparación de handoff antes de ejecución paralela, review o automatización.
+- `/oma taskboard` mantiene IDs estables, owners, dependencias, estados (`todo`, `ready`, `in-progress`, `blocked`, `done`, `verified`), notas de salud de lane y punteros de evidencia en `.omg/state/taskboard.md`.
 - `team-plan` siembra IDs estables y supuestos por lane, `team-exec` toma el slice listo más pequeño con contexto explícito de lane/subagent, y `team-verify` solo marca tareas como verificadas cuando hay evidencia y estado de lane seguro.
 - `checkpoint` y `status` pueden referenciar estos archivos en lugar de re-reproducir todo el chat, mejorando estabilidad de caché y reduciendo gasto de tokens.
-- `/oma:recall "<consulta>"` hace recuperación state-first y búsqueda de fallback acotada para recuperar razonamiento previo sin re-reproducir transcripciones completas.
+- `/oma recall "<consulta>"` hace recuperación state-first y búsqueda de fallback acotada para recuperar razonamiento previo sin re-reproducir transcripciones completas.
 
 Flujo de ejemplo:
 
 ```text
-/oma:workspace set .
-/oma:workspace audit
-/oma:workspace add ../feature-auth oma-executor
-/oma:taskboard sync
-/oma:taskboard next
-/oma:recall "why was auth lane blocked" scope=state
+/oma workspace set .
+/oma workspace audit
+/oma workspace add ../feature-auth oma-executor
+/oma taskboard sync
+/oma taskboard next
+/oma recall "why was auth lane blocked" scope=state
 ```
 
 ## Higiene de Workspace y simetría de Hooks
 
 Usa estos controles cuando las sesiones largas empiezan a desviarse porque ya no está clara la propiedad de lanes, la ejecución delegada o el comportamiento de continuación de hooks.
 
-- `/oma:workspace audit` muestra worktrees compartidos sucios, rutas de review no confiables y lanes handoff-ready vs handoff-blocked.
-- `/oma:hooks` y `/oma:hooks-validate` ahora modelan resultados emparejados del ciclo de vida de agentes (`completed`, `blocked`, `stopped`) para que continuaciones bloqueadas reingresen una vez al safety lane antes de reanudar hooks downstream.
+- `/oma workspace audit` muestra worktrees compartidos sucios, rutas de review no confiables y lanes handoff-ready vs handoff-blocked.
+- `/oma hooks` y `/oma hooks-validate` ahora modelan resultados emparejados del ciclo de vida de agentes (`completed`, `blocked`, `stopped`) para que continuaciones bloqueadas reingresen una vez al safety lane antes de reanudar hooks downstream.
 - `team-exec`, `team`, `team-verify`, `stop` y `cancel` mantienen compacto y explícito el contexto lane/subagent delegado, expandiendo detalle solo cuando la ejecución se detiene temprano o encuentra un blocker.
 
 ## Enrutamiento de notificaciones
@@ -256,79 +261,29 @@ Usa `notify` cuando una sesión OmA de larga duración necesita señales explíc
 Flujo de ejemplo:
 
 ```text
-/oma:notify profile watchdog
+/oma notify profile watchdog
 -> enables: approval-needed, verify-failed, blocker-raised, checkpoint-saved, idle-watchdog, session-stop
 -> sugiere canales: terminal-bell + file por defecto
 -> persiste política: .omg/state/notify.json
 ```
 
-## Monitor automático de uso (AfterAgent Hook)
+## Lifecycle Hooks
 
-OmA ahora incluye un hook de extensión que imprime una línea compacta de uso de tokens después de cada turno de agente completado.
+Los hooks nativos observan los resultados y añaden un aviso limitado tras una denegación o fallos repetidos, sin forzar la continuación después de detenerse. Terminar una herramienta no equivale a superar una prueba. El evento oficial es `PostToolUse`, no `PostToolCalling`. Gemini usa un adaptador `AfterTool` separado y mantiene el filtro `AfterAgent`.
 
-- Hook entrypoint: `hooks/hooks.json` (`AfterAgent` -> `oma-quota-watch-after-agent`)
-- Script: `hooks/scripts/after-agent-usage.js`
-- Artefacto de estado: `.omg/state/quota-watch.json` (contador de turnos, snapshot de uso más reciente y fingerprint de transcripción procesada por última vez)
-- Override opcional de raíz de estado: `OMG_STATE_ROOT=<dir>` (ruta absoluta o relativa al `cwd` de la sesión)
-- Salida silenciosa opcional del hook: `OMG_HOOKS_QUIET=1`
-- Modo opcional de pista de cwd: `OMG_USAGE_CWD_MODE=off|leaf|parent-leaf|full` (por defecto: `parent-leaf`)
-- Perfil opcional de hook: `OMG_HOOK_PROFILE=minimal|balanced|strict` (`minimal` suprime la línea de uso pero conserva snapshots)
-- Desactivación opcional por hook: `OMG_DISABLED_HOOKS=usage` para desactivar solo el monitor de uso por entorno
-- Las escrituras de estado se omiten si el hook no recibe un `cwd` de sesión fiable, para evitar que distintos proyectos caigan en un único estado compartido por `process.cwd()`.
+`PostToolUse` → `PreInvocation` → `Stop`
 
-Muestra automáticamente:
+`OMG_TOOL_CYCLE=off` · `OMG_MODEL_ROUTING_TRACE=1`
 
-- totales de tokens del último turno (input/output/cached/total)
-- tokens acumulados de sesión
-- tokens acumulados para el modelo activo más reciente
+`.omg/state/sessions/hooks-<session-key>/model-router-last.json`
 
-Límite:
+## Model Policy
 
-- Este hook no puede leer por sí mismo la cuota restante autoritativa de la cuenta.
-- Para cuota/límites reales restantes, ejecuta `/stats model(~0.37.2) or /model(0.38.0+)`.
-- Si Gemini reintenta la misma transcripción, el hook la trata como ya entregada y suprime salidas duplicadas.
-
-Ejemplo (silenciar salida del hook pero mantener snapshots de estado):
-
-```bash
-export OMG_HOOKS_QUIET=1
-```
-
-Ejemplo (guardar estado del monitor fuera de `.omg/state`):
-
-```bash
-export OMG_STATE_ROOT=.omg/state-local
-```
-
-Desactivar solo este hook:
-
-```json
-{
-  "hooksConfig": {
-    "disabled": ["oma-quota-watch-after-agent"]
-  }
-}
-```
-
-## Hooks de visibilidad del modelo
-
-OmA también incluye un banner `BeforeModel` para que la política activa de modelo sea visible antes de que Gemini CLI envíe una solicitud.
-
-- Hook entrypoint: `hooks/hooks.json` (`BeforeModel` -> `oma-before-model-banner`)
-- Script: `hooks/scripts/before-model-banner.js`
-- Muestra: modelo runtime solicitado cuando esté disponible, estrategia de modelo OmA actual, alias de lanes y estado `general.previewFeatures` del workspace
-- Forma por defecto:
-
-```text
-[OMA][MODEL][NEXT] preview=on strategy=balanced requested=pro plan=pro exec=flash quick=flash-lite review=pro
-```
-
-- Desactiva solo este banner con `OMG_DISABLED_HOOKS=model-preview` (o `model-banner`)
-- `/oma:status` y los previews del HUD muestran ahora el mismo resumen de estrategia con más claridad
+Antigravity CLI es el entorno principal; Gemini CLI conserva una entrada de compatibilidad separada. Usa `/oma <command>` en modo nativo y `/oma:<command>` con Gemini. La política predeterminada `auto` conserva el modelo del entorno. `balanced` recomienda Flash para todas las tareas; `quality` recomienda Argon para planificación y revisión, y Flash para implementación. Los perfiles nativos no reemplazan `/model`. Comprueba el acceso de tu cuenta en el selector de modelos.
 
 ## Filtro de seguridad Learn-Signal (AfterAgent Hook)
 
-OmA también incluye un hook de learn-signal endurecido para seguridad, de modo que los nudges de `/oma:learn` solo aparezcan cuando una sesión tiene intención de implementación accionable.
+OmA también incluye un hook de learn-signal endurecido para seguridad, de modo que los nudges de `/oma learn` solo aparezcan cuando una sesión tiene intención de implementación accionable.
 
 - Hook entrypoint: `hooks/hooks.json` (`AfterAgent` -> `oma-learn-signal-after-agent`)
 - Script: `hooks/scripts/learn.js`
@@ -358,22 +313,11 @@ Desactivar solo este hook:
 }
 ```
 
-## Notas de compatibilidad con Gemini CLI (Revisado: 2026-04-16)
+## Compatibility · 2026-10-15
 
-- La política de alias de modelo se revisó contra la documentación de Gemini CLI el 2026-04-20:
-  - los alias actuales son `auto`, `pro`, `flash` y `flash-lite`
-  - `auto` y `pro` resuelven a Gemini 3 Pro respaldado por preview cuando las preview features están activas; si no, caen a Gemini 2.5 Pro estable
-  - OmA ahora recomienda alias en vez de fijar nombres preview concretos, para que el routing de Gemini CLI pueda avanzar sin release de OmA
-- Este workspace incluye `.gemini/settings.json` con `general.previewFeatures=true`.
-- Baseline mínima recomendada y validada: Gemini CLI `v0.37.0+`.
-- OmA trata ahora los subagentes de Gemini CLI como capacidad soportada de primera clase.
-- Resultado actual para subagentes post-GA: estado hook más seguro entre proyectos, hook turns delegados omitidos por defecto salvo opt-in, lock single-writer para estado compartido y borradores de sesiones paralelas bajo `.omg/state/sessions/[session-slug]/`.
-- OmA no requiere funciones preview-only para operar con subagentes.
-- Compatibilidad UX retenida desde `v0.34.0-preview.0+`: invocación directa vía `/skill-name` y personalización de footer vía `/footer`.
-- Usa `/oma-plan` (o `$oma-plan`) para la skill de planning de OmA sin colisionar con `/plan` nativo.
-- Si skills o alias slash parecen obsoletos tras una actualización, ejecuta `/skills reload` en builds recientes o reinicia la sesión.
-- Si tus wrappers aún pasan `--allowed-tools`, migra a perfiles `--policy`.
-- El modo `/plan` nativo y el flujo automatizado de OmA (`/oma:team-assemble` o `/oma:team`) o el flujo manual por etapas (`/oma:team-plan`, `/oma:team-prd`, etc.) pueden coexistir.
+Antigravity CLI es el entorno principal; Gemini CLI conserva una entrada de compatibilidad separada. Usa `/oma <command>` en modo nativo y `/oma:<command>` con Gemini. La política predeterminada `auto` conserva el modelo del entorno. `balanced` recomienda Flash para todas las tareas; `quality` recomienda Argon para planificación y revisión, y Flash para implementación. Los perfiles nativos no reemplazan `/model`. Comprueba el acceso de tu cuenta en el selector de modelos.
+
+Los hooks nativos observan los resultados y añaden un aviso limitado tras una denegación o fallos repetidos, sin forzar la continuación después de detenerse. Terminar una herramienta no equivale a superar una prueba. El evento oficial es `PostToolUse`, no `PostToolCalling`. Gemini usa un adaptador `AfterTool` separado y mantiene el filtro `AfterAgent`.
 
 ## Mapa de interfaz
 
@@ -381,46 +325,46 @@ Desactivar solo este hook:
 
 | Comando | Propósito | Momento típico |
 | --- | --- | --- |
-| `/oma:status` | Resumir progreso, riesgos y próximos pasos | Inicio/fin de una sesión de trabajo |
-| `/oma:doctor` | Ejecutar diagnóstico de preparación de extensión/equipo/workspace/hooks y plan de remediación | Antes de corridas autónomas largas o cuando la configuración parece rota |
-| `/oma:hud` | Inspeccionar o cambiar perfil visual de HUD (`normal`, `compact`, `hidden`) | Antes de sesiones largas o cuando cambia la densidad del terminal |
-| `/oma:hud-on` | Activar rápido el HUD en modo visual completo | Al volver a tableros completos de estado |
-| `/oma:hud-compact` | Activar rápido el HUD en modo compacto | Durante bucles densos de implementación |
-| `/oma:hud-off` | Activar rápido el HUD en modo oculto (secciones de estado planas) | Cuando los bloques visuales distraen |
-| `/oma:hooks` | Inspeccionar/cambiar perfil del pipeline de hooks y política de disparo | Antes de bucles autónomos o cuando deriva el comportamiento de hooks |
-| `/oma:hooks-init` | Bootstrap de configuración de hooks y scaffolding de contratos de plugin | Al iniciar proyecto o primera adopción de hooks |
-| `/oma:hooks-validate` | Validar orden de hooks, simetría de ciclo de vida, seguridad y límites de presupuesto | Antes de habilitar flujos de alta autonomía |
-| `/oma:hooks-test` | Dry-run de secuencia de eventos de hooks y estimación de eficiencia | Después de cambios de política o bloqueos repetidos en bucles |
-| `/oma:notify` | Configurar enrutamiento de notificaciones para aprobaciones, blockers, resultados de verify, checkpoints y alertas de inactividad | Antes de corridas desatendidas de `autopilot`/`loop` o cuando hay que ajustar ruido de alertas |
-| `/oma:intent` | Clasificar intención de la tarea y enrutar a la etapa/comando correctos | Antes de planificar o codificar cuando la intención del pedido es ambigua |
-| `/oma:rules` | Activar paquetes de guardrails condicionados por tarea | Antes de implementar trabajo sensible de migración/seguridad/rendimiento |
-| `/oma:memory` | Mantener índice MEMORY, archivos por tema y rule packs conscientes de rutas | Durante sesiones largas o cuando derivan decisiones/reglas |
-| `/oma:workspace` | Inspeccionar, auditar o establecer raíz principal, lanes worktree/path y límites de colisión | Antes de implementación paralela o trabajo multi-root |
-| `/oma:taskboard` | Mantener un ledger compacto de tareas con IDs estables y estado de cierre respaldado por verifier | Después de planificar y durante bucles largos de exec/verify |
-| `/oma:recall` | Recuperar decisiones/evidencia previas con búsqueda state-first y fallback acotado de historial | Cuando necesitas rationale previo rápidamente sin re-reproducir transcripciones completas |
-| `/oma:reasoning` | Configurar esfuerzo global de razonamiento y overrides por teammate (`low/medium/high/xhigh`) | Antes de bucles costosos de planning/review o cuando la profundidad depende del rol |
-| `/oma:deep-init` | Construir mapa profundo del proyecto y baseline de validación para sesiones largas | En kickoff del proyecto o al incorporarte a codebases desconocidos |
-| `/oma:team-assemble` | Componer dinámicamente un equipo ajustado a roles con gate de aprobación y mapa de razonamiento por lane | Antes de `/oma:team` en tareas cross-domain o no estándar |
-| `/oma:team` | Ejecutar pipeline completo por etapas (`team-assemble? -> plan -> prd -> taskboard -> exec -> verify -> fix`) | Entrega de feature compleja o refactor |
-| `/oma:team-plan` | Construir plan de ejecución consciente de dependencias | Antes de implementar |
-| `/oma:team-prd` | Fijar criterios de aceptación medibles y restricciones | Después de planificar, antes de codificar |
-| `/oma:team-exec` | Implementar un slice de entrega acotado con handoff explícito de lane/subagente | Bucle principal de implementación |
-| `/oma:team-verify` | Validar criterios de aceptación, regresiones y puerta de calidad anti-slop | Después de cada slice de ejecución |
-| `/oma:team-fix` | Corregir solo fallos verificados | Cuando falla la verificación |
-| `/oma:loop` | Forzar ciclos repetidos `exec -> verify -> fix` hasta done/blocker | Mitad/final de entrega cuando quedan hallazgos sin resolver |
-| `/oma:mode` | Inspeccionar o cambiar perfil operativo (`balanced/speed/deep/autopilot/ralph/ultrawork`) | Al iniciar sesión o cambiar de postura |
-| `/oma:model` | Inspeccionar o cambiar estrategia de selección de modelo (`balanced/auto/custom`) | Cuando quieras fijar una política de modelo por defecto, por ejemplo Gemini Auto para todas las tareas |
-| `/oma:approval` | Inspeccionar o cambiar postura de aprobación (`suggest/auto/full-auto`) | Antes de bucles autónomos de entrega o cambios de política |
-| `/oma:autopilot` | Ejecutar ciclos autónomos iterativos con checkpoints | Entrega autónoma compleja |
-| `/oma:ralph` | Forzar orquestación estricta con puertas de calidad | Tareas críticas de release |
-| `/oma:ultrawork` | Modo de throughput para tareas independientes por lotes | Backlogs grandes |
-| `/oma:consensus` | Converger en una opción entre múltiples diseños | Momentos de alta carga de decisión |
-| `/oma:launch` | Inicializar estado persistente de ciclo de vida para tareas largas | Inicio de sesiones largas |
-| `/oma:checkpoint` | Guardar checkpoint compacto y pista de reanudación con referencias a taskboard/workspace | Handoff a mitad de sesión |
-| `/oma:stop` | Detener de forma segura modo autónomo y preservar progreso | Pausa/interrupción |
-| `/oma:cancel` | Alias de cancel estilo harness que detiene de forma segura y devuelve handoff de reanudación | Al interrumpir flujo autónomo/de equipo |
-| `/oma:optimize` | Mejorar prompts/contexto para calidad y eficiencia de tokens | Después de una sesión ruidosa o costosa |
-| `/oma:cache` | Inspeccionar comportamiento de cache/contexto y anclaje de estado compacto | Tareas largas con alto uso de contexto |
+| `/oma status` | Resumir progreso, riesgos y próximos pasos | Inicio/fin de una sesión de trabajo |
+| `/oma doctor` | Ejecutar diagnóstico de preparación de extensión/equipo/workspace/hooks y plan de remediación | Antes de corridas autónomas largas o cuando la configuración parece rota |
+| `/oma hud` | Inspeccionar o cambiar perfil visual de HUD (`normal`, `compact`, `hidden`) | Antes de sesiones largas o cuando cambia la densidad del terminal |
+| `/oma hud-on` | Activar rápido el HUD en modo visual completo | Al volver a tableros completos de estado |
+| `/oma hud-compact` | Activar rápido el HUD en modo compacto | Durante bucles densos de implementación |
+| `/oma hud-off` | Activar rápido el HUD en modo oculto (secciones de estado planas) | Cuando los bloques visuales distraen |
+| `/oma hooks` | Inspeccionar/cambiar perfil del pipeline de hooks y política de disparo | Antes de bucles autónomos o cuando deriva el comportamiento de hooks |
+| `/oma hooks-init` | Bootstrap de configuración de hooks y scaffolding de contratos de plugin | Al iniciar proyecto o primera adopción de hooks |
+| `/oma hooks-validate` | Validar orden de hooks, simetría de ciclo de vida, seguridad y límites de presupuesto | Antes de habilitar flujos de alta autonomía |
+| `/oma hooks-test` | Dry-run de secuencia de eventos de hooks y estimación de eficiencia | Después de cambios de política o bloqueos repetidos en bucles |
+| `/oma notify` | Configurar enrutamiento de notificaciones para aprobaciones, blockers, resultados de verify, checkpoints y alertas de inactividad | Antes de corridas desatendidas de `autopilot`/`loop` o cuando hay que ajustar ruido de alertas |
+| `/oma intent` | Clasificar intención de la tarea y enrutar a la etapa/comando correctos | Antes de planificar o codificar cuando la intención del pedido es ambigua |
+| `/oma rules` | Activar paquetes de guardrails condicionados por tarea | Antes de implementar trabajo sensible de migración/seguridad/rendimiento |
+| `/oma memory` | Mantener índice MEMORY, archivos por tema y rule packs conscientes de rutas | Durante sesiones largas o cuando derivan decisiones/reglas |
+| `/oma workspace` | Inspeccionar, auditar o establecer raíz principal, lanes worktree/path y límites de colisión | Antes de implementación paralela o trabajo multi-root |
+| `/oma taskboard` | Mantener un ledger compacto de tareas con IDs estables y estado de cierre respaldado por verifier | Después de planificar y durante bucles largos de exec/verify |
+| `/oma recall` | Recuperar decisiones/evidencia previas con búsqueda state-first y fallback acotado de historial | Cuando necesitas rationale previo rápidamente sin re-reproducir transcripciones completas |
+| `/oma reasoning` | Configurar esfuerzo global de razonamiento y overrides por teammate (`low/medium/high`) | Antes de bucles costosos de planning/review o cuando la profundidad depende del rol |
+| `/oma deep-init` | Construir mapa profundo del proyecto y baseline de validación para sesiones largas | En kickoff del proyecto o al incorporarte a codebases desconocidos |
+| `/oma team-assemble` | Componer dinámicamente un equipo ajustado a roles con gate de aprobación y mapa de razonamiento por lane | Antes de `/oma team` en tareas cross-domain o no estándar |
+| `/oma team` | Ejecutar pipeline completo por etapas (`team-assemble? -> plan -> prd -> taskboard -> exec -> verify -> fix`) | Entrega de feature compleja o refactor |
+| `/oma team-plan` | Construir plan de ejecución consciente de dependencias | Antes de implementar |
+| `/oma team-prd` | Fijar criterios de aceptación medibles y restricciones | Después de planificar, antes de codificar |
+| `/oma team-exec` | Implementar un slice de entrega acotado con handoff explícito de lane/subagente | Bucle principal de implementación |
+| `/oma team-verify` | Validar criterios de aceptación, regresiones y puerta de calidad anti-slop | Después de cada slice de ejecución |
+| `/oma team-fix` | Corregir solo fallos verificados | Cuando falla la verificación |
+| `/oma loop` | Forzar ciclos repetidos `exec -> verify -> fix` hasta done/blocker | Mitad/final de entrega cuando quedan hallazgos sin resolver |
+| `/oma mode` | Inspeccionar o cambiar perfil operativo (`balanced/speed/deep/autopilot/ralph/ultrawork`) | Al iniciar sesión o cambiar de postura |
+| `/oma model` | Inspeccionar o cambiar estrategia de selección de modelo (`auto/balanced/quality/custom`) | Cuando quieras fijar una política de modelo por defecto, por ejemplo Gemini Auto para todas las tareas |
+| `/oma approval` | Inspeccionar o cambiar postura de aprobación (`suggest/auto/full-auto`) | Antes de bucles autónomos de entrega o cambios de política |
+| `/oma autopilot` | Ejecutar ciclos autónomos iterativos con checkpoints | Entrega autónoma compleja |
+| `/oma ralph` | Forzar orquestación estricta con puertas de calidad | Tareas críticas de release |
+| `/oma ultrawork` | Modo de throughput para tareas independientes por lotes | Backlogs grandes |
+| `/oma consensus` | Converger en una opción entre múltiples diseños | Momentos de alta carga de decisión |
+| `/oma launch` | Inicializar estado persistente de ciclo de vida para tareas largas | Inicio de sesiones largas |
+| `/oma checkpoint` | Guardar checkpoint compacto y pista de reanudación con referencias a taskboard/workspace | Handoff a mitad de sesión |
+| `/oma stop` | Detener de forma segura modo autónomo y preservar progreso | Pausa/interrupción |
+| `/oma cancel` | Alias de cancel estilo harness que detiene de forma segura y devuelve handoff de reanudación | Al interrumpir flujo autónomo/de equipo |
+| `/oma optimize` | Mejorar prompts/contexto para calidad y eficiencia de tokens | Después de una sesión ruidosa o costosa |
+| `/oma cache` | Inspeccionar comportamiento de cache/contexto y anclaje de estado compacto | Tareas largas con alto uso de contexto |
 
 ### Skills
 
@@ -496,22 +440,9 @@ oh-my-antigravity/
 
 ## Solución de problemas
 
-| Síntoma | Causa probable | Acción |
-| --- | --- | --- |
-| `settings.filter is not a function` durante instalación | Runtime de Gemini CLI desactualizado o metadata cacheada obsoleta | Actualiza Gemini CLI, desinstala la extensión y reinstala desde la URL del repositorio |
-| No se encuentra `/oma:*` | La extensión no se cargó en la sesión actual | Ejecuta `gemini extensions list` y reinicia la sesión de Gemini CLI |
-| `/plan` abre el modo nativo cuando querías la skill de planificación OmA | Colisión de nombre entre `/plan` nativo y slash invocation de skill | Usa `/oma-plan` (o `$oma-plan`) para la skill OmA, o `/oma:team-assemble` o `/oma:team-plan` para planificación por etapas |
-| Una skill no se dispara | Solo se distribuyen retained deep-work skills, o metadata de extensión obsoleta | Revisa lista de retained skills en README y recarga extensión/sesión |
-| Team assembly sigue proponiendo pero no ejecuta | Falta token de aprobación en la solicitud | Responde con aprobación explícita (`yes`, `approve`, `go`, o `run`) |
-| La ejecución paralela colisiona o vuelve a planificar los mismos archivos | Los lanes de workspace no son explícitos | Ejecuta `/oma:workspace status` o fija ownership de lane/path con `/oma:workspace` |
-| Review o automatización está por ejecutarse sobre lane sucio/no confiable | Higiene de worktree compartido no clara | Ejecuta `/oma:workspace audit`, aísla el lane si hace falta y luego continúa verify/review |
-| El estado done deriva después de bucles largos | No hay fuente compacta de verdad o falta signoff del verifier | Ejecuta `/oma:taskboard sync` y vuelve a correr `/oma:team-verify` para cerrar IDs pendientes |
-| No recuerdas por qué se tomó una decisión antes | El rationale previo quedó enterrado en historial largo | Ejecuta `/oma:recall "<keyword>" scope=state` y amplía a `scope=recent` solo si hace falta |
-| Hooks parecen perder eventos terminales o dispararse dos veces tras continuation | Simetría de ciclo de vida de hooks no explícita | Ejecuta `/oma:hooks-validate` y corrige policy de lifecycle antes de reactivar bucles autónomos |
-| La salida es verbosa, genérica o repetitiva | Postura de razonamiento/gate demasiado débil para el artefacto objetivo | Sube esfuerzo en `/oma:reasoning` (opcionalmente con overrides por teammate) y vuelve a ejecutar `/oma:team-verify` |
-| Scripts de lanzamiento existentes usan `--allowed-tools` | Flag deprecado en Gemini CLI nuevo | Reemplaza por perfiles de policy con `--policy` y vuelve a ejecutar |
-| Flujo autónomo confirma demasiado (o demasiado poco) | Postura de aprobación no alineada con riesgo de tarea | Ejecuta `/oma:approval suggest|auto|full-auto` y vuelve a revisar guardrails |
-| No está clara la salud de setup antes de una corrida larga | Se acumuló deriva de estado/configuración | Ejecuta `/oma:doctor` (o `/oma:doctor team`) y aplica lista de remediación |
+`agy plugin list --json` · `/agents` · `/skills` · `/hooks`
+
+[Installation and diagnostics](guide/installation.md)
 
 ## Notas de migración
 

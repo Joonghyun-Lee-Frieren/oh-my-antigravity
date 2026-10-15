@@ -1,51 +1,28 @@
-description = "Inspect or set OmA model-selection strategy (balanced, auto, custom) for default task routing."
+description = "Inspect or set auto, balanced, quality or custom model policy."
 prompt = """
-Run OmA model-strategy manager.
+Input: {{args}}
+Read config/models.json and .omg/state/model.json first. Default is auto, preserving
+host selection. Balanced recommends Gemini 3.8 Flash in all four lanes; quality
+recommends Gemini 4 Argon for planning/review_verify and Flash for execution/quick_edit.
+Custom accepts validated current/future IDs; quick normalizes to quick_edit and
+missing lanes use balanced. A lane value auto means no override, not an API model ID.
+Removed preview presets and unavailable configured IDs fail open to the host.
+An available_models array is an operator constraint, never live entitlement discovery.
 
-Input:
-$ARGUMENTS
+With no args, show current policy without writing. For updates, check session-lock.json
+and preserve unrelated fields. Non-owning sessions produce session-local drafts.
+Fields: strategy, lane_models, lane_effort, trace, updated_at, source.
+trace on/off changes only the trace flag. Traces are session-local under
+.omg/state/sessions/hooks-<session-key>/model-router-last.json; match identity/time.
 
-Protocol:
-1. Parse requested strategy and optional lane overrides.
-   - examples:
-     - `auto`
-     - `balanced`
-     - `custom planning=gemini-3.1-pro-preview execution=gemini-3-flash-preview quick=gemini-3.1-flash-lite-preview review_verify=gemini-3.1-pro-preview`
-2. Supported strategies:
-   - `balanced` (default): role-aware lane split (`gemini-3.1-pro-preview` for planning/review, `gemini-3-flash-preview` for execution, `gemini-3.1-flash-lite-preview` for quick low-risk edits)
-   - `auto`: defer lane model selection to Gemini runtime auto-model policy across all lanes
-   - `custom`: operator-provided lane map with concrete model names or Gemini CLI aliases
-3. If no strategy is provided, show current policy from `.omg/state/model.json` when available.
-   - Also show `.omg/state/model-router-last.json` when it exists so operators can see the last selected lane, model, and match reason.
-   - If the operator passes `trace on`, explain that `OMG_MODEL_ROUTING_TRACE=1` enables the lightweight last-decision trace without reintroducing a per-request banner.
-4. Produce an effective lane map for:
-   - planning
-   - execution
-   - quick_edit
-   - review_verify
-5. If filesystem tools are available, write/update `.omg/state/model.json`.
-6. Clarify boundary:
-   - this command sets OmA orchestration defaults
-   - runtime model forcing still depends on Gemini CLI runtime controls (for example `/model` or launch-time `--model` when supported)
-
-Suggested `model.json` shape:
-{
-  "strategy": "balanced|auto|custom",
-  "lane_models": {
-    "planning": "gemini-3.1-pro-preview|auto|<custom>",
-    "execution": "gemini-3-flash-preview|auto|<custom>",
-    "quick_edit": "gemini-3.1-flash-lite-preview|auto|<custom>",
-    "review_verify": "gemini-3.1-pro-preview|auto|<custom>"
-  },
-  "updated_at": "<ISO-8601>",
-  "source": "oma:model",
-  "diagnostics": {
-    "trace_env": "OMG_MODEL_ROUTING_TRACE=1",
-    "last_trace_file": ".omg/state/model-router-last.json"
-  }
-}
-
-Response:
-- Keep it concise and operator-facing.
-- Include `Model Strategy`, `Effective Allocation`, `Runtime Notes`, and `Next Command`.
+Runtime boundary:
+- Native: use /model, or agy --model gemini-3.8-flash --effort medium / agy --model
+  gemini-4-argon --effort high. Check account access. Profiles are recommendations;
+  native hooks cannot rewrite modelName. Report applied=false honestly.
+- Gemini compatibility: BeforeModel applies explicitly selected profiles by patching
+  only llm_request.model. Use auto to preserve an explicit host model.
+- Thinking levels: low, medium, high. Never send minimal/xhigh or combine legacy
+  thinking_budget with thinking_level. Effort recommendations do not mutate SDK config.
+- Preserve SDK function-call IDs, thought signatures and tool-response structures.
+Return Strategy, Effective Allocation, Runtime Boundary and one Next Command.
 """

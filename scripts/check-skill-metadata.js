@@ -21,7 +21,7 @@ function parseFrontmatter(content) {
     if (!line || line.startsWith("#")) {
       continue;
     }
-    const kv = line.match(/^([A-Za-z0-9_-]+)\s*=\s*"(.*)"$/);
+    const kv = line.match(/^([A-Za-z0-9_-]+)\s*:\s*"(.*)"$/);
     if (!kv) {
       return { error: `invalid frontmatter line: ${rawLine}` };
     }

@@ -3,7 +3,7 @@ prompt = """
 Run OmA `consensus` mode.
 
 Decision topic:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Delegate criteria definition to `oma-consensus`.

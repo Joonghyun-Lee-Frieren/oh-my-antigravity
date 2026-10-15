@@ -2,8 +2,8 @@
 # REFACTORED: Integrated interactive selective save functionality into the learn skill.
 # The extraction process now prioritizes common reusable patterns over simple chat logs.
 # Default behavior is to save all identified patterns, allowing users to opt into selective saving.
-name = "learn"
-description = "Automatically extract reusable patterns from sessions and save them as learned skills/rules for future use."
+name: "learn"
+description: "Automatically extract reusable patterns from sessions and save them as learned skills/rules for future use."
 ---
 
 # Learn Skill

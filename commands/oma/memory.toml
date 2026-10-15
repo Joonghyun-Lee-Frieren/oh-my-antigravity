@@ -3,7 +3,7 @@ prompt = """
 Run OmA memory management workflow.
 
 User context:
-$ARGUMENTS
+{{args}}
 
 Objectives:
 1. Keep `MEMORY.md` as a short index (high-signal only).

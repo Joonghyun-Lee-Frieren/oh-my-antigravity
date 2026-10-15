@@ -26,52 +26,57 @@ OmA は Gemini CLI を単発セッションのアシスタントから、役割�
   <img src="../resources/image/oma_logo_02.png" alt="OmA Logo" width="420" />
 </p>
 
-## クイックスタート
+## Antigravity ネイティブ対応 · v0.10.0
 
-### インストール
+Antigravity CLI を主要な実行環境とし、Gemini CLI の互換エントリーも維持します。ネイティブでは `/oma <command>`、Gemini では `/oma:<command>` を使用します。既定の `auto` はホストのモデル選択を保持します。`balanced` は全作業に Flash、`quality` は計画・レビューに Argon、実装に Flash を推奨します。ネイティブ設定は `/model` を上書きしません。アカウントの利用権限はホストで確認してください。
 
-公式の Gemini Extensions コマンドで GitHub からインストールします。
+```bash
+agy plugin install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
+agy plugin list --json
+```
+
+```text
+/oma status
+/oma model auto
+/oma goal implement the approved change and verify acceptance criteria
+```
+
+```bash
+agy --model gemini-3.8-flash --effort medium
+agy --model gemini-4-argon --effort high
+```
+
+Gemini CLI:
 
 ```bash
 gemini extensions install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
 ```
 
-インタラクティブモードで確認:
-
-```text
-/extensions list
-```
-
-ターミナルモードで確認:
-
-```bash
-gemini extensions list
-```
-
-スモークテスト:
-
 ```text
 /oma:status
+/oma:model auto
 ```
 
-注意: extension の install/update はインタラクティブな slash-command モードではなく、ターミナルモード (`gemini extensions ...`) で実行されます。
+Node.js 22+ · Antigravity CLI 1.3.5 · 2026-10-15
 
-## v0.9.0 の新機能
+[Installation](guide/installation.md) · [Models](guide/models.md) · [Hooks](guide/hook-engineering.md)
 
-- Project and extension package name changed from `oh-my-gemini-cli` to `oh-my-antigravity`.
-- GitHub, GitHub Pages, extension gallery, install/uninstall commands, badges, and Star History links were updated for the new repository name.
-- Extension/package metadata was bumped to `0.9.0`, with README, Korean README, landing page, installation guide, localized docs, and history refreshed.
+## v0.10.0
+
+Antigravity CLI を主要な実行環境とし、Gemini CLI の互換エントリーも維持します。ネイティブでは `/oma <command>`、Gemini では `/oma:<command>` を使用します。既定の `auto` はホストのモデル選択を保持します。`balanced` は全作業に Flash、`quality` は計画・レビューに Argon、実装に Flash を推奨します。ネイティブ設定は `/model` を上書きしません。アカウントの利用権限はホストで確認してください。
+
+ネイティブフックはツールの結果を観測し、権限拒否や反復失敗の後に必要な通知を一度だけ挿入します。停止後の継続は強制しません。ツール完了はテスト合格ではありません。正式なイベント名は `PostToolCalling` ではなく `PostToolUse` です。Gemini は別の `AfterTool` と既存の `AfterAgent` フィルターを使用します。
 
 ## Extension 境界とアップグレード安全性
 
 - OmA の install/update は `gemini extensions ...` で行い、コピーされた command/skill フォルダを主 runtime path として扱わないでください。
 - event ごとに OmA hook registration の authoritative path は 1 つにしてください。extension 管理 hook と手動重複を混ぜると AfterAgent 出力の重複や古い挙動につながります。
-- update 後に OmA が古く見える場合は、出荷ファイルを編集する前に `gemini extensions list` を確認し、extension を refresh または reinstall してください。
-- 長時間または multi-lane の作業では、review、automation、`team-exec` の前に `/oma:workspace audit` を既定の preflight として扱ってください。
+- update 後に OmA が古く見える場合は、出荷ファイルを編集する前に `agy plugin list --json` を確認し、extension を refresh または reinstall してください。
+- 長時間または multi-lane の作業では、review、automation、`team-exec` の前に `/oma workspace audit` を既定の preflight として扱ってください。
 
 ## Interview Session Storage
 
-- `/oma:interview` の session state は、共有 interview file ではなく `.omg/state/interviews/[slug]/` 配下に置く想定です。
+- `/oma interview` の session state は、共有 interview file ではなく `.omg/state/interviews/[slug]/` 配下に置く想定です。
 - `.omg/state/interviews/active.json` が現在の interview を追跡し、複数の要件スレッドを混ぜずに resume/status を決定的にします。
 - これにより、同一プロジェクト内の複数の requirements discovery pass を区別しやすく、アーカイブしやすくします。
 
@@ -89,8 +94,8 @@ gemini extensions list
 | 提供形態 | 公式 Gemini CLI extension (`gemini-extension.json`) |
 | 中核構成 | `GEMINI.md`, `agents/`, `commands/`, `skills/`, `context/` |
 | 主な用途 | plan -> execute -> review ループを必要とする複雑実装タスク |
-| 操作面 | slash-command-first の `/oma:*` 制御面 + 8 つの deep-work `$skills` ( `oma-plan` エイリアス含む ) + sub-agent 委譲 |
-| 既定モデル戦略 | `/oma:model` で設定可能 (`balanced` lane split は既定で `pro` / `flash` / `flash-lite` alias を使用し、必要に応じて `auto` または `custom` で上書き可能) |
+| 操作面 | slash-command-first の `/oma *` 制御面 + 8 つの deep-work `$skills` ( `oma-plan` エイリアス含む ) + sub-agent 委譲 |
+| 既定モデル戦略 | `auto` → host; `balanced` → Flash; `quality` → Argon / Flash |
 
 ## なぜ OmA か
 
@@ -116,9 +121,9 @@ flowchart TD
     AGENTS["agents/*.md (role prompts)"] --> ORCH
     SKILLS["skills/*/SKILL.md (retained deep-work skills)"] --> ORCH
 
-    ORCH --> I["/oma:intent"]
-    I --> W["/oma:workspace (+ audit when needed)"]
-    W --> A["/oma:team-assemble (optional approval gate)"]
+    ORCH --> I["/oma intent"]
+    I --> W["/oma workspace (+ audit when needed)"]
+    W --> A["/oma team-assemble (optional approval gate)"]
     A --> P["team-plan -> team-prd -> taskboard sync"]
     P --> E["team-exec"]
     E --> V["team-verify"]
@@ -195,7 +200,7 @@ sequenceDiagram
 例:
 
 ```text
-/oma:team-assemble "Compare 3 competitors and produce an exec report"
+/oma team-assemble "Compare 3 competitors and produce an exec report"
 -> proposes: researcher x3 + consultant + editor + director
 -> asks: Proceed with this team? (yes/no)
 -> after approval: team-plan -> team-prd -> taskboard -> team-exec -> team-verify -> team-fix
@@ -203,36 +208,36 @@ sequenceDiagram
 
 有効化メモ:
 - OmA では research-preview の個別設定は不要です。
-- extension が読み込まれていれば `/oma:team-assemble` は即時利用できます。
+- extension が読み込まれていれば `/oma team-assemble` は即時利用できます。
 
 ## Workspace と Taskboard の制御
 
 複数 root・複数 implementation lane・長い verify/fix ループをまたぐ作業では `workspace` と `taskboard` を使います。
 
-- `/oma:workspace` は primary root と optional worktree/path lane を `.omg/state/workspace.json` で管理。
-- `/oma:workspace audit` は並列実行/レビュー/自動化前に lane cleanliness、trust、handoff readiness を確認。
-- `/oma:taskboard` は stable task ID、owner、依存関係、status (`todo`, `ready`, `in-progress`, `blocked`, `done`, `verified`)、lane health notes、evidence pointer を `.omg/state/taskboard.md` に保持。
+- `/oma workspace` は primary root と optional worktree/path lane を `.omg/state/workspace.json` で管理。
+- `/oma workspace audit` は並列実行/レビュー/自動化前に lane cleanliness、trust、handoff readiness を確認。
+- `/oma taskboard` は stable task ID、owner、依存関係、status (`todo`, `ready`, `in-progress`, `blocked`, `done`, `verified`)、lane health notes、evidence pointer を `.omg/state/taskboard.md` に保持。
 - `team-plan` が task ID と lane 仮定を seed し、`team-exec` が lane/subagent context 付きで最小 ready slice を取り、`team-verify` が evidence + safe lane state の時だけ `verified` を付与。
 - `checkpoint` と `status` は会話全体を再生せずにこれら state file を参照でき、cache 安定性向上と token 削減に寄与。
-- `/oma:recall "<query>"` は state-first recall + bounded fallback search で、全 transcript を再読せず過去 rationale を復元。
+- `/oma recall "<query>"` は state-first recall + bounded fallback search で、全 transcript を再読せず過去 rationale を復元。
 
 例:
 
 ```text
-/oma:workspace set .
-/oma:workspace audit
-/oma:workspace add ../feature-auth oma-executor
-/oma:taskboard sync
-/oma:taskboard next
-/oma:recall "why was auth lane blocked" scope=state
+/oma workspace set .
+/oma workspace audit
+/oma workspace add ../feature-auth oma-executor
+/oma taskboard sync
+/oma taskboard next
+/oma recall "why was auth lane blocked" scope=state
 ```
 
 ## Workspace 衛生と Hook 対称性
 
 長時間セッションで lane ownership、delegate 実行、hook continuation の挙動が不明瞭になり始めたときに使います。
 
-- `/oma:workspace audit` は dirty な共有 worktree、untrusted review path、handoff-ready/handoff-blocked lane を可視化。
-- `/oma:hooks` と `/oma:hooks-validate` は agent lifecycle 結果 (`completed`, `blocked`, `stopped`) をペアで扱い、blocked continuation を downstream 再開前に 1 回 safety lane へ戻す。
+- `/oma workspace audit` は dirty な共有 worktree、untrusted review path、handoff-ready/handoff-blocked lane を可視化。
+- `/oma hooks` と `/oma hooks-validate` は agent lifecycle 結果 (`completed`, `blocked`, `stopped`) をペアで扱い、blocked continuation を downstream 再開前に 1 回 safety lane へ戻す。
 - `team-exec`, `team`, `team-verify`, `stop`, `cancel` は delegated lane/subagent context を compact かつ明示的に保持し、早期停止や blocker 発生時のみ詳細を展開。
 
 ## 通知ルーティング
@@ -256,79 +261,29 @@ sequenceDiagram
 例:
 
 ```text
-/oma:notify profile watchdog
+/oma notify profile watchdog
 -> enables: approval-needed, verify-failed, blocker-raised, checkpoint-saved, idle-watchdog, session-stop
 -> suggests channels: terminal-bell + file by default
 -> persists policy: .omg/state/notify.json
 ```
 
-## 自動使用量モニタ (AfterAgent Hook)
+## Lifecycle Hooks
 
-OmA には、agent turn 完了ごとに compact な token 使用量行を出力する extension hook が同梱されています。
+ネイティブフックはツールの結果を観測し、権限拒否や反復失敗の後に必要な通知を一度だけ挿入します。停止後の継続は強制しません。ツール完了はテスト合格ではありません。正式なイベント名は `PostToolCalling` ではなく `PostToolUse` です。Gemini は別の `AfterTool` と既存の `AfterAgent` フィルターを使用します。
 
-- Hook entrypoint: `hooks/hooks.json` (`AfterAgent` -> `oma-quota-watch-after-agent`)
-- Script: `hooks/scripts/after-agent-usage.js`
-- State artifact: `.omg/state/quota-watch.json` (turn counter、latest usage snapshot、last processed transcript fingerprint)
-- Optional state root override: `OMG_STATE_ROOT=<dir>` (絶対パスまたは session `cwd` 相対)
-- Optional quiet output: `OMG_HOOKS_QUIET=1`
-- Optional cwd hint mode: `OMG_USAGE_CWD_MODE=off|leaf|parent-leaf|full` (既定: `parent-leaf`)
-- Optional hook profile: `OMG_HOOK_PROFILE=minimal|balanced|strict` (`minimal` は usage line 出力を抑止し state snapshot は維持)
-- Optional per-hook disable: `OMG_DISABLED_HOOKS=usage` で usage monitor のみ env から無効化
-- hook が信頼できる session `cwd` を受け取れない場合、project 間で共有 `process.cwd()` state file に落ちないよう state write は skip されます。
+`PostToolUse` → `PreInvocation` → `Stop`
 
-自動表示内容:
+`OMG_TOOL_CYCLE=off` · `OMG_MODEL_ROUTING_TRACE=1`
 
-- 直近 turn の token 合計 (input/output/cached/total)
-- session 累積 token
-- 直近 active model の累積 token
+`.omg/state/sessions/hooks-<session-key>/model-router-last.json`
 
-境界:
+## Model Policy
 
-- この hook 単体では、アカウントの authoritative な残 quota を取得できません。
-- 実際の残 quota/limit は `/stats model(~0.37.2) or /model(0.38.0+)` で確認してください。
-- Gemini が同一 transcript snapshot を再試行した場合、hook は既出とみなして重複出力を抑止します。
-
-例 (hook 出力のみ抑止し state snapshot は維持):
-
-```bash
-export OMG_HOOKS_QUIET=1
-```
-
-例 (監視 state を既定 `.omg/state` 以外へ保存):
-
-```bash
-export OMG_STATE_ROOT=.omg/state-local
-```
-
-この hook のみ無効化:
-
-```json
-{
-  "hooksConfig": {
-    "disabled": ["oma-quota-watch-after-agent"]
-  }
-}
-```
-
-## モデル可視性 Hooks
-
-OmA は、Gemini CLI が model request を送信する前に active model policy を表示する `BeforeModel` banner も同梱します。
-
-- Hook entrypoint: `hooks/hooks.json` (`BeforeModel` -> `oma-before-model-banner`)
-- Script: `hooks/scripts/before-model-banner.js`
-- 表示内容: 利用可能な requested runtime model、現在の OmA model strategy、lane alias、workspace の `general.previewFeatures` status
-- 既定 banner:
-
-```text
-[OMA][MODEL][NEXT] preview=on strategy=balanced requested=pro plan=pro exec=flash quick=flash-lite review=pro
-```
-
-- この banner だけを無効化するには `OMG_DISABLED_HOOKS=model-preview` (または `model-banner`)
-- `/oma:status` と HUD preview も同じ model strategy summary をより明確に表示します
+Antigravity CLI を主要な実行環境とし、Gemini CLI の互換エントリーも維持します。ネイティブでは `/oma <command>`、Gemini では `/oma:<command>` を使用します。既定の `auto` はホストのモデル選択を保持します。`balanced` は全作業に Flash、`quality` は計画・レビューに Argon、実装に Flash を推奨します。ネイティブ設定は `/model` を上書きしません。アカウントの利用権限はホストで確認してください。
 
 ## Learn-Signal 安全フィルタ (AfterAgent Hook)
 
-OmA は、安全強化された learn-signal hook も同梱し、`/oma:learn` nudge が実行意図のあるセッションでのみ表示されるようにしています。
+OmA は、安全強化された learn-signal hook も同梱し、`/oma learn` nudge が実行意図のあるセッションでのみ表示されるようにしています。
 
 - Hook entrypoint: `hooks/hooks.json` (`AfterAgent` -> `oma-learn-signal-after-agent`)
 - Script: `hooks/scripts/learn.js`
@@ -358,22 +313,11 @@ OmA は、安全強化された learn-signal hook も同梱し、`/oma:learn` nu
 }
 ```
 
-## Gemini CLI 互換性ノート (確認日: 2026-04-16)
+## Compatibility · 2026-10-15
 
-- model alias policy は 2026-04-20 に Gemini CLI docs と照合済みです。
-  - 現在の Gemini CLI alias は `auto`, `pro`, `flash`, `flash-lite`
-  - preview features 有効時、`auto` と `pro` は preview-backed Gemini 3 Pro に解決され、無効時は stable Gemini 2.5 Pro に fallback
-  - OmA は concrete preview model name の固定ではなく alias を推奨し、今後の Gemini CLI alias routing 更新を OmA release なしで取り込めるようにします
-- この workspace は `.gemini/settings.json` で `general.previewFeatures=true` を既定化しています。
-- 推奨最小 validated baseline: Gemini CLI `v0.37.0+`。
-- OmA は Gemini CLI subagents を first-class supported capability として扱います。
-- post-GA subagent 利用に対する現行結果: cross-project hook state は unsafe shared fallback を避け、delegated subagent hook turn は opt-in なしでは skip、shared workflow state は single-writer lock、非所有並列 session は `.omg/state/sessions/[session-slug]/` に draft を書きます。
-- OmA は subagent operation に preview-only 機能を必要としません。
-- `v0.34.0-preview.0+` からの UX 互換として `/skill-name` 直接呼び出しと `/footer` customization を保持します。
-- native `/plan` と衝突させず OmA planning skill を使うには `/oma-plan` (または `$oma-plan`) を使用してください。
-- runtime update 後に skill や slash alias が stale に見える場合、新しい build では `/skills reload`、古い build では session restart を行ってください。
-- wrapper script がまだ `--allowed-tools` を使う場合は `--policy` profile へ移行してください。
-- native `/plan` と OmA の自動化フロー (`/oma:team-assemble` または `/oma:team`)、または手動ステージフロー (`/oma:team-plan`, `/oma:team-prd` 등) は共存可能です。
+Antigravity CLI を主要な実行環境とし、Gemini CLI の互換エントリーも維持します。ネイティブでは `/oma <command>`、Gemini では `/oma:<command>` を使用します。既定の `auto` はホストのモデル選択を保持します。`balanced` は全作業に Flash、`quality` は計画・レビューに Argon、実装に Flash を推奨します。ネイティブ設定は `/model` を上書きしません。アカウントの利用権限はホストで確認してください。
+
+ネイティブフックはツールの結果を観測し、権限拒否や反復失敗の後に必要な通知を一度だけ挿入します。停止後の継続は強制しません。ツール完了はテスト合格ではありません。正式なイベント名は `PostToolCalling` ではなく `PostToolUse` です。Gemini は別の `AfterTool` と既存の `AfterAgent` フィルターを使用します。
 
 ## インターフェースマップ
 
@@ -381,46 +325,46 @@ OmA は、安全強化された learn-signal hook も同梱し、`/oma:learn` nu
 
 | コマンド | 目的 | 典型タイミング |
 | --- | --- | --- |
-| `/oma:status` | 進捗、リスク、次アクションを要約 | 作業セッションの開始/終了 |
-| `/oma:doctor` | extension/team/workspace/hook readiness 診断と remediation plan を実行 | 長時間自律実行前、または設定異常時 |
-| `/oma:hud` | HUD 表示 profile (`normal`, `compact`, `hidden`) の確認/切替 | 長時間セッション前、または端末密度変更時 |
-| `/oma:hud-on` | HUD を full visual mode へ即時切替 | 詳細 status board に戻るとき |
-| `/oma:hud-compact` | HUD を compact mode へ即時切替 | 密度の高い実装ループ中 |
-| `/oma:hud-off` | HUD を hidden mode へ即時切替 (プレーン status section) | 視覚ブロックがノイズになるとき |
-| `/oma:hooks` | hook pipeline profile と trigger policy を確認/切替 | 自律ループ前、または hook 挙動が drift したとき |
-| `/oma:hooks-init` | hook config と plugin contract scaffolding を初期化 | プロジェクト kickoff、または初回 hook 導入時 |
-| `/oma:hooks-validate` | hook 順序、lifecycle 対称性、安全性、予算制約を検証 | 高自律ワークフロー有効化前 |
-| `/oma:hooks-test` | hook event sequence の dry-run と効率見積り | policy 変更後、またはループ停滞再発時 |
-| `/oma:notify` | approval、blocker、verify 結果、checkpoint、idle watchdog の通知経路を設定 | 無人 `autopilot`/`loop` 実行前、または通知ノイズ調整時 |
-| `/oma:intent` | タスク意図を分類し正しい stage/command へルーティング | 要求意図が曖昧な状態で planning/coding に入る前 |
-| `/oma:rules` | タスク条件に応じた guardrail rule pack を有効化 | migration/security/performance 影響が大きい実装前 |
-| `/oma:memory` | MEMORY index、topic file、path-aware rule pack を維持 | 長時間セッション中、または決定/ルールが drift したとき |
-| `/oma:workspace` | primary root、worktree/path lane、collision boundary の確認/監査/設定 | 並列実装前、または multi-root 作業前 |
-| `/oma:taskboard` | stable ID と verifier-backed completion state を持つコンパクト task ledger を維持 | planning 後から長期 exec/verify ループ全体 |
-| `/oma:recall` | state-first 検索 + bounded history fallback で過去決定/証拠を復元 | transcript 全再生なしで根拠を素早く取り出したいとき |
-| `/oma:reasoning` | global reasoning effort と teammate override (`low/medium/high/xhigh`) を設定 | 高コストな planning/review ループ前、または役割別深さ調整時 |
-| `/oma:deep-init` | 長期セッション向けに deep project map と validation baseline を構築 | プロジェクト kickoff、または未知 codebase のオンボーディング時 |
-| `/oma:team-assemble` | approval gate と lane 別 reasoning map を伴う動的チーム編成 | cross-domain / 非定型タスクで `/oma:team` の前 |
-| `/oma:team` | stage pipeline 全体を実行 (`team-assemble? -> plan -> prd -> taskboard -> exec -> verify -> fix`) | 複雑な機能実装・リファクタ納品 |
-| `/oma:team-plan` | 依存関係を考慮した実行計画を作成 | 実装前 |
-| `/oma:team-prd` | 計測可能な受け入れ条件と制約を固定 | planning 後、coding 前 |
-| `/oma:team-exec` | lane/subagent handoff を明示してスコープ済み slice を実装 | メイン実装ループ |
-| `/oma:team-verify` | 受け入れ条件、回帰、anti-slop 品質ゲートを検証 | 各実装 slice の後 |
-| `/oma:team-fix` | 検証済み failure のみを修正 | verify 失敗時 |
-| `/oma:loop` | `exec -> verify -> fix` を done/blocker まで繰り返し強制 | 未解決 findings が残る中盤〜終盤 |
-| `/oma:mode` | operating profile (`balanced/speed/deep/autopilot/ralph/ultrawork`) を確認/切替 | セッション開始時、または姿勢変更時 |
-| `/oma:model` | model-selection strategy (`balanced/auto/custom`) を確認/切替 | すべてのタスクで Gemini Auto を使うなど、既定 model policy を設定したいとき |
-| `/oma:approval` | approval posture (`suggest/auto/full-auto`) を確認/切替 | 自律納品ループ前、または policy 変更時 |
-| `/oma:autopilot` | checkpoint 付き反復自律サイクルを実行 | 複雑な自律納品 |
-| `/oma:ralph` | 厳格な品質ゲート付きオーケストレーションを強制 | リリースクリティカルなタスク |
-| `/oma:ultrawork` | 独立タスクのバッチ処理向け throughput mode | 大規模バックログ |
-| `/oma:consensus` | 複数案から 1 つへ収束 | 意思決定負荷の高い局面 |
-| `/oma:launch` | 長時間タスク向け persistent lifecycle state を初期化 | 長時間セッションの開始 |
-| `/oma:checkpoint` | taskboard/workspace 参照付き compact checkpoint と再開ヒントを保存 | セッション中盤の handoff |
-| `/oma:stop` | 自律モードを安全停止し進捗を保全 | 一時停止/割り込み |
-| `/oma:cancel` | 安全停止 + 再開 handoff を返す harness-style cancel alias | 自律/チームフロー中断時 |
-| `/oma:optimize` | 品質と token 効率のため prompt/context を改善 | ノイズが多い/高コストなセッション後 |
-| `/oma:cache` | cache/context 挙動と compact-state anchoring を確認 | 長時間・高コンテキスト作業 |
+| `/oma status` | 進捗、リスク、次アクションを要約 | 作業セッションの開始/終了 |
+| `/oma doctor` | extension/team/workspace/hook readiness 診断と remediation plan を実行 | 長時間自律実行前、または設定異常時 |
+| `/oma hud` | HUD 表示 profile (`normal`, `compact`, `hidden`) の確認/切替 | 長時間セッション前、または端末密度変更時 |
+| `/oma hud-on` | HUD を full visual mode へ即時切替 | 詳細 status board に戻るとき |
+| `/oma hud-compact` | HUD を compact mode へ即時切替 | 密度の高い実装ループ中 |
+| `/oma hud-off` | HUD を hidden mode へ即時切替 (プレーン status section) | 視覚ブロックがノイズになるとき |
+| `/oma hooks` | hook pipeline profile と trigger policy を確認/切替 | 自律ループ前、または hook 挙動が drift したとき |
+| `/oma hooks-init` | hook config と plugin contract scaffolding を初期化 | プロジェクト kickoff、または初回 hook 導入時 |
+| `/oma hooks-validate` | hook 順序、lifecycle 対称性、安全性、予算制約を検証 | 高自律ワークフロー有効化前 |
+| `/oma hooks-test` | hook event sequence の dry-run と効率見積り | policy 変更後、またはループ停滞再発時 |
+| `/oma notify` | approval、blocker、verify 結果、checkpoint、idle watchdog の通知経路を設定 | 無人 `autopilot`/`loop` 実行前、または通知ノイズ調整時 |
+| `/oma intent` | タスク意図を分類し正しい stage/command へルーティング | 要求意図が曖昧な状態で planning/coding に入る前 |
+| `/oma rules` | タスク条件に応じた guardrail rule pack を有効化 | migration/security/performance 影響が大きい実装前 |
+| `/oma memory` | MEMORY index、topic file、path-aware rule pack を維持 | 長時間セッション中、または決定/ルールが drift したとき |
+| `/oma workspace` | primary root、worktree/path lane、collision boundary の確認/監査/設定 | 並列実装前、または multi-root 作業前 |
+| `/oma taskboard` | stable ID と verifier-backed completion state を持つコンパクト task ledger を維持 | planning 後から長期 exec/verify ループ全体 |
+| `/oma recall` | state-first 検索 + bounded history fallback で過去決定/証拠を復元 | transcript 全再生なしで根拠を素早く取り出したいとき |
+| `/oma reasoning` | global reasoning effort と teammate override (`low/medium/high`) を設定 | 高コストな planning/review ループ前、または役割別深さ調整時 |
+| `/oma deep-init` | 長期セッション向けに deep project map と validation baseline を構築 | プロジェクト kickoff、または未知 codebase のオンボーディング時 |
+| `/oma team-assemble` | approval gate と lane 別 reasoning map を伴う動的チーム編成 | cross-domain / 非定型タスクで `/oma team` の前 |
+| `/oma team` | stage pipeline 全体を実行 (`team-assemble? -> plan -> prd -> taskboard -> exec -> verify -> fix`) | 複雑な機能実装・リファクタ納品 |
+| `/oma team-plan` | 依存関係を考慮した実行計画を作成 | 実装前 |
+| `/oma team-prd` | 計測可能な受け入れ条件と制約を固定 | planning 後、coding 前 |
+| `/oma team-exec` | lane/subagent handoff を明示してスコープ済み slice を実装 | メイン実装ループ |
+| `/oma team-verify` | 受け入れ条件、回帰、anti-slop 品質ゲートを検証 | 各実装 slice の後 |
+| `/oma team-fix` | 検証済み failure のみを修正 | verify 失敗時 |
+| `/oma loop` | `exec -> verify -> fix` を done/blocker まで繰り返し強制 | 未解決 findings が残る中盤〜終盤 |
+| `/oma mode` | operating profile (`balanced/speed/deep/autopilot/ralph/ultrawork`) を確認/切替 | セッション開始時、または姿勢変更時 |
+| `/oma model` | model-selection strategy (`auto/balanced/quality/custom`) を確認/切替 | すべてのタスクで Gemini Auto を使うなど、既定 model policy を設定したいとき |
+| `/oma approval` | approval posture (`suggest/auto/full-auto`) を確認/切替 | 自律納品ループ前、または policy 変更時 |
+| `/oma autopilot` | checkpoint 付き反復自律サイクルを実行 | 複雑な自律納品 |
+| `/oma ralph` | 厳格な品質ゲート付きオーケストレーションを強制 | リリースクリティカルなタスク |
+| `/oma ultrawork` | 独立タスクのバッチ処理向け throughput mode | 大規模バックログ |
+| `/oma consensus` | 複数案から 1 つへ収束 | 意思決定負荷の高い局面 |
+| `/oma launch` | 長時間タスク向け persistent lifecycle state を初期化 | 長時間セッションの開始 |
+| `/oma checkpoint` | taskboard/workspace 参照付き compact checkpoint と再開ヒントを保存 | セッション中盤の handoff |
+| `/oma stop` | 自律モードを安全停止し進捗を保全 | 一時停止/割り込み |
+| `/oma cancel` | 安全停止 + 再開 handoff を返す harness-style cancel alias | 自律/チームフロー中断時 |
+| `/oma optimize` | 品質と token 効率のため prompt/context を改善 | ノイズが多い/高コストなセッション後 |
+| `/oma cache` | cache/context 挙動と compact-state anchoring を確認 | 長時間・高コンテキスト作業 |
 
 ### Skills
 
@@ -496,22 +440,9 @@ oh-my-antigravity/
 
 ## トラブルシューティング
 
-| 症状 | 想定原因 | 対応 |
-| --- | --- | --- |
-| install 時に `settings.filter is not a function` | Gemini CLI runtime が古い、または extension metadata cache が古い | Gemini CLI を更新し extension を再インストール |
-| `/oma:*` が見つからない | 現在セッションで extension 未ロード | `gemini extensions list` 実行後、Gemini CLI セッションを再起動 |
-| OmA planning skill を使いたいのに `/plan` で native plan が開く | built-in `/plan` と skill slash invocation の名前衝突 | OmA planning skill は `/oma-plan` (または `$oma-plan`) を使う、または staged planning に `/oma:team-assemble` または `/oma:team-plan` を使用 |
-| Skill が発火しない | retained deep-work skills 以外は同梱されない、または extension metadata が stale | README の retained skill 一覧を再確認し extension/session を再ロード |
-| team assembly が提案だけして実行しない | 要求内の approval token が不足 | 明示 approval (`yes`, `approve`, `go`, `run`) を返答 |
-| 並列実行で同じファイルが衝突/再計画される | workspace lane が明示されていない | `/oma:workspace status` で確認、または `/oma:workspace` で lane/path ownership を設定 |
-| dirty/untrusted lane で review/automation が走りそう | 共有 worktree の衛生状態が不明 | `/oma:workspace audit` 実行後、必要なら lane 分離してから verify/review 継続 |
-| 長いループ後に done 状態が揺れる | compact な真実源がない、または verifier signoff 欠落 | `/oma:taskboard sync` 後に `/oma:team-verify` を再実行して残 ID を閉じる |
-| 以前の判断理由を思い出せない | rationale が長い session history に埋もれた | まず `/oma:recall "<keyword>" scope=state`、必要時のみ `scope=recent` へ拡張 |
-| continuation 後に hook が終端イベントを取り逃す/二重発火する | hook lifecycle 対称性が未定義 | `/oma:hooks-validate` 実行後、lifecycle policy を修正してから自律ループ再開 |
-| 出力が冗長・汎用・反復的 | target artifact に対して reasoning/gate posture が弱い | `/oma:reasoning` を引き上げ (必要なら teammate override)、`/oma:team-verify` を再実行 |
-| 既存 launch script が `--allowed-tools` を使う | 新しい Gemini CLI で非推奨 | `--policy` profile に置き換えて再実行 |
-| 自律フローが確認しすぎる (または少なすぎる) | approval posture がタスクリスクと不一致 | `/oma:approval suggest|auto|full-auto` で再調整 |
-| 長時間 run 前に setup 健全性が不明 | state/config drift が蓄積 | `/oma:doctor` (または `/oma:doctor team`) を実行して remediation を反映 |
+`agy plugin list --json` · `/agents` · `/skills` · `/hooks`
+
+[Installation and diagnostics](guide/installation.md)
 
 ## 移行ノート
 

@@ -1,106 +1,25 @@
-description = "Inspect or configure OmA hook pipeline profiles, triggers, and safety policy."
+description = "Inspect and validate host-specific lifecycle hooks."
 prompt = """
-Run OmA hook pipeline manager.
+Input: {{args}}
+Read docs/guide/hook-engineering.md and identify the active host first.
+Antigravity uses root hooks.json: PostToolUse (observation only), PreInvocation
+(one bounded pending reminder), Stop (allow termination). Timeout is 5 seconds.
+Gemini uses hooks/hooks.json: BeforeModel, AfterTool, AfterAgent; timeouts in ms.
+PostToolCalling is an informal label, not a registered event. Never mix manifests
+or duplicate plugin registrations in manual settings. Hooks do not execute tests,
+prove acceptance, bypass permissions, or force continuation after stopping.
 
-Input:
-$ARGUMENTS
+Inspect /hooks and the installed plugin root. For nonstandard native installs,
+set OMG_PLUGIN_ROOT before launching the host. New state is isolated under
+.omg/state/sessions/hooks-<session-key>/; no raw tool arguments/errors are stored.
+With approved shell access run npm run check from the plugin repo. These are
+fixture checks, not authenticated model/delegation tests. Native package validation
+uses agy plugin validate . when the CLI is installed.
 
-Protocol:
-1. Parse requested action:
-   - `status`
-   - `on` / `off`
-   - `profile <strict|balanced|fast>`
-   - `events`
-2. Manage native event triggers:
-   - `SessionStart`
-   - `SessionEnd`
-   - `BeforeAgent`
-   - `AfterAgent`
-   - `BeforeModel`
-   - `AfterModel`
-   - `BeforeToolSelection`
-   - `BeforeTool`
-   - `AfterTool`
-   - `PreCompress`
-   - `Notification`
-3. Manage derived signals (opt-in, state-driven mapping):
-   - `stage-transition` (from AfterAgent)
-   - `blocker-raised` (from AfterAgent)
-   - `agent-blocked` (from AfterAgent)
-   - `agent-finished-early` (from AfterAgent)
-   - `pre-verify` (from BeforeTool)
-   - `post-verify` (from AfterTool)
-   - `checkpoint-save` (from AfterTool)
-   - `blocker-repeat` (from Notification)
-   - `loop-stall` (from Notification/AfterAgent)
-   - `risk-spike` (from Notification/AfterAgent)
-   - `context-drift` (from PreCompress)
-   - `token-burst` (from AfterModel)
-4. Build deterministic execution lanes:
-   - `P0-safety` (permission/risk guardrails)
-   - `P1-quality` (tests/docs/acceptance checks)
-   - `P2-optimization` (context compaction/perf hints)
-5. Enforce efficiency controls:
-   - idempotency key per event
-   - debounce window for repeated triggers
-   - timeout budget per lane
-   - cooldown after repeated failures
-   - runtime profile overrides via environment when operators need fast/noisy-session adjustments without editing hook files
-6. Enforce lifecycle symmetry for agent-bound triggers:
-   - every before/enter path must have exactly one terminal outcome (`completed`, `blocked`, or `stopped`)
-   - blocked continuations must re-enter `P0-safety` once before `P1` or `P2`
-   - terminal hooks must not double-fire after continuation or retry
-7. Detect duplicate delivery risk:
-   - if the same OmA hook appears to be registered through both extension-managed hooks and a manual/user-maintained hook file, call out the coexistence risk explicitly
-   - prefer one authoritative registration path per event to avoid duplicate AfterAgent output
-   - do not recommend editing shipped hook files first when env/runtime controls or extension-managed settings can solve the issue safely
-8. Enforce team-safety: side-effect hooks must be disabled in delegated sub-agent turns unless user explicitly allows them.
-9. Read `.omg/state/session-lock.json` before mutating shared hook-policy state.
-10. If filesystem tools are available:
-   - if the current orchestration session owns the lock, write/update `.omg/state/hooks.json`
-   - otherwise write `.omg/state/sessions/[session-slug]/hooks.json` instead and report the ownership conflict
-
-Suggested `hooks.json` shape:
-{
-  "enabled": true,
-  "profile": "balanced",
-  "native_events": ["SessionStart", "SessionEnd", "BeforeAgent", "AfterAgent", "BeforeModel", "AfterModel", "BeforeToolSelection", "BeforeTool", "AfterTool", "PreCompress", "Notification"],
-  "derived_signals": {
-    "context-drift": true,
-    "risk-spike": true,
-    "loop-stall": true,
-    "token-burst": false,
-    "blocker-repeat": true,
-    "agent-blocked": true,
-    "agent-finished-early": true,
-    "stage-transition": true,
-    "pre-verify": true,
-    "post-verify": true,
-    "checkpoint-save": true,
-    "blocker-raised": true
-  },
-  "lanes": {
-    "P0-safety": { "timeout_ms": 400, "debounce_ms": 0 },
-    "P1-quality": { "timeout_ms": 800, "debounce_ms": 200 },
-    "P2-optimization": { "timeout_ms": 600, "debounce_ms": 500 }
-  },
-  "lifecycle_policy": {
-    "before_after_symmetry": true,
-    "continuation_reenters_safety_lane": true,
-    "terminal_states": ["completed", "blocked", "stopped"]
-  },
-  "runtime_controls": {
-    "hook_profile_env": "OMG_HOOK_PROFILE=minimal|balanced|strict",
-    "disabled_hooks_env": "OMG_DISABLED_HOOKS=learn,model-routing",
-    "plans_dir_env": "GEMINI_PLANS_DIR when provided by Gemini CLI"
-  },
-  "team_safety": {
-    "disable_side_effects_for_worker_sessions": true
-  },
-  "source": "oma:hooks"
-}
-
-Response:
-- Keep it concise and operator-facing.
-- Include `Hook Status`, `Active Lanes`, `Trigger Matrix`, `Lifecycle Policy`, and `Next Command`.
+For on/off, change enabled in .omg/state/hooks.json only as the owning orchestration
+session; otherwise produce a draft. This toggles the new lifecycle adapter, not
+the legacy Gemini learn filter. Controls: OMG_TOOL_CYCLE=off,
+OMG_DISABLED_HOOKS=tool-cycle, OMG_MODEL_ROUTING=off, OMG_MODEL_ROUTING_TRACE=1.
+Do not create an unbounded loop or alter host permissions as a side effect.
+Return Host, Registered Events, Executed Checks, Findings and one Next Command.
 """

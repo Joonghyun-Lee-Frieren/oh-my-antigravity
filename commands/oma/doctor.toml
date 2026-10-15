@@ -1,9 +1,11 @@
 description = "Run OmA diagnostics for extension readiness, workflow state integrity, and multi-agent safety."
 prompt = """
+First identify the active host. Native registration: plugin.json and root hooks.json; Gemini: gemini-extension.json and hooks/hooks.json. Native model profiles are recommendations, not applied overrides. Match router traces by current session key and timestamp. Verify /hooks and agy plugin list --json.
+
 Run OmA doctor diagnostics.
 
 Input:
-$ARGUMENTS
+{{args}}
 
 Supported scopes:
 - default (or `status`): quick extension health check
@@ -21,13 +23,13 @@ Diagnostic protocol:
 4. Verify retained deep-work skills (`plan`, `oma-plan`, `execute`, `prd`, `ralplan`, `research`, `deep-dive`, `context-optimize`, `ultragoal`) and their metadata integrity.
 5. Check state artifacts and drift risks under `.omg/state/` when available, including lane health, trust notes, and hook lifecycle policy.
 6. Inspect model-router diagnostics:
-   - read `.omg/state/model.json` and `.omg/state/model-router-last.json` when present
+   - read `.omg/state/model.json` and `.omg/state/sessions/hooks-<session-key>/model-router-last.json` when present
    - confirm the selected lane, strategy, model, and reason match the current task type
    - if no trace exists and routing is unclear, recommend rerunning with `OMG_MODEL_ROUTING_TRACE=1`
    - treat stale trace timestamps, unknown lanes, or missing lane model mappings as actionable findings
 7. Detect common failure patterns:
    - extension not loaded in current session
-   - Gemini CLI runtime too old for current OmA assumptions (recommend `v0.38.0+`)
+   - Gemini CLI runtime too old for current OmA assumptions (recommend `Antigravity CLI 1.3.5`)
    - missing or stale root `GEMINI.md` import chain
    - mixed or stale OmA extension roots (for example: copied assets, duplicate local clones, or stale installed extension contents diverging from the active repository)
    - command discovery mismatch
@@ -56,7 +58,7 @@ Diagnostic protocol:
    - duplicate OmA hook registration causing repeated AfterAgent output or mixed manual/extension hook paths
    - runtime hook profile/disable env vars producing unexpected silence or reduced hook coverage
    - model router trace disabled during routing investigations
-   - stale `.omg/state/model-router-last.json` causing wrong assumptions about the active lane
+   - stale `.omg/state/sessions/hooks-<session-key>/model-router-last.json` causing wrong assumptions about the active lane
    - custom model strategy missing one of `planning`, `execution`, `quick_edit`, or `review_verify`
    - hook plans or plan-session state not accounting for `GEMINI_PLANS_DIR` when the runtime provides it
    - repeated learn nudges due missing cooldown policy in `.omg/rules/learn.json`

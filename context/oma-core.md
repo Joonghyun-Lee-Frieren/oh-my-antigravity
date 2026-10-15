@@ -1,6 +1,6 @@
 # OmA Core Context
 
-OmA adds a role-driven workflow layer to Gemini CLI.
+OmA adds a role-driven workflow layer to Antigravity CLI, with Gemini CLI compatibility.
 
 ## Primary Interface
 
@@ -53,6 +53,24 @@ OmA adds a role-driven workflow layer to Gemini CLI.
   - **Delegated Turns**: Delegated/worker/subagent turns must not write shared workflow artifacts directly; they return handoff summaries or session-local notes for the orchestrator to merge.
 - **Summarization**: Read only files needed for the current step and summarize before handoff.
 - **Persistence**: Use `.omg/state/*`, `MEMORY.md`, `.omg/memory/*`, `.omg/rules/*`, `.omg/hooks/*`, or `.omg/notify/*`.
+
+## Current host and model policy
+
+Antigravity is the native host. Use `/oma <command>` through the dispatcher skill;
+Gemini compatibility retains `/oma:<command>`. Native agents use explicit tool
+allowlists and `model: inherit` so the operator remains in control of model choice.
+Read config/models.json: auto is the default, balanced recommends Flash throughout,
+and quality recommends Argon for planning/review and Flash for implementation.
+Check /model for account availability. Only Gemini's documented BeforeModel
+contract can apply explicit OmA model overrides; native traces say applied=false.
+
+Keep SDK function-call IDs, thought signatures and full tool responses unchanged.
+Use low/medium/high thinking levels where supported; do not mix legacy budgets
+with thinking levels. Flash supports explicit caching; Argon uses implicit caching.
+Do not claim cache hit rates, cost reductions or token savings without host metrics.
+The hooks observe outcomes and give bounded reminders, never execute tests, change
+permissions or force another turn after termination. A verified result needs
+actual commands, exit codes and acceptance evidence, not narrative confidence.
 
 ## Execution Discipline
 

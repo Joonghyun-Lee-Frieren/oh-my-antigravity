@@ -3,7 +3,7 @@ prompt = """
 Run OmA HUD profile manager.
 
 Input:
-$ARGUMENTS
+{{args}}
 
 Protocol:
 1. Parse requested HUD profile.
@@ -29,5 +29,5 @@ Response:
 - Keep it concise and operator-facing.
 - Include `HUD Profile`, `HUD Preview`, `Notes`, and `Next Command`.
 - `HUD Preview` should be a single sample line.
-- In the preview line, surface model strategy and preview status prominently (for example `MODEL balanced gemini-3.1-pro-preview/gemini-3-flash-preview/gemini-3.1-flash-lite-preview preview:on`).
+- In the preview line, surface model strategy and preview status prominently (for example `MODEL balanced gemini-4-argon/gemini-3.8-flash/gemini-3.8-flash host:antigravity applied:false`).
 """

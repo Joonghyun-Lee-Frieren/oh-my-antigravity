@@ -3,7 +3,7 @@ prompt = """
 Run OmA `ultrawork` mode.
 
 Objective:
-$ARGUMENTS
+{{args}}
 
 Ultrawork protocol:
 1. Decompose work into independent shards.

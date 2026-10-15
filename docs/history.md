@@ -2,6 +2,41 @@
 
 All notable changes to oh-my-antigravity are documented here.
 
+## v0.10.0 - Native Antigravity workflows and current Gemini profiles (2026-10-15)
+
+### Added
+
+- Native plugin manifest, separate lifecycle registration and an on-demand /oma
+  dispatcher for the retained workflow commands.
+- Gemini 3.8 Flash and Gemini 4 Argon catalog entries, balanced/quality profiles,
+  custom IDs and optional operator inventory constraints.
+- Native PostToolUse, PreInvocation and Stop adapters plus Gemini AfterTool support.
+- Session-isolated atomic diagnostics, event deduplication, bounded reminders,
+  secret-conscious state and cross-platform regression checks.
+- Explicit native agent tool allowlists, selection flags, inherited models and
+  sandbox command policies; streamlined requirements discovery.
+
+### Changed
+
+- Default model policy is auto and preserves the host selection. Native profiles
+  are recommendations; only explicit Gemini BeforeModel profiles rewrite model IDs.
+- Routing reads explicit metadata or the current user command, not system text,
+  historical turns or tool output. SDK message/configuration data remains untouched.
+- Converted skill metadata to YAML and Gemini command arguments to {{args}}.
+- Updated six READMEs, model/install/hook guides, landing page and package metadata.
+
+### Removed
+
+- Old preview presets from active defaults/examples and the blanket workspace
+  preview opt-in. Historical entries below are preserved as an archive.
+- Shared trace writes from the new router; old traces are not current policy.
+
+### Verification boundary
+
+- Fixture and package checks do not call a model or prove account entitlement.
+- Native format validation is separate from authenticated inference/delegation.
+- Hooks never force continuation after stopping or claim test success from tool completion.
+
 ## v0.9.2 - Orbit Router Diagnostics (2026-06-23)
 
 ### Added

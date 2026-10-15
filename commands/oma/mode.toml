@@ -3,9 +3,10 @@ prompt = """
 Run OmA mode manager.
 
 Input:
-$ARGUMENTS
+{{args}}
 
 Mode behavior:
+- These are workflow profiles, not native permission or sandbox modes. Never change host permissions as a side effect.
 1. If no mode is provided, show current mode and profile table.
 2. If mode is provided, validate against:
    - `balanced`
@@ -23,9 +24,9 @@ Mode behavior:
 Suggested `mode.json` shape:
 {
   "mode": "<selected>",
-  "planning_model": "gemini-3.1-pro-preview",
-  "execution_model": "gemini-3-flash-preview",
-  "quick_edit_model": "gemini-3.1-flash-lite-preview",
+  "planning_model": "inherit",
+  "execution_model": "inherit",
+  "quick_edit_model": "inherit",
   "verification_strictness": "normal|high",
   "max_autonomous_cycles": 5
 }
