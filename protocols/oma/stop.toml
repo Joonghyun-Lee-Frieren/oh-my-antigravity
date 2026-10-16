@@ -1,0 +1,9 @@
+description = "Stop guarded work while preserving evidence and locks."
+prompt = """
+Request:
+$ARGUMENTS
+
+Save the stop reason in .omg/drafts/stop.json and submit controller block when active.
+Retain evidence, locks, issue backlog, and code changes. Do not reset the guard or continue
+repairs after cancellation. Explain the exact phase and operator recovery required.
+"""

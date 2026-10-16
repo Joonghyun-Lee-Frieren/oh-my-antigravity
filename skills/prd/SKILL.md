@@ -1,42 +1,9 @@
 ---
-name = "prd"
-description = "Convert a request into PRD-quality scope, measurable acceptance criteria, and delivery constraints."
+name: prd
+description: "Convert a request into PRD-quality scope, measurable acceptance criteria, and delivery constraints."
 ---
 
-## Purpose
-
-Use this skill to lock scope before implementation starts.
-
-## Trigger
-
-- Requirements are ambiguous or too broad
-- Team needs measurable done criteria
-- Scope creep risk is high
-
-## Workflow
-
-1. Write a concise problem statement.
-2. Define in-scope and explicit non-goals.
-3. Define acceptance criteria with evidence requirements.
-4. Capture constraints and dependencies.
-5. Produce handoff notes for execution and verification.
-
-## Output Template
-
-```markdown
-## Problem Statement
-- ...
-
-## Scope / Non-goals
-- ...
-
-## Acceptance Criteria
-| Criterion | Evidence Needed | Owner |
-| --- | --- | --- |
-
-## Constraints
-- ...
-
-## Handoff
-- ...
-```
+Read [the workflow](references/workflow.md) when this skill applies.
+For code work, follow [the guard contract](../../docs/guide/guarded-workflow.md) first.
+Design and implementation require separate user turns. Only the owning main conversation writes code.
+Missing evidence is unknown; honest failure is a valid outcome.

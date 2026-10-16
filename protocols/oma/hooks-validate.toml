@@ -1,0 +1,16 @@
+description = "Validate native Antigravity hooks, capability boundaries, and workflow evidence."
+prompt = """
+Request:
+$ARGUMENTS
+
+Inspect root hooks.json: exactly one named oma-workflow registration with PreToolUse,
+PreInvocation, and Stop. Timeout units are seconds. No legacy BeforeModel/AfterAgent.
+Hook script paths are relative to the installed plugin hook directory; do not invent a
+PLUGIN_ROOT variable. Check Node.js availability and inspect /hooks in the runtime.
+Validate with agy plugin validate <plugin-directory>.
+Check read-only agent allowlists and commandExecutionPolicy off.
+Check malformed state denies writes, root/owner derive from event metadata, shell calls
+only invoke the installed controller, and no extra flags/separators/inline code are accepted.
+Check current hashes, review coverage, batch size <=3, owner, and bounded continuations.
+Missing runtime proof is unknown. Never report estimated savings or a simulated PASS.
+"""

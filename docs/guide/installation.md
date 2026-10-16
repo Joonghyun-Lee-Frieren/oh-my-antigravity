@@ -1,115 +1,44 @@
-# oh-my-antigravity Extension Installation Guide
+# Antigravity CLI installation
 
-This guide follows the official Gemini CLI Extensions workflow.
-
-## Prerequisites
-
-1. Gemini CLI installed (recommended `v0.38.0+`)
-2. Gemini authentication completed
-3. Local clone of this repository
-
-Check quickly:
+Install a current Antigravity CLI and Node.js 20+, then authenticate through the CLI.
 
 ```bash
-gemini --version
+agy plugin install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
+agy plugin list
 ```
 
-Compatibility note:
+Inside the CLI, inspect `/plugin list` and `/hooks`. Native OmA commands are skills:
+`/oma-team-plan`, `/oma-team-exec`, `/oma-team-verify`, and `/oma-status`.
 
-- If your existing scripts still use `--allowed-tools`, migrate to `--policy` profiles.
-- OmA does not require preview-channel-only manifest features to run.
-- OmA keeps `general.previewFeatures=true` for preview-backed runtime features, while balanced model routing uses explicit preview model IDs by default.
-
-## Step 1: Clone Repository
+For a development checkout:
 
 ```bash
 git clone https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity.git
 cd oh-my-antigravity
+agy plugin validate .
+agy plugin install .
 ```
 
-## Step 2: Install as Gemini Extension
+Use the CLI's plugin manager to reinstall/refresh an existing bundle from its source.
+Do not assume a Gemini extensions update command applies to native plugins. Remove
+manually copied old OmA hooks so root `hooks.json` has one authoritative registration.
+The native package uses `plugin.json`, `hooks.json`, `skills/`, `agents/`, and `rules/`.
+`gemini-extension.json` is a migration marker, not the native manifest.
 
-Run from your terminal (non-interactive mode):
+The CLI displays each skill as a slash command. Old `/oma:<name>` commands are now
+`/oma-<name>`. TOML protocol sources live under `protocols/oma/`; they generate native
+YAML skill wrappers and are not rediscovered as legacy commands.
 
-```bash
-gemini extensions install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
-```
+Run `/oma-team-plan` to initialize, read documentation, and seal a design. End that
+turn, then run `/oma-team-exec` in the next user turn. See the [guarded workflow
+contract](guarded-workflow.md) for exact requests, evidence, locks, and recovery.
 
-## Step 3: Verify Extension Loaded
+If hooks are missing, do not assume safety controls are active. Check client version,
+Node availability, plugin validation, and runtime `/hooks`. A real authenticated
+smoke test establishes runtime behavior; static validation alone does not.
 
-Inside Gemini interactive mode:
+Models: use `agy models`, then `agy --model <id>`. The balanced profile recommends
+Gemini 4 Argon and Gemini 3.8 Flash. Account availability varies; select the Flash-only
+profile explicitly when needed. Hooks do not force model changes.
 
-```text
-/extensions list
-```
-
-Or from terminal:
-
-```bash
-gemini extensions list
-```
-
-You should see `oh-my-antigravity` in the extension list.
-
-## Step 3.5: Preview Features
-
-OmA defaults to explicit preview model IDs for balanced routing and keeps Gemini CLI preview features enabled for runtime features that still depend on the flag:
-
-```json
-{
-  "general": {
-    "previewFeatures": true
-  }
-}
-```
-
-Set this in `~/.gemini/settings.json` or your workspace `.gemini/settings.json`. This repository now ships the workspace setting enabled by default.
-
-## Step 4: Verify Core Features
-
-Run one command and one skill:
-
-```text
-/oma:status
-```
-
-```text
-$plan "Plan a small refactor in this repository"
-```
-
-Optional hook-layer smoke test:
-
-```text
-/oma:hooks
-/oma:hooks-validate
-```
-
-If agent delegation is needed:
-
-```text
-/oma:team "Implement a small feature with planning and review"
-```
-
-If dynamic team composition is needed before execution:
-
-```text
-/oma:team-assemble "Analyze competitors and draft a decision report"
-```
-
-## Note
-
-No extension-level setting override is required for installation.
-
-## Upgrade
-
-1. Pull latest repository changes.
-2. Restart Gemini CLI.
-3. Re-run `gemini extensions list` to confirm latest metadata is loaded.
-
-## Uninstall
-
-From terminal:
-
-```bash
-gemini extensions uninstall oh-my-antigravity
-```
+[Official plugin documentation](https://antigravity.google/docs/plugins?tab=cli)

@@ -11,9 +11,14 @@ const syncVersionPath = path.join(__dirname, "sync-version.js");
 
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
 const extensionJson = JSON.parse(fs.readFileSync(extensionJsonPath, "utf8"));
+const pluginJson = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "plugin.json"), "utf8"));
 
 const version = packageJson.version;
 const errors = [];
+
+if (pluginJson.name !== packageJson.name || !pluginJson.description) {
+  errors.push("Native plugin name/description must match the package identity.");
+}
 
 console.log(`Source version (package.json): ${version}`);
 

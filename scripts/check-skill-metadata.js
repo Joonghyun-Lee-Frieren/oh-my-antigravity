@@ -21,11 +21,15 @@ function parseFrontmatter(content) {
     if (!line || line.startsWith("#")) {
       continue;
     }
-    const kv = line.match(/^([A-Za-z0-9_-]+)\s*=\s*"(.*)"$/);
+    const kv = line.match(/^([A-Za-z0-9_-]+):\s*(.+)$/);
     if (!kv) {
       return { error: `invalid frontmatter line: ${rawLine}` };
     }
-    const [, key, value] = kv;
+    const [, key, rawValue] = kv;
+    let value = rawValue;
+    if (rawValue.startsWith('"')) {
+      try { value = JSON.parse(rawValue); } catch { return { error: `invalid YAML string: ${rawLine}` }; }
+    }
     if (Object.prototype.hasOwnProperty.call(result, key)) {
       return { error: `duplicate frontmatter key: ${key}` };
     }
@@ -58,6 +62,14 @@ for (const dirName of skillDirs) {
 
   const content = fs.readFileSync(skillPath, "utf8");
   const parsed = parseFrontmatter(content);
+  if (content.split(/\r?\n/).length > 20) {
+    errors.push(`${dirName}: SKILL.md must stay within 20 lines; move procedure to references`);
+  }
+  for (const match of content.matchAll(/\]\(([^)]+)\)/g)) {
+    if (!/^https?:/.test(match[1]) && !fs.existsSync(path.resolve(path.dirname(skillPath), match[1]))) {
+      errors.push(`${dirName}: broken reference ${match[1]}`);
+    }
+  }
   if (parsed.error) {
     errors.push(`${dirName}: ${parsed.error}`);
     continue;

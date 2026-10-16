@@ -1,91 +1,43 @@
-# Hook Engineering Guide
+# Native hook engineering
 
-OmA provides an extension-native hook layer for deterministic orchestration and safer autonomy loops.
+Root `hooks.json` contains one `oma-workflow` definition. It follows the
+[Antigravity hook contract](https://antigravity.google/docs/hooks), with camelCase
+stdin fields and JSON stdout. Timeout units are seconds.
 
-## Why This Layer Exists
+| Event | Purpose | Output |
+| --- | --- | --- |
+| PreToolUse | Validate tool, owner, phase, path, locks, and bounded review request | decision/reason; overwrite for controller/reviewer arguments |
+| PreInvocation | Supply compact phase and controller-path context | injectSteps with an ephemeralMessage |
+| Stop | End design, lock passed files, schedule <=3 repair units, or stop on blockers | decision/reason |
 
-- Prevent repeated regressions in long `exec -> verify -> fix` loops
-- Detect stall/drift signals earlier
-- Apply guardrails without inflating the base prompt every turn
+There is no BeforeModel override, AfterAgent learn nudge, custom hook profile,
+undocumented model switch, or environment flag that silently disables the guard.
+Node executes `hooks/scripts/guard.mjs` relative to the containing plugin directory.
+The script uses module-relative paths for its libraries and controller, so invocation
+does not depend on the project directory or an invented PLUGIN_ROOT variable.
 
-## Native Events
+The guard expects exactly one workspace and a conversation ID from native payloads.
+Only the owner can submit controller actions or edit scoped source. Read-only workers
+have capability allowlists at the native agent level. Unknown tools, generic shell
+calls, direct state/evidence writes, path escapes, and locked-file edits are denied.
+Controller invocations are exact; root/owner and the Node executable are overwritten
+from trusted metadata. Reviewer prompts are exact section IDs and are replaced with
+one current source section plus evidence pointers.
 
-Hooks can be attached to these core extension-level events:
+State changes use atomic replace and an atomic directory mutex. A collision fails
+closed rather than racing. If a process is killed while owning guard.lock, the
+operator must inspect and remove the stale mutex. Do not remove a live mutex.
 
-- `SessionStart`: Session initialization.
-- `SessionEnd`: Session finalization.
-- `BeforeAgent`: Before an agent turn begins.
-- `AfterAgent`: After an agent turn completes (success, failure, or block).
-- `BeforeModel`: Before a model request is sent.
-- `AfterModel`: After a model response is received.
-- `BeforeToolSelection`: Before the model decides which tool to call.
-- `BeforeTool`: Before a specific tool is executed.
-- `AfterTool`: After a tool execution returns.
-- `PreCompress`: Before context window compaction/summarization.
-- `Notification`: When a system or agent notification is issued.
+Stop continues only at fully idle model_stop. It never restarts cancellation,
+errors, max-step termination, or live background work. Duplicate execution numbers
+are ignored. Missing reviews remain unknown without a continuation loop. Repairs
+are bounded by six cycles, unchanged-failure detection, and two verification nudges.
 
-## Derived Signals
+Malformed safety-hook input yields a deny decision. Context errors inject a blocker;
+Stop errors permit stopping with the error reported and cannot accept stale evidence.
+These scripts cannot control whether an older CLI invokes a hook or ignores a field.
+Use current clients and validate actual loaded hooks before relying on the harness.
 
-Derived signals are state-driven mappings that allow for higher-level orchestration:
-
-- `session-start`: Triggered by `SessionStart`.
-- `stage-transition`: Triggered by `AfterAgent` (e.g., plan -> exec).
-- `blocker-raised`: Triggered by `AfterAgent` when a new blocker is identified.
-- `agent-blocked`: Triggered by `AfterAgent` when execution is paused.
-- `agent-finished-early`: Triggered by `AfterAgent` when a goal is completed before all tasks are exhausted.
-- `pre-verify`: Triggered by `BeforeTool` for critical validation.
-- `post-verify`: Triggered by `AfterTool` to confirm outcome.
-- `checkpoint-save`: Triggered by `AfterTool` when state is persisted.
-- `blocker-repeat`: Triggered by `Notification` or `AfterAgent` when the same blocker persists.
-- `loop-stall`: Triggered by `Notification` or `AfterAgent` when a loop fails to progress.
-- `risk-spike`: Triggered by `Notification` or `AfterAgent` on high failure density.
-- `context-drift`: Triggered by `PreCompress` when summary entropy is high.
-- `token-burst`: Triggered by `AfterModel` when token usage exceeds thresholds.
-
-## Deterministic Lanes
-
-Use a fixed lane order to keep behavior predictable:
-
-1. `P0-safety`
-2. `P1-quality`
-3. `P2-optimization`
-
-Recommended behavior:
-
-- `P0-safety`: fail-closed only for explicit safety violations
-- `P1-quality`: retryable, with bounded timeout/debounce
-- `P2-optimization`: fail-open to avoid blocking delivery
-
-## Efficiency Controls
-
-- Idempotency key per `(event, task, stage)` tuple
-- Debounce repeated triggers in noisy loops
-- Timeout budgets per lane
-- Cooldown for repeatedly failing hooks
-
-## Runtime Knobs
-
-- `OMG_HOOKS_QUIET=1`: suppresses non-essential learn-signal hook status lines while keeping fail-open behavior.
-- `OMG_STATE_ROOT=<dir>`: overrides the default `.omg/state` location for retained hook state such as `learn-watch.json`.
-- `OMG_DISABLED_HOOKS=model-routing`: disables only the quiet `BeforeModel` model router.
-- `OMG_DISABLED_HOOKS=learn`: disables only the retained learn-signal `AfterAgent` hook.
-- `GEMINI_PLANS_DIR`: when provided by Gemini CLI, can be used by hook/plan policy to reference native plan-session storage without guessing paths.
-
-Note: OmA no longer ships the quota-watch usage monitor hook. Use Gemini CLI's native `/model` or `/stats model` output when authoritative usage or quota visibility is needed.
-
-## Team Safety Policy
-
-In delegated/worker sub-agent turns:
-
-- Side-effect hooks stay disabled by default
-- Read-only diagnostics and guardrail hooks remain available
-- Side effects require explicit user opt-in
-
-## Suggested Workflow
-
-1. `/oma:hooks-init`
-2. `/oma:hooks`
-3. `/oma:hooks-validate`
-4. `/oma:hooks-test`
-
-Then run `/oma:autopilot` or `/oma:loop` with validated hook policy.
+See [the workflow contract](guarded-workflow.md) for schemas and honest-failure limits.
+Development tests exercise native payloads and observable behavior, including bypass
+attempts. They do not replace authenticated CLI testing.

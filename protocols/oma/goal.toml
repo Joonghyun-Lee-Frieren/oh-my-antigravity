@@ -1,0 +1,14 @@
+description = "Drive delivery through separate design and implementation turns with bounded repair loops."
+prompt = """
+Request:
+$ARGUMENTS
+
+Treat this request as authorization for routine reversible work. Initialize guarded state,
+read docs through oma-doc-reader, submit the handoff, and seal intent/files/criteria/checks.
+End the design user turn. Do not invoke start until the next user turn.
+Then implement one scoped slice, execute sealed checks, and collect bounded section receipts.
+Stop owns subsequent <=3-issue repair executions and passed-file locks. Continue only while
+within the controller limits and runtime permissions. Missing dependencies, missing proof,
+unavailable reviewers, or locked-file regressions are honest blocked/unknown outcomes.
+Only report complete when controller status is complete. Do not write guard state directly.
+"""

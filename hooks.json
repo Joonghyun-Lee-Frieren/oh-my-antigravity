@@ -1,0 +1,18 @@
+{
+  "oma-workflow": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          { "type": "command", "command": "node ./hooks/scripts/guard.mjs pre", "timeout": 10 }
+        ]
+      }
+    ],
+    "PreInvocation": [
+      { "type": "command", "command": "node ./hooks/scripts/guard.mjs context", "timeout": 10 }
+    ],
+    "Stop": [
+      { "type": "command", "command": "node ./hooks/scripts/guard.mjs stop", "timeout": 10 }
+    ]
+  }
+}

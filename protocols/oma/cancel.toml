@@ -1,0 +1,10 @@
+description = "Stop guarded work and retain its real blocker and verification evidence."
+prompt = """
+Request:
+$ARGUMENTS
+
+If the workflow is active, save a reason under .omg/drafts/cancel.json and submit
+controller block. Retain source changes, evidence, receipts, locks, and remaining issues.
+Native cancellation or non-model_stop termination never launches a Stop repair continuation.
+Give the operator a concise status and recovery handoff. Do not delete state or unlock files.
+"""

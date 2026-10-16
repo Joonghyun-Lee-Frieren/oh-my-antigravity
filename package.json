@@ -1,11 +1,11 @@
 {
   "name": "oh-my-antigravity",
-  "version": "0.9.2",
-  "description": "Extension-first context engineering and multi-agent workflow pack for Gemini CLI.",
+  "version": "1.0.0",
+  "description": "Guarded, evidence-first engineering workflows for Antigravity CLI.",
   "keywords": [
     "gemini",
-    "gemini-cli",
-    "extension",
+    "antigravity-cli",
+    "plugin",
     "agents",
     "skills",
     "context-engineering"
@@ -19,15 +19,24 @@
   "author": "Joonghyun-Lee-Frieren",
   "type": "module",
   "scripts": {
+    "test": "node --test tests/workflow.test.mjs",
     "test:version": "node scripts/check-version.js",
     "test:skills": "node scripts/check-skill-metadata.js",
+    "test:generated": "node scripts/build-skills.mjs --check",
+    "test:package": "node scripts/check-package.mjs",
+    "build:skills": "node scripts/build-skills.mjs",
     "sync:version": "node scripts/sync-version.js"
   },
   "files": [
+    "plugin.json",
+    "hooks.json",
+    "rules/",
+    "config/",
+    "scripts/",
     "GEMINI.md",
     "gemini-extension.json",
     "agents/",
-    "commands/",
+    "protocols/",
     "hooks/",
     "skills/",
     "context/",

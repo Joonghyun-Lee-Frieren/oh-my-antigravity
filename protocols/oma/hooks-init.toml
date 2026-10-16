@@ -1,0 +1,12 @@
+description = "Initialize guarded state after native plugin installation."
+prompt = """
+Request:
+$ARGUMENTS
+
+Read docs/guide/guarded-workflow.md. Inspect /plugin list and /hooks.
+Do not create duplicate local hook registrations. Native root hooks.json is authoritative.
+Run the installed workflow controller init using its exact absolute path, without extra
+root/owner flags. Existing active/blocked state must be recovered by the operator.
+Then ask oma-doc-reader for a focused summary and save its handoff under .omg/drafts/.
+Report actual initialized phase or the exact blocker.
+"""

@@ -1,0 +1,34 @@
+description = "Enforce execution/verify/fix loops until acceptance criteria pass or blockers are explicit."
+prompt = """
+Guarded execution contract (takes precedence):
+Read docs/guide/guarded-workflow.md first. Use the installed workflow controller.
+Documentation handoff precedes design. Seal the plan and end that USER TURN.
+Implementation starts only in the next user turn. Stop schedules at most three
+repair units per execution and locks passed files. Auxiliary artifacts go to
+.omg/drafts/. Only the main conversation applies code and controller operations.
+
+Run OmA `loop` enforcement.
+
+Context:
+$ARGUMENTS
+
+Protocol:
+1. Read current acceptance criteria and open backlog from prior stage outputs.
+2. Prefer `.omg/drafts/taskboard.md` as the source of truth when available.
+3. Build the next smallest ready cycle scope.
+4. Execute one strict cycle: `team-exec -> team-verify -> team-fix` (fix only if verify fails).
+5. Never declare done when unresolved blocker, major item, open task, or missing verifier signoff remains.
+6. Stop only when:
+   - all criteria pass (done),
+   - hard blocker exists (blocked),
+   - max cycles reached (escalate).
+7. Default max cycles: 3 for one invocation unless user overrides.
+8. Read `.omg/state/guard.json` before mutating shared workflow state.
+9. If filesystem tools are available:
+   - if the current orchestration session owns the lock, update `.omg/drafts/workflow.md`, `.omg/drafts/taskboard.md`, and `.omg/drafts/checkpoint.md`
+   - otherwise write session-local drafts under `.omg/drafts/sessions/[session-slug]/` and report the ownership conflict
+
+Response:
+- Keep it concise and operator-facing.
+- Include `Loop Status`, `Cycle Evidence`, `Remaining Backlog`, and `Next Command`.
+"""

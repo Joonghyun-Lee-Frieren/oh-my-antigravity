@@ -1,31 +1,32 @@
-name: Version Consistency Check
+name: Plugin Checks
 
 on:
   push:
-    branches: [ main ]
-    paths:
-      - 'package.json'
-      - 'gemini-extension.json'
-      - 'scripts/check-version.js'
-      - 'scripts/sync-version.js'
+    branches: [ main, dev ]
   pull_request:
     branches: [ main ]
-    paths:
-      - 'package.json'
-      - 'gemini-extension.json'
-      - 'scripts/check-version.js'
-      - 'scripts/sync-version.js'
 
 jobs:
   check-version:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          
-      - name: Run version check script
-        run: node scripts/check-version.js
+
+      - name: Check package identity and version
+        run: npm run test:version
+      - name: Check skill metadata and references
+        run: npm run test:skills
+      - name: Check generated native entrypoints
+        run: npm run test:generated
+      - name: Check native package and agent capabilities
+        run: npm run test:package
+      - name: Exercise workflow boundaries
+        run: npm test

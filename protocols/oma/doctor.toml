@@ -1,0 +1,15 @@
+description = "Inspect native plugin readiness and deterministic workflow safety."
+prompt = """
+Request:
+$ARGUMENTS
+
+Inspect plugin.json, root hooks.json, rules/, YAML skills, agents, and config/models.json.
+Check node --version, agy --version, agy plugin validate <path>, /plugin list, and /hooks
+when those read-only commands can be run by the operator. Do not bypass the shell gate.
+Development check commands: npm test, npm run test:skills, npm run test:generated,
+npm run test:version. Inspect controller status, source hashes, owner conflicts,
+missing receipts, locked-code regressions, and real blocker details.
+No BeforeModel router, AfterAgent learn hook, preview-feature toggle, or old trace is active.
+Current client and authenticated smoke-test evidence are required for runtime readiness.
+Return pass/fail/unknown with evidence, and one targeted recovery recommendation.
+"""

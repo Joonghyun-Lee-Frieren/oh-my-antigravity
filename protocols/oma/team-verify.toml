@@ -1,0 +1,16 @@
+description = "Run sealed checks and collect independent reviews one small section at a time."
+prompt = """
+Task:
+$ARGUMENTS
+
+Read docs/guide/guarded-workflow.md and controller status.
+In implement/repair, run controller verify. It executes sealed argv checks, records
+actual exit codes/logs, and hashes source. In review, resume the missing receipts.
+Send each oma-reviewer only ONE section from guard.json.sections (<=120 lines), its
+hash, criteria, and relevant validator evidence. Never ask for a repository-wide PASS.
+Each reviewer returns pass/fail/unknown with concrete evidence. Missing proof is unknown.
+The parent saves receipts under .omg/drafts/ and submits controller review.
+Do not write .omg/state/ or .omg/evidence/ directly. Only the controller owns these paths.
+Stop requires current hashes, complete section coverage, and passing checks before locking.
+Report the exact phase and outstanding evidence. Do not infer success from agent prose.
+"""

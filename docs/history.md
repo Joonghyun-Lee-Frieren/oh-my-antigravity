@@ -2,6 +2,36 @@
 
 All notable changes to oh-my-antigravity are documented here.
 
+## v1.0.0 - Guarded Antigravity Workflows (2026-10-16)
+
+### Added
+
+- Native plugin.json, root hooks.json, and always-on workflow rule for Antigravity CLI.
+- Read-only oma-doc-reader with sourced summaries and explicit unknowns; native tool capability limits for all 15 workers.
+- Deterministic workflow controller with ownership, sealed plans, design/implementation turn separation, real argv verification, and source hashes.
+- PreToolUse enforcement for paths, shell calls, evidence integrity, test-disabling patterns, and scoped reviewer payloads.
+- Stop-driven batches of at most three registered repair units, passed-file hash locks, bounded continuations, and honest blocked outcomes.
+- Independent <=120-line section reviews with required receipts, criteria, evidence, and current hashes.
+- Gemini 4 Argon and Gemini 3.8 Flash profiles, with an explicit Flash-only option and account-aware runtime model selection.
+- Adversarial behavior tests and native skill/package validation in CI.
+
+### Changed
+
+- Minimized SKILL.md entrypoints and moved detailed procedures into on-demand references.
+- Converted 45 legacy command protocols into native YAML skills (56 total entrypoints); moved protocol sources to protocols/oma/ to avoid duplicate runtime command discovery.
+- Made the owning main conversation the sole code writer; executor workers return patch proposals.
+- Rebuilt README, Korean README, guides, and landing page around the enforced workflow and current model catalog.
+- Bumped package and legacy migration marker to v1.0.0; plugin manifest follows the native name/description schema.
+
+### Removed
+
+- Legacy Gemini BeforeModel model overrides, router trace flags, AfterAgent learn nudges, and preview-model defaults.
+- Unsupported claims of automatic native per-lane model switching. Models are selected through CLI controls; workers inherit them.
+
+### Acknowledgments
+
+- **Special thanks to @hyunuk.lim (threads).** Their threads and posts were a major help in shaping this refactor and its emphasis on thin skills, physical tool constraints, honest failure, bounded repairs, and focused reviews.
+
 ## v0.9.2 - Orbit Router Diagnostics (2026-06-23)
 
 ### Added

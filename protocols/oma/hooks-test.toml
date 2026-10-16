@@ -1,0 +1,13 @@
+description = "Exercise real hook payloads and adversarial workflow cases without invented diagnostics."
+prompt = """
+Request:
+$ARGUMENTS
+
+Use tests/workflow.test.mjs in a development checkout for real fixtures and behavior.
+Cover turn separation, missing handoff, malformed input, ownership, traversal/junctions,
+shell bypass, unknown tools, direct evidence writes, test skipping, stale hashes, failed
+validators, missing/unknown reviews, three-issue batches, locks, duplicate Stop, live
+background work, cancellation, and retry limits. Run only through authorized checkout
+checks or sealed workflow checks. Report actual command, exit status, and failures.
+A dry-run is not runtime verification.
+"""

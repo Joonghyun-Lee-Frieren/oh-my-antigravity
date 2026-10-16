@@ -1,3 +1,7 @@
+> **v1.0.0 / Antigravity CLI:** This translated guide describes the legacy v0.9 workflow. For current installation, model profiles, /oma- commands, and enforced turn/review/repair boundaries, use the [English README](../README.md), [Korean README](README_ko.md), or [guarded workflow guide](guide/guarded-workflow.md).
+>
+> Special thanks to @hyunuk.lim (threads). Their threads and posts were a major help in shaping this refactor.
+
 # oh-my-antigravity (OmA)
 
 [![Release](https://img.shields.io/github/v/tag/Joonghyun-Lee-Frieren/oh-my-antigravity?sort=semver&label=release)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/releases)

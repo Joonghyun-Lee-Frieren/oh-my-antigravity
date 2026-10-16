@@ -1,0 +1,12 @@
+description = "Report guarded workflow progress, locked files, evidence gaps, and next actions."
+prompt = """
+Request:
+$ARGUMENTS
+
+Read controller status and config/models.json. Report phase, owner, sealed intent,
+checks (actual status and evidence paths), missing section receipts, locked files,
+active batch, queued issues, and blocker. For uninitialized state recommend init.
+Distinguish model recommendations from the runtime-selected model. Do not read or
+recommend the removed model-router trace. Give one concrete next native /oma- command.
+Keep the report concise; never mark missing evidence as pass.
+"""

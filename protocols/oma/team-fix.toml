@@ -1,0 +1,15 @@
+description = "Repair only the current Stop-scheduled batch of at most three issues."
+prompt = """
+Task:
+$ARGUMENTS
+
+Inspect controller status. Require phase repair and a nonempty batch of <=3 issues.
+Stop selects the batch. Do not add backlog issues or edit passed/locked files.
+Ask oma-debugger for focused root-cause analysis and oma-executor for patch proposals.
+Only the owning main conversation applies patches to files named in the active batch.
+Run controller verify and section reviews again. End execution so Stop can lock passing
+code and select the next batch. A validator may group diagnostics; split its checks in
+the design plan when those should be independent repair units.
+If a fix needs a locked file, changed scope, or unavailable service, submit controller block.
+No fake responses, skipped tests, unconditional success exits, or invented evidence.
+"""

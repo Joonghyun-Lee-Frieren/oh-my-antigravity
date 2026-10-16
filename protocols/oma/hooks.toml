@@ -1,0 +1,12 @@
+description = "Inspect the three native guard events and their enforcement state."
+prompt = """
+Request:
+$ARGUMENTS
+
+Read root hooks.json and controller status. PreToolUse restricts tools/paths/owner,
+PreInvocation injects concise state context, and Stop closes design turns, locks passed
+files, and schedules <=3 repair units. There are no hook profiles that weaken safety.
+Use /hooks to inspect loaded runtime hooks. Report missing Node, duplicate registrations,
+old manually copied Gemini hooks, and unknown runtime behavior explicitly.
+Do not edit installed hooks or register alternate ones from a guarded conversation.
+"""

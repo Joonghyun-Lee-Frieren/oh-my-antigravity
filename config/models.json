@@ -1,0 +1,25 @@
+{
+  "verifiedOn": "2026-10-16",
+  "sources": [
+    "https://antigravity.google/docs/models",
+    "https://antigravity.google/docs/cli/headless/"
+  ],
+  "models": {
+    "gemini-4-argon": { "efforts": ["low", "medium", "high"], "use": "Architecture, planning, section review" },
+    "gemini-3.8-flash": { "efforts": ["low", "medium", "high"], "use": "Documentation, implementation, quick edits" }
+  },
+  "profiles": {
+    "balanced": {
+      "planning": "gemini-4-argon-high",
+      "execution": "gemini-3.8-flash-medium",
+      "quick_edit": "gemini-3.8-flash-low",
+      "review_verify": "gemini-4-argon-high"
+    },
+    "flash": {
+      "planning": "gemini-3.8-flash-high",
+      "execution": "gemini-3.8-flash-medium",
+      "quick_edit": "gemini-3.8-flash-low",
+      "review_verify": "gemini-3.8-flash-high"
+    }
+  }
+}
