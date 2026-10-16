@@ -5,9 +5,10 @@ Follow the [guard contract](../../../docs/guide/guarded-workflow.md) first. It o
 Request:
 Use the user request following this skill invocation.
 
-Read controller status and config/models.json. Report phase, owner, sealed intent,
+Read the bounded controller status and config/models.json. Report phase, owner, sealed intent,
 checks (actual status and evidence paths), missing section receipts, locked files,
 active batch, queued issues, and blocker. For uninitialized state recommend init.
+Include Design Check verdict, effective care, checkpoint, and next action.
 Distinguish model recommendations from the runtime-selected model. Do not read or
 recommend the removed model-router trace. Give one concrete next native /oma- command.
 Keep the report concise; never mark missing evidence as pass.

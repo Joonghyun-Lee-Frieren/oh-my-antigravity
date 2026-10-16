@@ -1,6 +1,6 @@
 # oh-my-antigravity (OmA)
 
-[![Version](https://img.shields.io/badge/version-1.0.0-0d8a83)](docs/history.md)
+[![Version](https://img.shields.io/badge/version-1.1.0-0d8a83)](docs/history.md)
 [![Checks](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-antigravity/version-check.yml?branch=main&label=checks)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -26,8 +26,9 @@ Inside the CLI, inspect `/plugin list` and `/hooks`, then start with:
 /oma-team-plan Describe the change and its acceptance criteria
 ```
 
-The documentation reader returns a concise summary. The parent seals the file scope,
-acceptance criteria, and executable checks, then **ends the design turn**. In your next turn:
+The documentation reader returns a concise summary. Record a Scope Brief, seal the
+file scope and checks, and request an independent Design Check. After it passes,
+**end the design turn**. In your next turn:
 
 ```text
 /oma-team-exec Implement the sealed plan
@@ -40,20 +41,20 @@ when checks or reviews fail. Missing services, permissions, or evidence can end 
 Read the [guarded workflow guide](docs/guide/guarded-workflow.md) for exact controller
 commands, JSON examples, recovery, and enforcement limits.
 
-## What's new in v1.0.0
+## What's new in v1.1.0
 
-| Change | Result |
+| Surface | Behavior |
 | --- | --- |
-| Native plugin layout | `plugin.json`, root `hooks.json`, `rules/`, and YAML skills |
-| Thin skill entrypoints | Every `SKILL.md` stays within 20 lines; detailed procedures load on demand |
-| Documentation first | `oma-doc-reader` has native read-only tools and passes summaries with sources/unknowns |
-| Separate turns | Implementation stays blocked until the sealed design execution has stopped |
-| PreToolUse gate | Exact scope, owner checks, protected evidence, restricted shell, and test-integrity checks |
-| Real verification | Sealed argv checks produce actual exit codes, logs, and source hashes |
-| Stop repair batches | At most three registered repair units per execution; bounded retries and explicit blockers |
-| Passed-file locks | Files lock after all covering checks and section reviews pass |
-| Section reviews | Hook constructs one <=120-line source section per reviewer invocation; stale hashes cannot pass |
-| Current models | Gemini 4 Argon and Gemini 3.8 Flash replace old preview defaults |
+| **Scope Brief** | Record the objective, constraints, non-goals, decision owners, and source conflicts; unresolved items block sealing |
+| **Design Check** | A read-only auditor checks the exact plan before the design turn can close; plan changes invalidate prior review |
+| **Evidence Window** | Read integrity-checked log excerpts with a bounded UTF-8 byte cursor; full output remains on disk |
+| **Session Trail** | Immutable JSON/Markdown checkpoints retain the current intent and next action; resume detects source/plan drift |
+| **Native review receipts** | The reviewer submits its own result from another conversation; the parent cannot author PASS or steer the review |
+| **Care profiles** | Routine/elevated/critical scopes use 120/90/60-line sections and 3/2/1-unit batches, while keeping all checks and locks |
+
+Sensitive paths can only raise care. Compact status/context packs keep full logs and
+receipt tickets out of routine model context. Checks still run and missing proof
+stays unknown. Read [schemas and examples](docs/guide/session-continuity.md).
 
 ## Models
 
@@ -76,12 +77,16 @@ profile. Older enterprise models may remain available; they are absent from ship
 
 ## Workflows and roles
 
-The plugin exposes 56 short skills, including 45 `/oma-<name>` command entrypoints,
-and 15 capability-limited agents. Use only the procedures relevant to the current task.
+The plugin exposes 60 short skills, including 49 `/oma-<name>` command entrypoints,
+and 16 capability-limited agents. Use only the procedures relevant to the current task.
 
 | Command | Purpose |
 | --- | --- |
 | `/oma-team-plan`, `/oma-team-prd` | Documentation handoff, scope, acceptance criteria, and design |
+| `/oma-brief` | Objective, constraints, decision ownership, and source conflicts |
+| `/oma-design-check` | Independent check of the exact sealed plan |
+| `/oma-evidence` | Bounded, integrity-checked validator log windows |
+| `/oma-checkpoint`, `/oma-resume` | Immutable handoff and read-only continuity inspection |
 | `/oma-team-exec` | Apply the sealed scope in the next user turn |
 | `/oma-team-verify` | Real checks and one-section review handoffs |
 | `/oma-team-fix` | The Stop-selected batch of up to three repair units |
@@ -93,17 +98,25 @@ and 15 capability-limited agents. Use only the procedures relevant to the curren
 
 `oma-doc-reader` reads specifications. `oma-planner` and `oma-architect` help design.
 `oma-executor` proposes patches; only the owning main conversation applies them.
-`oma-reviewer` examines one bounded section; `oma-verifier` checks acceptance evidence.
+`oma-design-auditor` checks the sealed plan. `oma-reviewer` examines one bounded section; `oma-verifier` checks acceptance evidence.
 Every shipped worker excludes write, shell, MCP, and delegation tools.
 
 The authoritative workflow state is `.omg/state/guard.json`; execution logs live in
 `.omg/evidence/`. Agents use `.omg/drafts/` for requests and auxiliary notes. The controller
-alone owns guard state and evidence. One workspace and one writer are allowed per workflow;
+alone owns guard state, evidence, and checkpoints. Independent reviewer messages are
+captured by the hook using the real sender identity. One workspace and one writer are allowed per workflow;
 use separate workflows for isolated worktrees.
 
-## Upgrade from Gemini CLI / v0.9
+## Upgrade from v1.0 or Gemini CLI
 
-Install the native plugin using `agy plugin install`. Native commands now use
+Reinstall the native plugin using `agy plugin install`. New plans require a settled
+Scope Brief and native Design Check. Independent roles need native send_message
+hooks with the actual child conversation ID; missing runtime support stays unknown.
+Existing v1.0 sealed state can finish through its legacy receipt path, but new plans
+always use the native path. Session Trail inspects current state without restoring
+old ownership, approval, or locks.
+
+Native commands use
 `/oma-team-exec`, replacing `/oma:team-exec`. The old TOML protocol sources live in
 `protocols/oma/` and generate native skill wrappers; they are outside the runtime's
 legacy `commands/` discovery directory to avoid duplicate registrations.
@@ -135,6 +148,8 @@ Edit command procedures in `protocols/oma/`, then run `npm run build:skills`.
 Core skill procedures live beside their entrypoints in `references/`.
 Tests cover turn boundaries, shell/path bypasses, ownership, failed/missing checks,
 review coverage, stale evidence, locks, repair limits, cancellation, and retry bounds.
+v1.1 also covers source conflicts, design receipt invalidation, actor spoofing, replay,
+care escalation, UTF-8 log paging, checkpoint corruption, and source drift on resume.
 
 ## Special thanks
 

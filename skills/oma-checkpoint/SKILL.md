@@ -1,6 +1,6 @@
 ---
 name: oma-checkpoint
-description: "Create a compact checkpoint snapshot for long-running OmA sessions."
+description: "Record an immutable Session Trail checkpoint with source hashes and a compact resume pack."
 ---
 
 Read [the protocol](references/protocol.md) for this command.

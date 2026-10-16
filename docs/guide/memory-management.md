@@ -7,6 +7,7 @@ than full transcripts.
 | Location | Owner / use |
 | --- | --- |
 | .omg/state/guard.json | Controller-owned phase, plan, check results, sections, receipts, batch, locks |
+| .omg/state/checkpoints/ | Controller-owned immutable Session Trail records and Markdown handoffs |
 | .omg/evidence/ | Controller-owned actual check output |
 | .omg/drafts/ | Main-conversation request JSON and auxiliary taskboard/checkpoint/memory notes |
 | skills/*/references/ | Versioned procedures loaded only when needed |
@@ -25,3 +26,5 @@ must preserve the prior record and explicitly reopen scope/locks when required.
 A stale guard.lock directory after a killed controller also needs operator inspection.
 
 See [the workflow contract](guarded-workflow.md).
+
+Use controller context for a compact current-state pack and controller resume for digest/source continuity checks. They never restore old authority. See [continuity features](session-continuity.md).

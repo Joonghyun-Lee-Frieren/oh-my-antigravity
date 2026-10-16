@@ -1,74 +1,70 @@
-# Guarded workflow (v1.0)
+# Guarded workflow (v1.1)
 
-OmA is a native Antigravity CLI plugin. Install with `agy plugin install <repo>`;
-inspect `/plugin list` and `/hooks`. Node.js 20+ is required for hook scripts.
-Skill commands use `/oma-team-plan`, `/oma-team-exec`, and `/oma-team-verify`.
-The retained `protocols/oma/*.toml` files are protocol sources for generated native
-skills; Antigravity does not need to discover Gemini TOML commands.
+OmA is a native Antigravity CLI plugin. Use a current CLI and Node.js 20+.
+Inspect `/plugin list` and `/hooks` after installing. Skill entrypoints stay within
+20 lines; references carry the procedures that are needed only for a particular task.
 
-## Boundaries
+## The delivery boundary
 
-`SKILL.md` contains a short entrypoint. Conditional procedures live in references.
-The hook controls enforce the following workflow:
-
-| Phase | Allowed work | Exit |
+| Phase | Work | Exit |
 | --- | --- | --- |
-| research | Native reads; read-only doc-reader; handoff drafts | `handoff` |
-| design | Scope, criteria, executable check definitions; drafts | `plan`, then end user turn |
-| ready | No code edits | `start` in next user turn |
-| implement | Main conversation edits exact planned files | `verify` |
-| review | Read-only section reviews and receipt drafts | `review`, then Stop |
-| repair | Edits only files in the current <=3-issue batch | `verify`, section reviews, Stop |
-| complete | Read-only; passed files remain locked | Operator starts another scoped workflow |
-| blocked | Read-only; exact blocker retained | Operator recovery |
+| research | Read-only documentation handoff | controller handoff |
+| design | Scope Brief, exact plan, independent Design Check | current design pass, then end user turn |
+| ready | Code remains read-only | controller start in the next user turn |
+| implement | Main conversation edits exact planned files | controller verify |
+| review | Independent bounded section reviews | native receipts, then Stop |
+| repair | Only the Stop-selected repair batch | verification and independent reviews |
+| complete | Passed files remain locked | Report result; explicitly start another scoped workflow |
+| blocked | Keep evidence and the actual blocker | Operator recovery |
 
-The parent alone writes code and state. All shipped subagents have native tool
-allowlists that exclude shell, writes, MCP, and further delegation. The doc-reader
-returns <=600 words, sources, and unknowns. The executor proposes a patch; the
-parent applies it. The reviewer receives one section of at most 120 lines, its
-hash, criteria, and relevant check logs. For `invoke_subagent`, set the reviewer's
-`Prompt` to one exact section ID. PreToolUse replaces it with the bounded source,
-hash, criteria, and evidence pointers, and rejects arbitrary review prompts.
-Larger files become several handoffs.
-Separate invocations may run concurrently, but never ask one reviewer to approve
-the whole repository. The controller aggregates receipts and checks every section.
+The parent applies patches and runs sealed checks. All 16 workers exclude shell,
+file writes, MCP, and further delegation. Only the reviewer and design auditor have
+send_message, for submitting their own issued receipt to the workflow owner.
 
 ## Controller
 
-`PreInvocation` supplies the absolute installed controller path. Invoke it with
-`run_command` using precisely this shape (replace the path):
+PreInvocation supplies the installed controller path. Use this exact command shape:
 
 ```text
 node "<installed-plugin>/scripts/workflow.mjs" init
 node "<installed-plugin>/scripts/workflow.mjs" status
 node "<installed-plugin>/scripts/workflow.mjs" handoff .omg/drafts/handoff.json
-node "<installed-plugin>/scripts/workflow.mjs" plan .omg/drafts/plan.json
 ```
 
-Do not add root/owner arguments. `PreToolUse` supplies those from the hook's single
-workspace and conversation identity. It replaces the command with an invocation
-of the actual Node executable and installed controller, outside shell parsing.
-Extra flags, pipes, command substitution, separators, arbitrary shells, inline
-interpreters, alternate controllers, and asynchronous command input are denied.
-Native read tools remain available. Unknown tools are denied rather than assumed
-safe. Runtime permissions still apply; a hook `allow` does not auto-approve them.
+PreToolUse overwrites root/owner and the Node executable from native hook metadata.
+Do not add flags, pipes, substitutions, shell commands, or alternate controllers.
+Exactly one workspace and one owning conversation are allowed. Native read tools
+remain available, including reads of installed plugin references.
 
-Save a doc-reader handoff using a native file tool:
+Save the doc-reader result with native file tools:
 
 ```json
 {
   "agent": "oma-doc-reader",
-  "summary": "The discount rounds once at the currency boundary.",
+  "summary": "The final invoice rounds once at the currency boundary.",
   "sources": ["docs/pricing.md"],
   "unknowns": []
 }
 ```
 
-Then seal a plan. Paths are exact workspace-relative paths. Every file and
-acceptance criterion must have a check. Validators are argv arrays, never shell
-strings. On Windows, use Node plus a script instead of relying on npm.cmd through
-a shell. Keep validators short (30 seconds each); design separate checks for
-independently repairable failures.
+The handoff is bounded. Do not replace full-document reading with an unsupported
+claim based on a few search matches. Preserve versions and conflicting claims.
+
+## Scope Brief and design
+
+Use `/oma-brief` to record the objective, constraints, non-goals, decision owners,
+and source conflicts. Already supplied user instructions settle the corresponding
+user decisions; do not ask for approval again. Read discoverable facts yourself.
+Open decisions and conflicts block sealing. See [continuity features](session-continuity.md)
+for the exact brief schema and care policy.
+
+```text
+node "<installed-plugin>/scripts/workflow.mjs" brief .omg/drafts/brief.json
+node "<installed-plugin>/scripts/workflow.mjs" plan .omg/drafts/plan.json
+```
+
+The plan intent must equal the brief objective. A plan names exact relative files,
+acceptance criteria, and executable checks. Every file and criterion needs a check:
 
 ```json
 {
@@ -76,129 +72,157 @@ independently repairable failures.
   "criteria": ["rounding", "existing-contract"],
   "files": ["src/pricing.js", "tests/pricing.test.js"],
   "testFiles": ["tests/pricing.test.js"],
-  "checks": [
-    {
-      "id": "pricing",
-      "argv": ["node", "scripts/check-pricing.mjs"],
-      "files": ["src/pricing.js", "tests/pricing.test.js"],
-      "criteria": ["rounding", "existing-contract"]
-    }
-  ]
+  "checks": [{
+    "id": "pricing",
+    "argv": ["node", "scripts/check-pricing.mjs"],
+    "files": ["src/pricing.js", "tests/pricing.test.js"],
+    "criteria": ["rounding", "existing-contract"]
+  }]
 }
 ```
 
-End the design turn. `Stop` changes `design` to `ready` and permits the stop;
-it does not continue into implementation. In the next user turn:
+Validators are argv arrays, never shell strings. Node/Python validators must be
+existing workspace scripts; inline interpreters and shells are rejected. On Windows,
+use Node plus a script rather than relying on npm.cmd through a shell. Each check
+has a 30-second timeout. Validators are trusted project code, not sandboxed by OmA.
+
+Request `/oma-design-check`: invoke oma-design-auditor with Prompt exactly `plan`.
+The hook supplies the brief, documentation handoff, exact plan hash, care policy,
+and a receipt ticket. The auditor checks intent fidelity, acceptance coverage,
+source conflicts, and whether the tests could pass without exercising the behavior.
+
+The auditor submits pass/revise/unknown through its own native send_message call.
+The parent cannot submit or amend that verdict. Resealing a plan or changing the
+brief invalidates older tickets and verdicts. Stop sets ready only after the current
+native Design Check passes. It permits the design turn to stop normally.
+
+Start implementation in the **next user turn**:
 
 ```text
 node "<installed-plugin>/scripts/workflow.mjs" start
 ```
 
-Edit using native file tools, then run:
+Scoped source hashes must still match the design basis. Drift requires reconciliation.
 
-```text
-node "<installed-plugin>/scripts/workflow.mjs" verify
-```
+## Verification and independent review
 
-Verification executes sealed checks without a shell and records actual exit codes,
-timestamps, output logs, and source hashes in controller-owned state/evidence.
-Timeouts, missing binaries, and nonzero exits fail. Validation that modifies scoped
-code is rejected. Review the resulting `sections` independently. Example receipt:
+Edit with native file tools, then run controller verify. It executes the sealed
+checks without a shell and records actual exit codes, logs, timestamps, log digests,
+and source hashes. Missing executables, timeouts, and nonzero exits fail. A validator
+that changes scoped code cannot establish valid evidence.
+
+Invoke oma-reviewer with Prompt equal to one current section ID from status, such
+as `src/pricing.js:1`. The hook constructs the packet: bounded source, current hash,
+criteria, check results, and bounded log windows. Oversized packets are rejected,
+not silently truncated. A reviewer may read a specific dependency to trace behavior.
+
+Both independent roles use send_message with the issued Recipient and a JSON Message:
 
 ```json
 {
-  "agent": "oma-reviewer",
-  "section": "src/pricing.js:1",
-  "hash": "<hash supplied by the controller>",
-  "verdict": "pass",
-  "criteria": ["rounding", "existing-contract"],
-  "evidence": "Lines 18-24 round the final amount once; pricing log covers the half-cent case.",
-  "findings": []
+  "omaReceipt": {
+    "token": "<issued ticket>",
+    "receipt": {
+      "agent": "oma-reviewer",
+      "section": "src/pricing.js:1",
+      "hash": "<issued source hash>",
+      "verdict": "pass",
+      "criteria": ["rounding", "existing-contract"],
+      "evidence": "Lines 18-24 round once; the check exercises the half-cent boundary.",
+      "findings": []
+    }
+  }
 }
 ```
 
-The parent saves one receipt at a time and submits it:
+The hook records the actual sender conversation ID. A sender equal to the parent,
+a wrong recipient, an unknown/superseded ticket, changed source, or a changed replay
+is rejected. An identical retry from the same sender is idempotent. Parent follow-up
+messages are blocked to prevent steering a reviewer toward PASS. The design receipt
+uses agent oma-design-auditor, planHash, and verdict pass/revise/unknown instead of
+section/hash. Its criteria and findings are still required.
 
-```text
-node "<installed-plugin>/scripts/workflow.mjs" review .omg/drafts/review-1.json
-```
+Missing native submission stays unknown. There is no parent-written fallback for
+v1.1 plans. A section pass requires no open findings; findings need an in-section
+line and a reproducible reason. Runtime-observed submission establishes who sent
+which verdict against which issued basis. It does not prove that the judgment is
+correct, that all dependencies were read, or that arbitrary code is truthful.
 
-Use `fail` or `unknown` when warranted. Findings need a line in the assigned section
-and a reproducible reason. A pass with open findings is rejected. `Stop` cannot
-complete the workflow until every section has a current pass and every check passes.
+## Care, repairs, and locks
 
-## Repair scheduling and locks
+| Effective care | Section cap | Repair units / execution | Repair cycles |
+| --- | --- | --- | --- |
+| routine | 120 lines | 3 | 6 |
+| elevated | 90 lines | 2 | 5 |
+| critical | 60 lines | 1 | 4 |
 
-At a fully idle `model_stop`, Stop locks each file whose covering checks and all
-sections passed. Locks store SHA-256 hashes. Failed checks and non-passing sections
-become repair units. Stop selects at most three, restricts edits to their files,
-and returns `decision: continue` for the next execution slice. A check may represent
-multiple diagnostics; the limit is three registered repair units, not a claim to
-understand every compiler diagnostic. Use focused checks to make that granularity
-meaningful. Do not work on queued issues simply because they share a file.
+The brief may request stronger care. Scoped auth/security/permissions/migration paths,
+hooks, and scripts/workflow.mjs force critical care; config/api/contract path segments
+force at least elevated care. Unknown semantic risk still needs judgment. Classification
+cannot remove executable checks, independent review, turn separation, or locks.
 
-Run checks and section reviews after each batch. Passing files stay locked across
-batches and subsequent workflows. A changed locked hash blocks further actions.
-Scope/path changes and locked-code regressions require operator recovery. The
-controller permits six repair cycles; two repeated unchanged failures block it.
-At most two verification reminders may continue an unverified implementation.
-Duplicate Stop events, cancellation, system errors, max-step exits, and active
-background work do not launch repair loops. Missing section receipts remain unknown
-and stop normally so an unavailable reviewer cannot create an infinite loop.
+At fully idle model_stop, Stop locks files whose covering checks and all sections
+passed. Failed checks and non-passing sections become repair units. The selected
+batch restricts editable files. Do not fix queued units merely because they share a
+file. A check may group diagnostics; split checks during design for finer scheduling.
+
+Every batch returns to verification. Locks retain SHA-256 hashes across batches and
+subsequent workflows. Scope changes and locked-code regressions require explicit
+operator recovery. Two unchanged repeated failures block further repairs. At most
+two verification reminders continue an unverified implementation. Duplicate Stop,
+cancellation, errors, exhausted executions, and live background tasks do not restart
+repair loops. Missing reviews stop normally, without an infinite continuation loop.
+
+## Evidence Window and Session Trail
+
+Status and PreInvocation use a compact context pack: current intent, care, phase,
+check counts/results, next section IDs, active batch, lock count, and exact next action.
+Omitted items are labeled. Raw logs and receipt tickets do not enter that pack.
+
+Use `/oma-evidence` to page through a real log with an integrity-checked UTF-8 byte
+cursor. Full output stays on disk. Native direct evidence-file reads are gated so a
+single large log cannot flood the conversation. Reviewers receive bounded windows;
+missing or omitted relevant proof remains unknown.
+
+Use `/oma-checkpoint` to record an immutable JSON and Markdown Session Trail entry.
+Plan/start/verify/block and normal Stop transitions also record checkpoints. `/oma-resume`
+compares the latest record with current owner, workspace, plan, and source hashes.
+It reports the current next action. It never restores an old snapshot, transfers
+ownership, unlocks code, clears a blocker, or grants permission.
 
 ## Honest failure and recovery
 
-If a dependency, credential, capability, or service is missing, save its real cause:
-
 ```json
-{ "reason": "Integration check cannot connect to the configured staging service." }
+{ "reason": "The configured staging service is unavailable; integration evidence is missing." }
 ```
 
-```text
-node "<installed-plugin>/scripts/workflow.mjs" block .omg/drafts/blocker.json
-```
+Save under .omg/drafts/ and submit controller block. Do not return a fabricated
+service response, swallow a failed check, skip tests, or manufacture a success exit.
+Test/fixture files require explicit testFiles scope. Pattern checks catch common
+validation bypasses; meaningful behavioral checks and reviewers assess semantics.
 
-There is no agent command to set checks to pass, overwrite evidence, widen a sealed
-plan, clear locks, reset a live workflow, or write guard state. Test/fixture paths
-must be explicit in `testFiles`. Common skipped/focused tests and unconditional
-success exits are rejected. Semantic fabrication still requires relevant behavioral
-checks and a reviewer; string matching cannot prove arbitrary code is truthful.
+State/evidence/checkpoints are controller-owned. Writes use an atomic state replace
+and an atomic directory mutex. A killed controller may leave guard.lock; the operator
+must inspect it before removing a stale mutex. Preserve evidence during recovery.
+A new conversation cannot silently take ownership. Old v1.0 sealed states retain
+the legacy receipt path until a new plan is sealed; new plans always use native receipts.
 
-For recovery, the operator should inspect `.omg/state/guard.json`, preserve its
-evidence, resolve the blocker, and explicitly archive/reinitialize the state or
-reopen a specific lock outside the guarded agent. Never delete evidence to hide a
-failure. A new owner cannot silently take over an existing workflow.
+The harness constrains tools, not the operating system. Operators can change plugin
+files or run external commands. Use the runtime sandbox when needed. Current clients
+must execute child send_message hooks with the actual child conversation ID. Missing
+hook behavior leaves receipts unknown; never infer readiness from static validation.
+Authenticated CLI smoke tests remain necessary for each deployed runtime build.
 
-These are tool/workflow constraints, not an OS security sandbox. Validators are
-trusted project code and execute with the CLI user's permissions. An operator who
-changes hook files or runs commands outside the CLI can bypass the harness. Review
-validator definitions in the design turn and keep runtime sandboxing enabled when
-needed. Review receipts are structured agent judgments, not cryptographic proof of
-who reviewed them. Native capability limits enforce read-only worker tools.
+## Models and sources
 
-## Models and migration
+config/models.json retains Gemini 4 Argon and Gemini 3.8 Flash recommendations.
+Run agy models for account availability and select through agy --model or the runtime
+selector. Subagents inherit the selected model; hooks do not override it.
 
-`config/models.json` is the maintained catalog (verified 2026-10-16). Balanced
-recommends `gemini-4-argon-high` for design/review and `gemini-3.8-flash-medium` for
-implementation; quick work uses `gemini-3.8-flash-low`. The explicit `flash` profile
-uses 3.8 Flash throughout. Confirm account availability with `agy models` and select
-through `agy --model <id>`. Subagents inherit the selected runtime model. No hook
-pretends to override models through unsupported fields. Older enterprise models may
-still exist, but removed preview IDs are no longer shipped defaults.
+[Official hooks](https://antigravity.google/docs/hooks),
+[plugins](https://antigravity.google/docs/plugins?tab=cli),
+[subagents](https://antigravity.google/docs/subagents),
+[models](https://antigravity.google/docs/models).
 
-Remove manually copied Gemini hooks before using the native plugin; root
-`hooks.json` is authoritative. Hook commands run relative to their containing plugin
-directory. No undocumented `PLUGIN_ROOT` substitution is assumed. Use the current
-CLI; older clients may lack modern agent capability controls. Run `agy plugin
-validate <path>` and inspect `/hooks` after installation. A real authenticated smoke
-test is still required to establish behavior on a particular CLI build.
-
-Sources: [Antigravity plugins](https://antigravity.google/docs/plugins?tab=cli),
-[hooks](https://antigravity.google/docs/hooks),
-[subagent capability fields](https://antigravity.google/docs/subagents),
-[models](https://antigravity.google/docs/models),
-[headless model selection](https://antigravity.google/docs/cli/headless/).
-
-Special thanks to **@hyunuk.lim (threads)**. His threads and posts were a major
-help in shaping this approach to small skills, physical tool boundaries, honest
-failure, bounded repair batches, and focused reviews.
+Special thanks to **@hyunuk.lim (threads)**. His threads and posts were a major help
+in shaping thin skills, physical tool boundaries, honest failure, and focused reviews.

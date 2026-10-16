@@ -1,0 +1,14 @@
+description = "Request independent Design Check for the exact sealed plan before implementation."
+prompt = """
+Request:
+$ARGUMENTS
+
+Require design phase and a sealed plan. Invoke oma-design-auditor with Prompt exactly
+plan. The hook supplies the Scope Brief, documentation summary, plan, effective care,
+and a receipt ticket. Never suggest a verdict, claim approval implies PASS, or send
+follow-up steering messages. The auditor submits pass/revise/unknown through its own
+send_message tool. The parent cannot submit or amend the receipt.
+Inspect controller status. Revise the brief/plan for concrete findings; resealing
+invalidates old tickets and verdicts. Missing native receipts remain unknown.
+End the design user turn only after the current Design Check passes.
+"""

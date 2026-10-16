@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="OmA is a native Antigravity CLI plugin: thin skills, read-only documentation agents, guarded edits, three-issue repair batches, and focused section reviews.">
+  <meta name="description" content="OmA is a native Antigravity CLI plugin: Scope Brief, independent Design Check, bounded evidence, and verified session continuity for Antigravity CLI.">
   <meta name="theme-color" content="#073d3a">
   <title>OmA &mdash; Guarded workflows for Antigravity CLI</title>
   <style>
@@ -15,14 +15,14 @@
     .hero{display:grid;grid-template-columns:1.2fr 1fr;gap:64px;align-items:center;padding:85px 0 70px}.eyebrow{font-family:var(--mono);font-size:.75rem;letter-spacing:.13em;text-transform:uppercase;color:var(--green);margin:0 0 22px}.eyebrow::before{content:"";display:inline-block;width:8px;height:8px;background:var(--green);border-radius:50%;margin-right:10px}h1{font-size:clamp(2.6rem,5.6vw,4.6rem);line-height:1.08;letter-spacing:-.055em;margin:0 0 26px;font-weight:750}h1 em{font-style:normal;color:var(--green)}.lead{font-size:1.07rem;color:var(--muted);max-width:570px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:29px}.button{display:inline-flex;justify-content:center;align-items:center;padding:11px 19px;border-radius:8px;background:var(--green);color:#fff;text-decoration:none;font-weight:600;font-size:.9rem;border:1px solid var(--green)}.button.secondary{background:transparent;color:var(--green)}
     .terminal{background:var(--deep);border-radius:var(--radius);color:#e3f3e8;box-shadow:0 18px 45px #13382b16;overflow:hidden;min-width:0}.terminal-top{padding:16px 21px;border-bottom:1px solid #ffffff20;display:flex;justify-content:space-between;align-items:center;font:12px var(--mono);color:#a2c6b8}.dots{letter-spacing:5px;color:#8fb5a5}.terminal-body{padding:27px}.comment{color:#a0c4b3;font:12px var(--mono);margin:0 0 14px}.install{display:block;font:13px/1.8 var(--mono);overflow-wrap:anywhere;color:var(--accent)}.copy{border:1px solid #ffffff40;background:transparent;color:#e3f3e8;border-radius:6px;padding:7px 13px;font:12px var(--mono);cursor:pointer;margin:18px 0 29px}.terminal-step{border-top:1px solid #ffffff20;padding-top:18px;margin-top:18px}.terminal-step p{margin:6px 0 0;font-size:.83rem;color:#c1d9cb}.terminal-step code{font:13px var(--mono);color:var(--accent)}.label{display:block;font:10px var(--mono);letter-spacing:.1em;color:#a0c4b3;margin-bottom:7px}
     .strip{display:flex;gap:24px;flex-wrap:wrap;justify-content:space-between;padding:20px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:.82rem;color:var(--muted)}.strip strong{color:var(--ink)}
-    section{padding:65px 0 0}h2{font-size:clamp(1.75rem,3.2vw,2.45rem);letter-spacing:-.04em;line-height:1.2;margin:0 0 15px}.intro{color:var(--muted);max-width:730px;margin:0 0 28px}.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px}.section-number{font:12px var(--mono);color:var(--green)}
+    .release-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:17px}section{padding:65px 0 0}h2{font-size:clamp(1.75rem,3.2vw,2.45rem);letter-spacing:-.04em;line-height:1.2;margin:0 0 15px}.intro{color:var(--muted);max-width:730px;margin:0 0 28px}.section-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px}.section-number{font:12px var(--mono);color:var(--green)}
     .flow{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--paper)}.flow article{padding:26px;border-right:1px solid var(--line)}.flow article:last-child{border:0}.flow b{display:block;font:12px var(--mono);color:var(--green);margin-bottom:20px}.flow h3{margin:0 0 8px;font-size:1.03rem}.flow p{margin:0;font-size:.88rem;color:var(--muted)}.turn-boundary{margin:15px 0 0;padding:13px 19px;border-left:3px solid var(--green);background:#e9f0e5;font-size:.86rem;color:var(--muted)}
     .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:27px}.card code{font:11px var(--mono);color:var(--green);text-transform:uppercase;letter-spacing:.06em}.card h3{font-size:1.05rem;margin:17px 0 10px}.card p{font-size:.9rem;color:var(--muted);margin:0}
     .table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper)}table{border-collapse:collapse;width:100%;text-align:left;font-size:.9rem}th,td{padding:17px 23px;border-bottom:1px solid var(--line)}th{background:#eaf0e8;font-size:.75rem;letter-spacing:.04em;text-transform:uppercase}tr:last-child td{border:0}td code{font:12px var(--mono);white-space:nowrap}.note{font-size:.83rem;color:var(--muted);margin-top:16px}.note code{font-family:var(--mono);font-size:.9em}
     .split{display:grid;grid-template-columns:1fr 1fr;gap:40px}.migration{padding:29px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius)}.migration h3{margin:0 0 12px;font-size:1.1rem}.migration p{color:var(--muted);font-size:.9rem;margin:0 0 12px}.migration code{font-size:.83em;overflow-wrap:anywhere}.thanks{margin-top:65px;padding:36px 39px;background:var(--deep);border-radius:var(--radius);color:#e4f0e5;display:grid;grid-template-columns:1fr 1.5fr;gap:35px}.thanks h2{font-size:1.55rem;color:var(--accent);margin:0}.thanks p{margin:0;color:#c7dccf;font-size:.93rem}.thanks strong{color:#fff}
     footer{padding:35px 0 42px;display:flex;justify-content:space-between;gap:20px;font-size:.8rem;color:var(--muted)}footer a{color:var(--muted)}
     @media(max-width:900px){.hero{grid-template-columns:1fr;gap:35px;padding:52px 0}.terminal{max-width:620px}.flow{grid-template-columns:1fr 1fr}.flow article:nth-child(2){border-right:0}.flow article:nth-child(-n+2){border-bottom:1px solid var(--line)}.cards{grid-template-columns:1fr 1fr}.split{gap:18px}.thanks{grid-template-columns:1fr;gap:18px}}
-    @media(max-width:560px){.wrap{width:calc(100% - 32px)}nav{gap:10px}.brand span{display:none}.navlinks{gap:14px;font-size:.8rem}.hero{padding-top:43px}h1{font-size:2.9rem}.strip{gap:10px 22px;justify-content:flex-start}.cards,.split,.flow{grid-template-columns:1fr}.flow article{border-right:0;border-bottom:1px solid var(--line)}.flow article:last-child{border:0}.flow b{margin-bottom:10px}.card{padding:23px}section{padding-top:45px}.thanks{margin-top:45px;padding:27px}footer{flex-direction:column;gap:10px}th,td{padding:14px 17px}.section-head{align-items:center}.section-number{white-space:nowrap}}
+    @media(max-width:560px){.wrap{width:calc(100% - 32px)}nav{gap:10px}.brand span{display:none}.navlinks{gap:14px;font-size:.8rem}.hero{padding-top:43px}h1{font-size:2.9rem}.strip{gap:10px 22px;justify-content:flex-start}.cards,.split,.flow,.release-cards{grid-template-columns:1fr}.flow article{border-right:0;border-bottom:1px solid var(--line)}.flow article:last-child{border:0}.flow b{margin-bottom:10px}.card{padding:23px}section{padding-top:45px}.thanks{margin-top:45px;padding:27px}footer{flex-direction:column;gap:10px}th,td{padding:14px 17px}.section-head{align-items:center}.section-number{white-space:nowrap}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
   </style>
 </head>
@@ -31,14 +31,14 @@
   <div class="wrap">
     <nav aria-label="Main navigation">
       <a class="brand" href="#">OmA<span>OH-MY-ANTIGRAVITY</span></a>
-      <div class="navlinks"><a href="#workflow">Workflow</a><a href="#models">Models</a><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity">GitHub ↗</a></div>
+      <div class="navlinks"><a href="#release">Updates</a><a href="#workflow">Workflow</a><a href="#models">Models</a><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity">GitHub ↗</a></div>
     </nav>
     <main id="main">
       <header class="hero">
         <div>
-          <p class="eyebrow">v1.0.0 · Native Antigravity CLI plugin</p>
+          <p class="eyebrow">v1.1.0 · Native Antigravity CLI plugin</p>
           <h1>Small skills.<br>Concrete limits.<br><em>Evidence first.</em></h1>
-          <p class="lead">Turn a coding session into a controlled engineering workflow. Read the specs, end the design turn, implement a sealed scope, and review it in small sections.</p>
+          <p class="lead">Keep intent and evidence intact across long coding sessions. Settle decisions, check the design independently, and resume from recorded state.</p>
           <div class="actions"><a class="button" href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity#install">Get started ↗</a><a class="button secondary" href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/guide/guarded-workflow.md">Read the guard contract</a></div>
         </div>
         <div class="terminal" aria-label="Installation and first steps">
@@ -47,18 +47,29 @@
             <p class="comment"># Install the native plugin</p>
             <code class="install" id="install-command">agy plugin install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity</code>
             <button class="copy" id="copy" type="button" aria-label="Copy installation command">Copy command</button><span id="copy-status" role="status" aria-live="polite"></span>
-            <div class="terminal-step"><span class="label">TURN 01 / READ &amp; DESIGN</span><code>/oma-team-plan</code><p>Summarize documentation. Seal scope and checks. Stop.</p></div>
-            <div class="terminal-step"><span class="label">TURN 02 / IMPLEMENT &amp; VERIFY</span><code>/oma-team-exec</code><p>Apply the plan. Run real checks. Request section reviews.</p></div>
+            <div class="terminal-step"><span class="label">TURN 01 / READ &amp; DESIGN</span><code>/oma-team-plan</code><p>Read docs. Settle Scope Brief. Pass Design Check. Stop.</p></div>
+            <div class="terminal-step"><span class="label">TURN 02 / IMPLEMENT &amp; VERIFY</span><code>/oma-team-exec</code><p>Apply the plan. Run checks. Collect native review receipts.</p></div>
           </div>
         </div>
       </header>
       <div class="strip"><span><strong>≤20 lines</strong> per skill entrypoint</span><span><strong>Read-only</strong> worker tools</span><span><strong>≤3 issues</strong> per repair batch</span><span><strong>≤120 lines</strong> per review</span></div>
+      <section id="release">
+        <div class="section-head"><h2>Keep the decisions. Keep the proof.</h2><span class="section-number">NEW / v1.1.0</span></div>
+        <p class="intro">Four focused surfaces carry the task from its first decisions to a reliable handoff. The existing edit guards, checks, and passed-file locks stay in place.</p>
+        <div class="release-cards">
+          <article class="card"><code>/oma-brief</code><h3>Scope Brief</h3><p>Record what should change, what should stay, and who owns each decision. Open questions and conflicting sources prevent the plan from being sealed.</p></article>
+          <article class="card"><code>/oma-design-check</code><h3>Design Check</h3><p>An independent auditor checks the exact plan before implementation. The auditor submits its own verdict; a changed plan needs a fresh check.</p></article>
+          <article class="card"><code>/oma-evidence</code><h3>Evidence Window</h3><p>Inspect the useful part of a long verification log without filling the conversation. Each bounded window includes integrity, position, and a next cursor.</p></article>
+          <article class="card"><code>/oma-checkpoint · /oma-resume</code><h3>Session Trail</h3><p>Preserve a compact handoff and compare it with current source when you return. Drift is explicit; an old snapshot never restores permission or clears locks.</p></article>
+        </div>
+        <p class="note">Care scales with the scope: routine, elevated, and critical work use review caps of 120, 90, and 60 lines and repair batches of 3, 2, and 1. Sensitive paths can only raise care. Every profile retains real checks and independent receipts. <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/guide/session-continuity.md">Read the operating guide ↗</a></p>
+      </section>
       <section id="workflow">
         <div class="section-head"><h2>A boundary at every handoff.</h2><span class="section-number">01 / WORKFLOW</span></div>
         <p class="intro">Procedures load when needed. Native capability limits and lifecycle hooks enforce the work that can happen in each phase.</p>
         <div class="flow">
           <article><b>01 / READ</b><h3>Documentation first</h3><p>A dedicated agent returns a short summary, sources, constraints, and unknowns. No writes or shell access.</p></article>
-          <article><b>02 / DESIGN</b><h3>Seal the contract</h3><p>Choose exact files, measurable criteria, and executable checks. End the user turn before implementation.</p></article>
+          <article><b>02 / DESIGN</b><h3>Seal the contract</h3><p>Resolve Scope Brief decisions, seal exact files and checks, and obtain an independent Design Check. End the user turn.</p></article>
           <article><b>03 / IMPLEMENT</b><h3>Stay inside scope</h3><p>The owning conversation applies patches. PreToolUse rejects off-scope edits, shell bypasses, and evidence writes.</p></article>
           <article><b>04 / VERIFY</b><h3>Prove each section</h3><p>Actual check results and focused reviews determine completion. Stop locks passed files and schedules bounded repairs.</p></article>
         </div>
@@ -72,7 +83,7 @@
           <article class="card"><code>Verification</code><h3>Results from execution</h3><p>Sealed argv checks record real exit codes, output, and source hashes. There is no agent command to declare a failed check passed.</p></article>
           <article class="card"><code>Stop</code><h3>Fix up to three</h3><p>One batch contains at most three failed validators or non-passing sections. Every batch returns to verification before another is assigned.</p></article>
           <article class="card"><code>Hash locks</code><h3>Keep passed code stable</h3><p>A file locks after its checks and every section pass. Further edits and stale evidence are rejected. Reopening requires operator recovery.</p></article>
-          <article class="card"><code>Section review</code><h3>A small, concrete assignment</h3><p>The hook builds one source section of up to 120 lines per reviewer. Each receipt names its hash, criteria, evidence, and any reproducible findings.</p></article>
+          <article class="card"><code>Section review</code><h3>A small, concrete assignment</h3><p>The hook builds one source section of up to 120 lines per reviewer. Receipts come from the reviewer’s own conversation. The parent cannot write PASS or steer its verdict.</p></article>
           <article class="card"><code>Fail / unknown / blocked</code><h3>No manufactured success</h3><p>Do not fake service responses, skip validation, or invent logs. Bounded retries and explicit blockers stop unproductive repair loops.</p></article>
         </div>
         <p class="note">Tool constraints complement runtime sandboxing. Trusted project validators and relevant behavioral reviews remain essential; pattern checks cannot prove arbitrary code is truthful. A repair unit may contain multiple diagnostics.</p>
@@ -91,13 +102,13 @@
       <section>
         <div class="section-head"><h2>Native from the entrypoint down.</h2><span class="section-number">04 / UPGRADE</span></div>
         <div class="split">
-          <article class="migration"><h3>Moving from v0.9</h3><p>Install with <code>agy plugin install</code>. Commands now use <code>/oma-team-exec</code> in place of <code>/oma:team-exec</code>. Remove old manually copied Gemini hooks.</p><p>The old model router and automatic learn nudge are removed. Use native model selection and <code>/oma-learn</code> explicitly.</p><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity#upgrade-from-gemini-cli--v09">Migration details ↗</a></article>
-          <article class="migration"><h3>A compact control plane</h3><p>56 short skill entrypoints, 15 read-only workers, and three guard events. The controller owns state and verification evidence; agents exchange drafts and focused summaries.</p><p>Use <code>/oma-status</code> for progress, <code>/oma-doctor</code> for diagnostics, and <code>/oma-team-verify</code> for remaining evidence.</p><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/history.md">Read the v1.0.0 history ↗</a></article>
+          <article class="migration"><h3>Moving from v1.0</h3><p>Reinstall with <code>agy plugin install</code>. New plans require Scope Brief and native Design Check. Current clients must support child review messages and hooks.</p><p>Existing v1.0 sealed work can finish through its legacy path. New plans use native independent receipts; missing support remains unknown.</p><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity#upgrade-from-v10-or-gemini-cli">Migration details ↗</a></article>
+          <article class="migration"><h3>A compact control plane</h3><p>60 short skill entrypoints, 16 capability-limited workers, and three guard events. Compact state packs retain the current next action; full evidence stays on disk.</p><p>Use <code>/oma-status</code> for progress, <code>/oma-doctor</code> for diagnostics, and <code>/oma-team-verify</code> for remaining evidence.</p><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/history.md">Read the v1.1.0 history ↗</a></article>
         </div>
       </section>
       <aside class="thanks" aria-label="Acknowledgment"><h2>Ideas worth building on.</h2><p><strong>Special thanks to <a href="https://www.threads.com/@hyunuk.lim" style="color:var(--accent)">@hyunuk.lim</a> (threads).</strong> His threads and posts were a major help in shaping this refactor: thin skills, physical tool constraints, honest failure, bounded repairs, and focused reviews.</p></aside>
     </main>
-    <footer><span>oh-my-antigravity · v1.0.0 · MIT</span><span><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/README_ko.md" lang="ko">한국어</a> · <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity">Source</a> · <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/history.md">History</a> · <a href="https://github.com/sponsors/Joonghyun-Lee-Frieren">Sponsor</a></span></footer>
+    <footer><span>oh-my-antigravity · v1.1.0 · MIT</span><span><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/README_ko.md" lang="ko">한국어</a> · <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity">Source</a> · <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/history.md">History</a> · <a href="https://github.com/sponsors/Joonghyun-Lee-Frieren">Sponsor</a></span></footer>
   </div>
   <script>
     const copy = document.getElementById('copy');

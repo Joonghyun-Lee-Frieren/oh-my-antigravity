@@ -1,0 +1,17 @@
+description = "Create a Scope Brief with decision owners, constraints, non-goals, and explicit source conflicts."
+prompt = """
+Request:
+$ARGUMENTS
+
+Read the guard contract and controller status. Initialize and obtain oma-doc-reader's
+summary first if needed. Save .omg/drafts/brief.json with objective, risk
+(routine|elevated|critical), constraints, nonGoals, decisions, and conflicts.
+Decisions have id, owner (user|agent), status (open|resolved), question, and,
+when resolved, answer and basis. Conflicts have topic, at least two sources,
+status, and resolution when settled. Use empty arrays when none exist.
+Settle discoverable facts by reading sources. Ask only unresolved user decisions;
+existing instructions count as the user's decision and must not be asked again.
+Never silently choose between conflicting source claims. Submit controller brief
+with the draft path. Plan intent must match objective exactly. Open decisions/conflicts
+prevent sealing. A revised brief invalidates the previous Design Check.
+"""

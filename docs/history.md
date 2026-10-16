@@ -2,6 +2,26 @@
 
 All notable changes to oh-my-antigravity are documented here.
 
+## v1.1.0 - Scope and Session Continuity (2026-10-16)
+
+### Added
+
+- Scope Brief records objectives, constraints, non-goals, decision ownership, and explicit source conflicts; unresolved decisions block plan sealing.
+- Design Check uses a read-only auditor bound to the exact brief/plan fingerprint before the design turn can close.
+- Native independent receipts bind issued review tickets to actual worker conversation IDs; parent-written verdicts and steering messages are rejected.
+- Evidence Window provides bounded UTF-8-safe log paging with recorded digests, explicit truncation, and retrievable full output.
+- Session Trail creates immutable JSON/Markdown checkpoints and read-only resume reports that detect owner/workspace/plan/source drift.
+- Care profiles reduce review-section and repair-batch sizes for sensitive scopes without removing checks or locks.
+- Compact context packs retain the real phase, evidence gaps, current batch, and next action while excluding full logs and receipt tokens.
+
+### Changed
+
+- New plans require settled briefs and native independent design receipts; resealing invalidates prior tickets and verdicts.
+- Implementation start checks source hashes against the design basis.
+- Expanded native commands to 49 and short skill entrypoints to 60; added the sixteenth capability-limited worker.
+- Updated README, Korean documentation, operational guides, landing page, and package/migration metadata to v1.1.0.
+- Expanded behavior tests for intent drift, authority boundaries, receipt replay, evidence paging, risk escalation, and checkpoint integrity.
+
 ## v1.0.0 - Guarded Antigravity Workflows (2026-10-16)
 
 ### Added

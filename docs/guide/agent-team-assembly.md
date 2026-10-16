@@ -1,6 +1,6 @@
 # Focused agent handoffs
 
-OmA ships 15 workers. Each has a native read/search tool allowlist, command execution
+OmA ships 16 workers. Each has a native read/search tool allowlist, command execution
 off, no write tools, no MCP tools, and no nested delegation. The owning main
 conversation applies patches and controls workflow state.
 
@@ -8,6 +8,7 @@ conversation applies patches and controls workflow state.
 | --- | --- | --- |
 | Read specs | oma-doc-reader | <=600-word summary, sources/versions, constraints, unknowns |
 | Decompose scope | oma-planner | Atomic tasks, dependencies, file scope, validation |
+| Check sealed design | oma-design-auditor | Native pass/revise/unknown receipt for the current plan hash |
 | Decide interfaces | oma-architect | Relevant tradeoffs and a concrete recommendation |
 | Propose code | oma-executor, oma-quick | Focused patch proposal; no claimed writes or test runs |
 | Diagnose failure | oma-debugger | One root cause and a reproducible path |
@@ -21,7 +22,7 @@ sidecar work concurrently. Keep dependent work sequential.
 
 A reviewer invocation sets Prompt to one current section ID from guard.json.sections.
 PreToolUse injects the bounded content and evidence pointers. One reviewer never
-owns a global PASS. The parent submits each receipt; Stop aggregates coverage and
+owns a global PASS. The auditor and reviewer submit their own issued receipts through native send_message; the parent cannot write their verdicts. Stop aggregates coverage and
 locks only files whose checks and every section passed.
 
 Model profiles are recommendations. Antigravity agent templates use model: inherit;
@@ -30,3 +31,5 @@ to agent frontmatter or claim automatic per-role switching.
 
 Use one workflow per workspace and one writer. Worktrees need separate workflows.
 See [the full contract](guarded-workflow.md) for turn separation and batch recovery.
+
+Design Check precedes the design turn boundary. Use [Scope Brief and Session Trail](session-continuity.md) for decision ownership and resumption.

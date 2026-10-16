@@ -25,7 +25,9 @@ for (const file of agents) {
   const front = /^---\n([\s\S]*?)\n---/.exec(source.replace(/\r\n/g, '\n'))?.[1];
   assert.ok(front, `${file}: YAML frontmatter required`);
   const tools = /^tools: \[([^\]]+)\]$/m.exec(front)?.[1].split(',').map(x => x.trim());
-  assert.ok(tools?.length && tools.every(tool => allowed.has(tool)), `${file}: worker must have read-only capabilities`);
+  const receiptAgent = ['reviewer.md', 'design-auditor.md'].includes(file);
+  assert.ok(tools?.length && tools.every(tool => allowed.has(tool) || (receiptAgent && tool === 'send_message')), `${file}: worker must have read-only capabilities`);
+  if (receiptAgent) assert.ok(tools.includes('send_message'), `${file}: independent receipt tool required`);
   assert.match(front, /^commandExecutionPolicy: off$/m);
   assert.match(front, /^mainAgent: false$/m);
   assert.match(front, /^model: inherit$/m);

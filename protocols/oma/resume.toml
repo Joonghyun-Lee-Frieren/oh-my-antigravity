@@ -1,0 +1,13 @@
+description = "Inspect Session Trail continuity and the next action without restoring stale state or clearing locks."
+prompt = """
+Request:
+$ARGUMENTS
+
+Run controller resume. It verifies the latest checkpoint's digest, owner, workspace,
+plan hash, and scoped source hashes against current state. Report continuity honestly.
+Use the returned phase, pending sections, repair batch, and next action.
+Never restore an old snapshot, transfer ownership, clear a blocker, unlock code,
+restart cancelled work, or infer fresh permission. If continuity is not ready,
+inspect the drift and reconcile with the operator. Controller checkpoint records
+an additional immutable handoff after useful progress.
+"""

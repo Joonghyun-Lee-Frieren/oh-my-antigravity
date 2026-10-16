@@ -6,13 +6,15 @@ Task:
 Use the user request following this skill invocation.
 
 Read docs/guide/guarded-workflow.md and controller status.
-Require phase ready: only Stop sets this after a documentation handoff and sealed plan.
+Require phase ready: Stop sets this after the documentation handoff, settled Scope
+Brief, sealed plan, and independent Design Check. Source drift blocks start.
 Run controller start in this new user turn. Never start from design in the same turn.
 Read scoped files and the documentation summary. Request a focused patch proposal from
 oma-executor if useful; it has no write/shell tools. The owning main conversation
 applies changes using native edit tools. Tests/fixtures require testFiles in the plan.
 Never synthesize service results or hardcode successful responses to satisfy checks.
 Run controller verify, then assign one <=120-line section per oma-reviewer handoff.
-Submit receipts with controller review. Stop evaluates evidence and locks passing files.
+Reviewers submit their own native receipts; parent-written verdicts are rejected.
+Stop evaluates evidence and locks passing files.
 If a real dependency or permission is unavailable, submit controller block with the exact
 reason. Failure and unknown are valid; never manufacture a green result.

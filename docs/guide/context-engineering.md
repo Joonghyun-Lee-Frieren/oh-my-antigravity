@@ -1,6 +1,6 @@
 # Context engineering for OmA
 
-Use context to communicate intent; use tools to enforce boundaries. v1.0 moves
+Use context to communicate intent; use tools to enforce boundaries. OmA moves
 large procedures out of SKILL.md and makes phase/ownership/evidence checks executable.
 
 1. Keep each skill entrypoint within 20 lines. Put conditional detail in references.
@@ -28,3 +28,12 @@ work. See [agent handoffs](agent-team-assembly.md) for role-specific context.
 
 Special thanks to @hyunuk.lim (threads). His threads and posts were a major help
 in shaping this approach.
+
+## Intent and continuity
+
+Scope Brief keeps user decisions, discoverable technical facts, and source conflicts
+explicit. Design Check challenges the exact plan before code starts. Native worker
+receipts establish who submitted each review; the parent cannot write a verdict.
+Evidence Window bounds log reads. Session Trail compares recorded intent/source
+hashes with live state before continuation, without restoring stale authority.
+See [the continuity guide](session-continuity.md).

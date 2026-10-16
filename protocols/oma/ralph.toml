@@ -2,7 +2,8 @@ description = "Run strict quality-gated orchestration (Ralph mode) with mandator
 prompt = """
 Guarded execution contract (takes precedence):
 Read docs/guide/guarded-workflow.md first. Use the installed workflow controller.
-Documentation handoff precedes design. Seal the plan and end that USER TURN.
+Documentation handoff precedes Scope Brief. Resolve decisions/conflicts, seal the
+plan, obtain native Design Check, and end that USER TURN.
 Implementation starts only in the next user turn. Stop schedules at most three
 repair units per execution and locks passed files. Auxiliary artifacts go to
 .omg/drafts/. Only the main conversation applies code and controller operations.

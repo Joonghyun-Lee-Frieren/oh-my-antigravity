@@ -19,3 +19,9 @@
 [실행 계약과 JSON 예시](guarded-workflow.md) · [에이전트 인계](agent-team-assembly.md)
 
 **Special thanks to @hyunuk.lim (threads).** 이분의 쓰레드와 포스팅 글이 이번 구조를 설계하는 데 큰 도움이 되었습니다.
+
+## 의도와 세션 연속성
+
+Scope Brief는 결정권과 문서 충돌을 기록하고, Design Check는 정확한 계획을 독립 검토합니다. 리뷰어의 실제 대화에서 보낸 결과만 훅이 수집하므로 부모가 PASS를 대신 작성할 수 없습니다. Evidence Window는 로그 읽기를 제한하고, Session Trail은 체크포인트와 현재 소스를 비교합니다. 예전 소유권이나 승인을 복원하지 않습니다.
+
+[새 기능과 스키마](session-continuity.md)

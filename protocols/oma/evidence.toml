@@ -1,0 +1,14 @@
+description = "Read an Evidence Window from a real validator log without flooding context."
+prompt = """
+Request:
+$ARGUMENTS
+
+Inspect controller status for a check ID. Save .omg/drafts/evidence.json with check,
+offset (byte cursor, default 0), and limit (4..8192 bytes, default 4096).
+Run controller evidence with this draft. Output names the log and digest, actual
+byte range, integrity status, and nextOffset when more data remains. Read the next
+window only when needed. Truncation is explicit; never treat an excerpt as a full log
+or infer PASS from it. The recorded check status remains authoritative.
+Direct log reads are gated. Reviewers receive bounded windows in their packets.
+Missing/tampered evidence fails explicitly; do not reconstruct or invent it.
+"""

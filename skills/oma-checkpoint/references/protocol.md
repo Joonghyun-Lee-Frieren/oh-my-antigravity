@@ -2,37 +2,12 @@
 
 Follow the [guard contract](../../../docs/guide/guarded-workflow.md) first. It overrides legacy shared-state writes and same-turn execution. Save auxiliary notes under .omg/drafts/.
 
-Create an OmA checkpoint snapshot.
-
-Context:
+Request:
 Use the user request following this skill invocation.
 
-Protocol:
-1. Summarize objective, active stage, and current mode.
-2. Capture completed work and remaining TODOs.
-3. Capture key decisions and open risks.
-4. Reference `.omg/drafts/taskboard.md` and `.omg/drafts/workspace.json` when available instead of replaying long raw history.
-5. Provide a one-command resume hint.
-6. Read `.omg/state/guard.json` before persisting.
-   - if the current orchestration session owns the lock, write/update `.omg/drafts/checkpoint.md`
-   - if another session owns the lock, write `.omg/drafts/sessions/[session-slug]/checkpoint.md` instead and flag the pending merge
-
-Output format:
-## Checkpoint
-- objective:
-- mode:
-- stage:
-- workspace:
-- taskboard:
-
-## Completed
-- ...
-
-## Remaining
-- ...
-
-## Risks
-- ...
-
-## Resume
-- ...
+Run controller checkpoint for the active owned workflow. It records a JSON snapshot
+and a Markdown handoff under .omg/state/checkpoints/, with a digest, plan hash,
+scoped source hashes, phase, and next action. Do not write checkpoints directly.
+Use controller resume to verify continuity against current state. A snapshot never
+restores an older verdict, clears a lock, transfers ownership, or grants permission.
+Auxiliary human notes may live under .omg/drafts/; they are not runtime authority.

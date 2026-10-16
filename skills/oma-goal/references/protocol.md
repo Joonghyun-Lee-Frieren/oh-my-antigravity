@@ -6,7 +6,8 @@ Request:
 Use the user request following this skill invocation.
 
 Treat this request as authorization for routine reversible work. Initialize guarded state,
-read docs through oma-doc-reader, submit the handoff, and seal intent/files/criteria/checks.
+read docs through oma-doc-reader, submit the handoff and Scope Brief, and seal the plan.
+Request Design Check through oma-design-auditor with Prompt exactly plan.
 End the design user turn. Do not invoke start until the next user turn.
 Then implement one scoped slice, execute sealed checks, and collect bounded section receipts.
 Stop owns subsequent <=3-issue repair executions and passed-file locks. Continue only while

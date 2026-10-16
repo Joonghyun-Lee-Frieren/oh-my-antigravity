@@ -2,12 +2,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { assert, within, protectedFile, readState, checkLocks, owner, stop, digest } from '../lib/workflow.mjs';
+import { assert, within, protectedFile, readState, checkLocks, owner } from '../lib/storage.mjs';
+import { stop } from '../lib/workflow.mjs';
+import { issueReview, captureReceipt } from '../lib/reviews.mjs';
+import { contextPack } from '../lib/continuity.mjs';
 
 export const CONTROLLER = fileURLToPath(new URL('../../scripts/workflow.mjs', import.meta.url));
 const READ_TOOLS = new Set(['view_file', 'list_dir', 'find_by_name', 'grep_search', 'search_web', 'read_url_content', 'list_permissions', 'ask_question', 'ask_permission']);
 const WRITE_TOOLS = new Set(['write_to_file', 'replace_file_content', 'multi_replace_file_content']);
-const AGENTS = new Set(['oma-doc-reader', 'oma-researcher', 'oma-planner', 'oma-architect', 'oma-executor', 'oma-reviewer', 'oma-verifier', 'oma-debugger', 'oma-director', 'oma-quick', 'oma-product', 'oma-consultant', 'oma-editor', 'oma-interview', 'oma-consensus']);
+const AGENTS = new Set(['oma-design-auditor', 'oma-doc-reader', 'oma-researcher', 'oma-planner', 'oma-architect', 'oma-executor', 'oma-reviewer', 'oma-verifier', 'oma-debugger', 'oma-director', 'oma-quick', 'oma-product', 'oma-consultant', 'oma-editor', 'oma-interview', 'oma-consensus']);
 
 function quote(value) {
   assert(typeof value === 'string' && !/["$`%!\r\n]/.test(value), 'Unsupported characters in command metadata.');
@@ -16,7 +19,7 @@ function quote(value) {
 
 function commandRequest(command) {
   // Deliberately not a shell parser. Accept one exact controller invocation only.
-  const match = /^node\s+(?:"([^"\r\n]+)"|([^\s"']+))\s+(init|status|handoff|plan|start|verify|review|block)(?:\s+(\.omg\/drafts\/[a-zA-Z0-9_./-]+\.json))?\s*$/.exec(command || '');
+  const match = /^node\s+(?:"([^"\r\n]+)"|([^\s"']+))\s+(init|status|context|brief|handoff|plan|start|verify|review|block|evidence|checkpoint|resume)(?:\s+(\.omg\/drafts\/[a-zA-Z0-9_./-]+\.json))?\s*$/.exec(command || '');
   if (!match || path.resolve(match[1] || match[2]) !== path.resolve(CONTROLLER)) return null;
   return { action: match[3], draft: match[4] || '-' };
 }
@@ -27,25 +30,35 @@ export function pre(root, input) {
   const tool = input.toolCall;
   assert(tool && typeof tool.name === 'string' && tool.args && typeof tool.args === 'object', 'Malformed tool call.');
   const args = tool.args;
-  if (READ_TOOLS.has(tool.name)) return { decision: 'allow' };
+  if (READ_TOOLS.has(tool.name)) {
+    const readPath = tool.name === 'view_file' ? args.AbsolutePath : tool.name === 'grep_search' ? args.SearchPath : null;
+    if (typeof readPath === 'string') {
+      const absolute = path.resolve(root, readPath);
+      const local = path.relative(root, absolute);
+      const file = local && !local.startsWith('..') && !path.isAbsolute(local) ? within(root, absolute) : null;
+      if (file?.startsWith('.omg/evidence/')) {
+        throw new Error('Use controller evidence or the issued review packet for a bounded, integrity-checked Evidence Window.');
+      }
+    }
+    return { decision: 'allow' };
+  }
   if (tool.name === 'manage_task' && ['list', 'status', 'kill'].includes(args.Action)) return { decision: 'allow' };
   if (tool.name === 'manage_subagents' && ['list', 'kill', 'kill_all'].includes(args.Action)) return { decision: 'allow' };
-  if (tool.name === 'send_message') return { decision: 'allow' };
+  if (tool.name === 'send_message') {
+    assert(input.conversationId !== state?.owner, 'The parent cannot steer independent reviewers; issue a new bounded handoff instead.');
+    let message;
+    try { message = JSON.parse(args.Message); } catch { /* A malformed message has no review authority. */ }
+    assert(message?.omaReceipt, 'Reviewer messages must contain an issued native receipt.');
+    captureReceipt(root, input.conversationId, args.Recipient, message.omaReceipt);
+    return { decision: 'allow' };
+  }
   if (tool.name === 'invoke_subagent') {
     assert(Array.isArray(args.Subagents) && args.Subagents.length > 0 && args.Subagents.every(agent => AGENTS.has(agent.TypeName)), 'Only shipped capability-limited OmA agents may be invoked.');
     assert(args.Subagents.every(agent => !agent.Workspace || ['inherit', 'share'].includes(agent.Workspace)), 'Guarded agents must use this workspace; use a separate workflow for another worktree.');
     const subagents = args.Subagents.map(agent => {
-      if (agent.TypeName !== 'oma-reviewer') return agent;
-      owner(state, input.conversationId);
-      assert(state.phase === 'review', 'Section reviewers require current verification evidence.');
-      // The caller supplies a section ID, not an unbounded review prompt.
-      const section = state.sections.find(section => section.id === agent.Prompt);
-      assert(section, 'Reviewer Prompt must be one exact current section ID.');
-      assert(digest(root, section.file) === section.hash, 'Source changed after verification; do not review stale evidence.');
-      assert(!state.reviews[section.id], 'This section already has a receipt.');
-      const content = fs.readFileSync(path.join(root, within(root, section.file)), 'utf8').split(/\r?\n/).slice(section.start - 1, section.end).join('\n');
-      const evidence = state.checks.filter(check => check.files.includes(section.file));
-      return { ...agent, Role: 'Review only the assigned section; return a structured receipt with concrete evidence.', Prompt: JSON.stringify({ ...section, criteria: state.plan.criteria, checks: evidence, content }) };
+      if (!['oma-reviewer', 'oma-design-auditor'].includes(agent.TypeName)) return agent;
+      const packet = issueReview(root, input.conversationId, agent.TypeName === 'oma-reviewer' ? 'section' : 'design', agent.Prompt);
+      return { ...agent, Role: 'Make an independent evidence-based judgment of only this packet. Submit your own receipt through send_message.', Prompt: JSON.stringify(packet) };
     });
     return { decision: 'allow', overwrite: { Subagents: subagents } };
   }
@@ -53,8 +66,8 @@ export function pre(root, input) {
     const request = commandRequest(args.CommandLine);
     assert(request, 'Shell execution is restricted to the OmA workflow controller. Use native read tools, scoped edit tools, and sealed verification commands.');
     assert(input.conversationId, 'Missing conversation identity.');
-    if (state && request.action !== 'status') owner(state, input.conversationId);
-    if (!state) assert(['init', 'status'].includes(request.action), 'Initialize the workflow first.');
+    if (state && !['status', 'context', 'resume', 'evidence'].includes(request.action)) owner(state, input.conversationId);
+    if (!state) assert(['init', 'status', 'context', 'resume'].includes(request.action), 'Initialize the workflow first.');
     const command = [process.execPath, CONTROLLER, request.action, request.draft, root, input.conversationId].map(quote).join(' ');
     return { decision: 'allow', overwrite: { CommandLine: command, Cwd: root, WaitMsBeforeAsync: 1000, RunPersistent: false } };
   }
@@ -91,7 +104,7 @@ export function handle(event, input) {
   if (event === 'stop') return stop(root, input);
   if (event === 'context') {
     const state = readState(root);
-    const message = `OmA guard: ${state?.phase || 'uninitialized'}. Native commands use /oma-<name>. Controller: node "${CONTROLLER}" <action> [ .omg/drafts/request.json ]. Keep design and implementation in separate user turns. Never invent a successful result; blocked/unknown are valid. Read docs/guide/guarded-workflow.md in the plugin for the protocol. Model selection uses agy --model, not a PreInvocation override.`;
+    const message = `OmA: ${JSON.stringify(contextPack(state))}\nController: node "${CONTROLLER}" <action> [ .omg/drafts/request.json ]. Use Scope Brief and Design Check before ending design; implement in the next user turn. Reviewers send their own native receipts. Never invent success. Read docs/guide/guarded-workflow.md for the protocol. Select runtime models through the CLI.`;
     return { injectSteps: [{ ephemeralMessage: message }] };
   }
   throw new Error('Unknown hook event.');

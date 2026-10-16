@@ -29,8 +29,9 @@ The CLI displays each skill as a slash command. Old `/oma:<name>` commands are n
 `/oma-<name>`. TOML protocol sources live under `protocols/oma/`; they generate native
 YAML skill wrappers and are not rediscovered as legacy commands.
 
-Run `/oma-team-plan` to initialize, read documentation, and seal a design. End that
-turn, then run `/oma-team-exec` in the next user turn. See the [guarded workflow
+Run `/oma-team-plan` to read documentation, settle Scope Brief, seal a plan, and
+request independent Design Check. End that turn after it passes, then run
+`/oma-team-exec` in the next user turn. See the [guarded workflow
 contract](guarded-workflow.md) for exact requests, evidence, locks, and recovery.
 
 If hooks are missing, do not assume safety controls are active. Check client version,

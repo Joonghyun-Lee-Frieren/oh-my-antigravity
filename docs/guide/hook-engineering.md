@@ -6,7 +6,7 @@ stdin fields and JSON stdout. Timeout units are seconds.
 
 | Event | Purpose | Output |
 | --- | --- | --- |
-| PreToolUse | Validate tool, owner, phase, path, locks, and bounded review request | decision/reason; overwrite for controller/reviewer arguments |
+| PreToolUse | Validate tool, owner, phase, path, locks, bounded review request, and native receipt sender | decision/reason; overwrite for controller/reviewer arguments |
 | PreInvocation | Supply compact phase and controller-path context | injectSteps with an ephemeralMessage |
 | Stop | End design, lock passed files, schedule <=3 repair units, or stop on blockers | decision/reason |
 
@@ -41,3 +41,20 @@ Use current clients and validate actual loaded hooks before relying on the harne
 See [the workflow contract](guarded-workflow.md) for schemas and honest-failure limits.
 Development tests exercise native payloads and observable behavior, including bypass
 attempts. They do not replace authenticated CLI testing.
+
+## Independent receipt capture
+
+A review invocation creates a single-use ticket bound to a source hash or plan hash.
+PreToolUse builds the packet and later captures the worker's native send_message.
+The sender must differ from the owner and address that owner. The hook records the
+actual sender ID; the parent cannot author a verdict or send steering messages.
+Exact retries from the same actor are idempotent; changed or stale retries fail.
+Current clients must invoke hooks in child conversations with truthful native metadata.
+Missing runtime support leaves the verdict unknown, without a parent fallback.
+
+## Continuity
+
+PreInvocation injects a bounded context pack. Evidence Window uses integrity-checked
+byte cursors. Session Trail records immutable handoffs and detects drift on resume.
+See [schemas and care profiles](session-continuity.md). Checks and locks remain
+mandatory even when care uses a smaller repair batch or review section.

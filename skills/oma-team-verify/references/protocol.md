@@ -11,7 +11,9 @@ actual exit codes/logs, and hashes source. In review, resume the missing receipt
 Send each oma-reviewer only ONE section from guard.json.sections (<=120 lines), its
 hash, criteria, and relevant validator evidence. Never ask for a repository-wide PASS.
 Each reviewer returns pass/fail/unknown with concrete evidence. Missing proof is unknown.
-The parent saves receipts under .omg/drafts/ and submits controller review.
+Reviewers submit their own issued receipts through send_message to the owner. The
+hook records the actual reviewer conversation ID. The parent cannot author/amend
+verdicts or send follow-up messages steering an independent reviewer.
 Do not write .omg/state/ or .omg/evidence/ directly. Only the controller owns these paths.
 Stop requires current hashes, complete section coverage, and passing checks before locking.
 Report the exact phase and outstanding evidence. Do not infer success from agent prose.
