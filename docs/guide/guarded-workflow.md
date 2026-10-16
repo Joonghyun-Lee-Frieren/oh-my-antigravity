@@ -199,6 +199,6 @@ Sources: [Antigravity plugins](https://antigravity.google/docs/plugins?tab=cli),
 [models](https://antigravity.google/docs/models),
 [headless model selection](https://antigravity.google/docs/cli/headless/).
 
-Special thanks to **@hyunuk.lim (threads)**. Their threads and posts were a major
+Special thanks to **@hyunuk.lim (threads)**. His threads and posts were a major
 help in shaping this approach to small skills, physical tool boundaries, honest
 failure, bounded repair batches, and focused reviews.

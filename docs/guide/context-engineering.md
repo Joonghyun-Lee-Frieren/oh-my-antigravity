@@ -26,5 +26,5 @@ select the model and workers inherit it.
 Read [the guard contract](guarded-workflow.md) only when starting or operating code
 work. See [agent handoffs](agent-team-assembly.md) for role-specific context.
 
-Special thanks to @hyunuk.lim (threads). Their threads and posts were a major help
+Special thanks to @hyunuk.lim (threads). His threads and posts were a major help
 in shaping this approach.

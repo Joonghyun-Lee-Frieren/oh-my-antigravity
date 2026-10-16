@@ -138,7 +138,7 @@ review coverage, stale evidence, locks, repair limits, cancellation, and retry b
 
 ## Special thanks
 
-**Special thanks to [@hyunuk.lim](https://www.threads.com/@hyunuk.lim) (threads).** Their threads and posts were a major
+**Special thanks to [@hyunuk.lim](https://www.threads.com/@hyunuk.lim) (threads).** His threads and posts were a major
 help in shaping this refactor: smaller skills, physical tool constraints, honest
 failure, bounded repairs, and focused reviews.
 
