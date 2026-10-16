@@ -1,8 +1,15 @@
 # oh-my-antigravity (OmA)
 
-[웹페이지](https://joonghyun-lee-frieren.github.io/oh-my-antigravity/) · [변경 이력](history.md) · [English](../README.md)
+[![Version](https://img.shields.io/badge/version-1.1.0-0d8a83)](history.md)
+[![Checks](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-antigravity/version-check.yml?branch=main&label=checks)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
 
-설계와 구현 턴을 분리하고, 읽기 전용 문서 에이전트와 실제 훅 제약으로 작업을 관리하는 **Antigravity CLI 플러그인**입니다.
+[Website](https://joonghyun-lee-frieren.github.io/oh-my-antigravity/) · [History](history.md) · [English](../README.md) · [한국어](README_ko.md) · [日本語](README_ja.md) · [Français](README_fr.md) · [中文](README_zh.md) · [Español](README_es.md)
+
+설계 턴 분리, 읽기 전용 문서 에이전트, 편집 게이트, 실제 검증 증거, 작은 단위의 리뷰를 제공하는
+엔지니어링 작업용 네이티브 **Antigravity CLI 플러그인**입니다.
+
+<p align="center"><img src="../resources/image/oma_logo_02.png" alt="OmA" width="360"></p>
 
 ## 설치
 
@@ -13,70 +20,117 @@ agy plugin install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
 agy plugin list
 ```
 
-CLI 안에서 `/plugin list`, `/hooks`를 확인합니다.
+CLI에서 `/plugin list`와 `/hooks`를 확인한 뒤 다음과 같이 시작합니다.
 
 ```text
-/oma-team-plan 변경할 내용과 검증 조건을 설계해 줘
+/oma-team-plan 변경 사항과 인수 기준을 설명하세요
 ```
 
-문서 에이전트가 사양을 읽고 출처·제약·불확실성을 요약합니다. Scope Brief로 의도·결정권·문서 충돌을 정리하고 파일 범위와 검증 명령을 확정합니다. 독립 Design Check가 통과하면 **설계 턴을 종료합니다**. 다음 사용자 턴에 구현을 시작합니다.
+문서 리더가 간결한 요약을 반환합니다. Scope Brief를 작성하고 파일 범위와 검증 항목을 확정한 뒤,
+독립적인 Design Check를 요청합니다. 통과하면 **설계 턴을 종료**합니다. 다음 턴에서 실행합니다.
 
 ```text
-/oma-team-exec 확정한 계획을 구현해 줘
+/oma-team-exec 확정된 계획을 구현하세요
 ```
 
-## v1.1.0 변경점
+`/oma-team-verify`로 남은 섹션 리뷰를 수집합니다. 검증이나 리뷰가 실패하면 Stop 훅이 수정 배치를
+예약합니다. 서비스, 권한, 증거가 부족하면 `blocked`나 `unknown`으로 끝날 수 있습니다.
+성공이라는 답변을 강요하지 않습니다.
 
-| 구성 | 동작 |
+정확한 컨트롤러 명령, JSON 예제, 복구 방법, 제약의 한계는
+[보호 워크플로 가이드](guide/guarded-workflow.md)를 참고하세요.
+
+## v1.1.0의 새로운 기능
+
+| 기능 | 동작 |
 | --- | --- |
-| Scope Brief | 목표·제약·비목표·결정권·출처 충돌을 기록하고 미해결 항목이 있으면 계획 확정 차단 |
-| Design Check | 별도 읽기 전용 감사자가 정확한 계획 해시를 검토; 계획 변경 시 이전 결과 무효화 |
-| Evidence Window | 긴 검증 로그를 최대 8192바이트씩 읽고 무결성과 다음 커서를 제공 |
-| Session Trail | JSON·Markdown 체크포인트와 현재 소스 해시를 비교해 재개 시 변경 여부 확인 |
-| 독립 리뷰 제출 | 리뷰어 자신의 대화에서 보낸 native 메시지만 수집; 부모의 PASS 제출·유도 메시지 차단 |
-| 위험도별 한도 | routine/elevated/critical에 따라 섹션 120/90/60줄, 수정 배치 3/2/1개; 검사와 잠금은 유지 |
-| 네이티브 플러그인 | plugin.json, 루트 hooks.json, rules/, YAML 스킬 |
-| 최소 SKILL.md | 모든 진입점을 20줄 이내로 유지하고 자세한 절차는 references로 이동 |
-| 문서 먼저 읽기 | oma-doc-reader는 읽기·검색 도구만 사용하고 600단어 이내 요약 전달 |
-| 턴 분리 | 문서 인계와 설계가 끝나고 Stop이 실행되기 전에는 구현 차단 |
-| PreToolUse | 범위 밖 수정, 상태·증거 조작, 셸 우회, 검증 무력화 패턴 차단 |
-| 실제 검증 | 확정된 argv 명령의 종료 코드·로그·코드 해시를 컨트롤러가 기록 |
-| Stop | 실패한 검증/섹션을 한 실행에 최대 3개씩 배정하고 반복 횟수 제한 |
-| 통과한 코드 잠금 | 해당 파일의 검증과 모든 섹션 리뷰가 통과하면 해시 잠금 |
-| 작은 리뷰 | 훅이 리뷰어에게 최대 120줄짜리 섹션 하나만 전달; 오래된 해시는 거부 |
-| 정직한 실패 | 서비스·권한·증거가 없으면 blocked/unknown으로 보고; 가짜 성공 금지 |
+| **Scope Brief** | 목표, 제약, 비목표, 의사결정 담당자, 자료 간 충돌을 기록합니다. 미해결 항목이 있으면 계획을 확정할 수 없습니다 |
+| **Design Check** | 읽기 전용 감사자가 설계 턴 종료 전에 정확한 계획을 검토합니다. 계획이 바뀌면 이전 리뷰는 무효가 됩니다 |
+| **Evidence Window** | 범위가 제한된 UTF-8 바이트 커서로 무결성이 검증된 로그 일부를 읽습니다. 전체 출력은 디스크에 남습니다 |
+| **Session Trail** | 변경 불가능한 JSON/Markdown 체크포인트가 현재 의도와 다음 행동을 보존합니다. 재개 시 자료와 계획의 변경을 감지합니다 |
+| **네이티브 리뷰 영수증** | 리뷰어가 다른 대화에서 직접 결과를 제출합니다. 부모 대화는 PASS를 작성하거나 리뷰를 유도할 수 없습니다 |
+| **Care 프로필** | routine/elevated/critical 범위에 각각 120/90/60줄 섹션과 3/2/1개 단위의 배치를 적용하며 모든 검증과 잠금을 유지합니다 |
 
-서브에이전트 16개 모두 쓰기·셸·MCP·추가 위임 도구가 없습니다. 구현 에이전트도 패치 제안만 반환하고, 소유권을 가진 메인 대화가 실제 수정을 적용합니다. 네이티브 스킬 60개에는 기존 명령을 옮긴 `/oma-<이름>` 진입점 49개가 포함됩니다.
-
-`/oma-brief`, `/oma-design-check`, `/oma-evidence`, `/oma-resume`가 새 진입점입니다. `/oma-checkpoint`는 실제 컨트롤러 체크포인트를 생성합니다. 민감한 경로는 선언한 위험도를 자동으로 높일 수 있으며, 어떤 프로필도 검증·독립 리뷰·잠금을 생략하지 않습니다.
-
-[새 기능의 스키마와 예시](guide/session-continuity.md)를 참고하세요. 현재 CLI에서 자식 대화의 send_message 훅과 실제 발신자 ID를 지원해야 하며, 미지원 상태에서는 부모가 대신 PASS를 만들 수 없습니다. 기존 v1.0 확정 작업은 기존 경로로 마칠 수 있고 새 계획부터 새 제약을 사용합니다.
+민감한 경로는 주의 수준을 높일 수만 있습니다. 간결한 상태·컨텍스트 묶음은 전체 로그와 영수증 티켓을
+일상적인 모델 컨텍스트에서 제외합니다. 검증은 계속 실행되며 증거가 부족하면 unknown으로 남습니다.
+[스키마와 예제](guide/session-continuity.md)를 참고하세요.
 
 ## 모델
 
-2026-10-16 [공식 모델 안내](https://antigravity.google/docs/models)를 확인했습니다.
+추천 설정은 [config/models.json](../config/models.json)에 있으며, 2026-10-16에
+[공식 모델 제공 현황](https://antigravity.google/docs/models)을 기준으로 확인했습니다.
 
-| 역할 | balanced | flash |
+| 역할 | Balanced 프로필 | Flash 프로필 |
 | --- | --- | --- |
-| 설계·리뷰 | gemini-4-argon-high | gemini-3.8-flash-high |
-| 구현 | gemini-3.8-flash-medium | gemini-3.8-flash-medium |
-| 간단한 작업 | gemini-3.8-flash-low | gemini-3.8-flash-low |
+| 설계·계획 | `gemini-4-argon-high` | `gemini-3.8-flash-high` |
+| 구현 | `gemini-3.8-flash-medium` | `gemini-3.8-flash-medium` |
+| 빠른 작업 | `gemini-3.8-flash-low` | `gemini-3.8-flash-low` |
+| 리뷰·검증 | `gemini-4-argon-high` | `gemini-3.8-flash-high` |
 
-`agy models`로 계정에서 사용 가능한 ID를 확인하고 `agy --model <id>` 또는 런타임 선택기로 설정합니다. 서브에이전트는 모델을 상속합니다. 프로필은 권장 배분이며 자동 모델 변경 기능이 아닙니다. Argon을 사용할 수 없으면 flash 프로필을 명시적으로 선택합니다. 예전 preview 모델은 기본 목록에서 제거했으며, 기업 계정의 기존 모델 제공 여부는 별개입니다.
+`agy models`로 계정에서 사용할 수 있는 모델을 확인하고 `agy --model <id>` 또는 런타임 선택기로
+선택하세요. 서브에이전트는 `model: inherit`를 사용합니다. `/oma-model`이 프로필을 설명합니다.
+`auto`는 현재 선택한 런타임 모델을 유지하며, `custom`은 네 역할을 모두 지정해야 합니다.
+프로필은 추천 설정이며 모델을 자동으로 전환하지 않습니다. 네이티브 훅 계약에는 모델 재정의 출력이
+없습니다. Argon을 사용할 수 없다면 Flash 프로필을 명시적으로 선택하세요.
+이전 기업용 모델이 계속 제공될 수 있지만 배포 기본값에는 포함하지 않습니다.
 
-## 운영과 업그레이드
+## 워크플로와 역할
 
-`/oma-team-verify`로 검증·섹션 리뷰를 진행하고, `/oma-team-fix`는 Stop이 배정한 최대 3개 수정 단위만 처리합니다. `/oma-status`, `/oma-doctor`에서 상태·잠금·증거 누락을 확인합니다.
+플러그인은 `/oma-<name>` 명령 진입점 49개를 포함한 짧은 스킬 60개와 기능이 제한된 에이전트 16개를
+제공합니다. 현재 작업에 필요한 절차만 사용하세요.
 
-상태는 `.omg/state/guard.json`, 검증 로그는 `.omg/evidence/`, 에이전트 요청과 보조 메모는 `.omg/drafts/`에 둡니다. 상태·검증 증거는 컨트롤러만 수정합니다. 잠긴 코드 재수정, 확정 범위 변경, 차단된 작업 복구는 운영자가 증거를 보존한 뒤 명시적으로 처리해야 합니다.
+| 명령 | 목적 |
+| --- | --- |
+| `/oma-team-plan`, `/oma-team-prd` | 문서 인계, 범위, 인수 기준, 설계 |
+| `/oma-brief` | 목표, 제약, 의사결정 책임, 자료 간 충돌 |
+| `/oma-design-check` | 확정된 정확한 계획에 대한 독립 검토 |
+| `/oma-evidence` | 범위가 제한되고 무결성이 검증된 검증기 로그 조회 |
+| `/oma-checkpoint`, `/oma-resume` | 변경 불가능한 인계 기록과 읽기 전용 연속성 점검 |
+| `/oma-team-exec` | 다음 사용자 턴에서 확정된 범위 구현 |
+| `/oma-team-verify` | 실제 검증과 섹션 하나씩의 리뷰 인계 |
+| `/oma-team-fix` | Stop이 선택한 최대 3개 수정 단위 배치 |
+| `/oma-goal`, `/oma-ultragoal` | 동일한 턴·증거 게이트를 적용하는 작업 완료 추적 |
+| `/oma-status`, `/oma-doctor` | 단계, 소유권, 증거 부족, 잠금, 차단 요인 |
+| `/oma-model` | 현재 모델 추천과 런타임 선택 |
+| `/oma-hooks`, `/oma-hooks-validate` | 네이티브 훅 점검과 안전 진단 |
+| `/oma-stop`, `/oma-cancel` | 증거와 잠금을 보존하며 중단 |
 
-Gemini CLI의 `/oma:team-exec` 대신 `/oma-team-exec`를 사용합니다. 예전 TOML 절차는 `protocols/oma/`에 보존하고 네이티브 스킬을 생성합니다. 중복 로딩을 막기 위해 런타임 `commands/` 폴더는 사용하지 않습니다. 수동 복사한 예전 훅을 제거해 주세요. BeforeModel 라우터와 AfterAgent 학습 알림은 제거했으며 학습은 `/oma-learn`으로 실행합니다.
+`oma-doc-reader`는 명세를 읽습니다. `oma-planner`와 `oma-architect`는 설계를 돕습니다.
+`oma-executor`는 패치를 제안하며 소유권이 있는 메인 대화만 적용합니다.
+`oma-design-auditor`는 확정된 계획을 검토합니다. `oma-reviewer`는 범위가 제한된 섹션 하나를,
+`oma-verifier`는 인수 증거를 검토합니다. 배포된 모든 워커에서 쓰기, 셸, MCP, 위임 도구를 제외합니다.
 
-이 제약은 도구·워크플로우 수준이며 OS 샌드박스는 아닙니다. 검증 스크립트는 신뢰하는 프로젝트 코드여야 합니다. 코드 의미상 가짜 응답은 관련 동작 검증과 리뷰가 함께 잡아야 합니다. 수정 단위 하나는 실패한 검증 또는 통과하지 못한 섹션이며 여러 진단을 포함할 수 있습니다.
+워크플로의 기준 상태는 `.omg/state/guard.json`이며 실행 로그는 `.omg/evidence/`에 저장됩니다.
+에이전트는 요청과 보조 메모에 `.omg/drafts/`를 사용합니다. 컨트롤러만 보호 상태, 증거,
+체크포인트를 소유합니다. 훅은 실제 발신자 신원을 사용해 독립 리뷰어의 메시지를 수집합니다.
+워크플로마다 작업 공간 하나와 작성자 하나만 허용합니다. 격리된 워크트리에는 별도 워크플로를 사용하세요.
 
-[전체 프로토콜·JSON 예시·복구 안내](guide/guarded-workflow.md)를 참고하세요.
+## v1.0 또는 Gemini CLI에서 업그레이드
 
-## 개발 검증
+`agy plugin install`로 네이티브 플러그인을 다시 설치하세요. 새 계획에는 정리된 Scope Brief와
+네이티브 Design Check가 필요합니다. 독립 역할에는 실제 자식 대화 ID를 담는 네이티브
+send_message 훅이 필요합니다. 런타임이 지원하지 않으면 unknown으로 남습니다.
+기존 v1.0의 확정된 상태는 레거시 영수증 경로로 완료할 수 있지만 새 계획은 항상 네이티브 경로를
+사용합니다. Session Trail은 이전 소유권, 승인, 잠금을 복원하지 않고 현재 상태를 점검합니다.
+
+네이티브 명령은 `/oma:team-exec` 대신 `/oma-team-exec`를 사용합니다.
+기존 TOML 프로토콜 소스는 `protocols/oma/`에 있으며 네이티브 스킬 래퍼를 생성합니다.
+중복 등록을 피하기 위해 런타임의 레거시 `commands/` 검색 디렉터리 밖에 둡니다.
+
+`gemini-extension.json`은 마이그레이션 표식으로 남습니다. 수동으로 복사한 이전 훅은 제거하세요.
+Gemini `BeforeModel` 라우터, 라우터 추적 플래그, `AfterAgent` 학습 알림은 제거되었습니다.
+`/oma-learn`을 명시적으로 사용하고 CLI에서 모델을 선택하세요.
+
+통과한 파일은 이후 워크플로에서도 잠금 상태를 유지합니다. 잠금 해제, 확정 범위 변경,
+차단되었거나 다른 주체가 소유한 상태의 복구에는 보호 에이전트 밖에서 운영자가 명시적으로 조작해야 합니다.
+복구할 때 이전 증거를 보존하세요.
+
+하네스는 에이전트 도구를 제한하며 OS 샌드박스는 아닙니다. 검증기는 신뢰하는 프로젝트 코드입니다.
+의미상의 조작은 여전히 동작 검증과 리뷰어가 찾아야 합니다. 수정 단위 하나는 실패한 검증기 하나 또는
+통과하지 못한 섹션 하나이며 여러 진단을 포함할 수 있습니다.
+[전체 계약](guide/guarded-workflow.md)을 참고하세요.
+
+## 개발
 
 ```bash
 npm test
@@ -86,8 +140,19 @@ npm run test:version
 agy plugin validate .
 ```
 
-절차 변경 후 `npm run build:skills`로 진입점을 갱신합니다.
+`protocols/oma/`에서 명령 절차를 편집한 다음 `npm run build:skills`를 실행하세요.
+핵심 스킬 절차는 각 진입점 옆의 `references/`에 있습니다.
+테스트는 턴 경계, 셸·경로 우회, 소유권, 실패하거나 누락된 검증, 리뷰 범위, 오래된 증거, 잠금,
+수정 한도, 취소, 재시도 한도를 다룹니다. v1.1은 자료 간 충돌, 설계 영수증 무효화, 행위자 사칭,
+재전송, 주의 수준 상향, UTF-8 로그 페이징, 체크포인트 손상, 재개 시 자료 변경도 다룹니다.
 
-## Special thanks
+## 특별히 감사드립니다
 
-**Special thanks to [@hyunuk.lim](https://www.threads.com/@hyunuk.lim) (threads).** 이분의 쓰레드와 포스팅 글이 이번 리팩토링에 큰 도움이 되었습니다. 작은 스킬, 도구의 물리적 제약, 정직한 실패, 제한된 수정 배치, 작은 섹션 단위 리뷰를 설계하는 데 큰 영감을 받았습니다.
+**[@hyunuk.lim](https://www.threads.com/@hyunuk.lim) (threads) 님께 특별히 감사드립니다.**
+그의 스레드와 포스팅은 작은 스킬, 물리적인 도구 제약, 정직한 실패, 제한된 수정,
+집중된 리뷰를 중심으로 이번 리팩토링의 방향을 잡는 데 큰 도움이 되었습니다.
+
+이 프로젝트는 모델 자체만큼 모델을 둘러싼 엔지니어링 하네스도 중요하다는 신정규 님의 관점에서도
+발전했습니다.
+
+[MIT License](../LICENSE) · [Sponsor](https://github.com/sponsors/Joonghyun-Lee-Frieren)
