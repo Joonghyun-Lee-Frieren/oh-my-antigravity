@@ -1,6 +1,6 @@
 # oh-my-antigravity (OmA)
 
-[![Version](https://img.shields.io/badge/version-1.1.0-0d8a83)](history.md)
+[![Version](https://img.shields.io/badge/version-1.2.0-0d8a83)](history.md)
 [![Checks](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-antigravity/version-check.yml?branch=main&label=checks)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
 
@@ -42,7 +42,27 @@ d’autorisations ou de preuves peut aboutir à `blocked` ou `unknown` ; une ré
 Consultez le [guide du workflow protégé](guide/guarded-workflow.md) pour les commandes exactes du
 contrôleur, les exemples JSON, la récupération et les limites des protections.
 
-## Nouveautés de la v1.1.0
+## Nouveautés de la v1.2.0
+
+Les scripts de validation et les fichiers déclarés dans les `inputs` des vérifications
+sont désormais identifiés par leur empreinte. Une modification bloque le démarrage,
+la validation ou l'acceptation de preuves périmées ; Session Trail signale aussi cette
+dérive. Chaque résultat pertinent parvient au réviseur, avec au plus deux extraits
+de journaux donnant priorité aux échecs. Consultez le [schéma des entrées](guide/guarded-workflow.md)
+pour les changements de tests autorisés. Les plans déjà scellés doivent être scellés
+à nouveau pour bénéficier de cette protection.
+
+Les parties 1–7 fournies inspirent aussi la couverture complète des sources, les
+frontières de dépendances en lecture seule, les limites de réécriture, les échecs
+typés, l'analyse AST Python et les groupes de correction ordonnés par dépendances.
+Une oscillation réduit le lot à un groupe. Chaque section utilise une nouvelle
+conversation avec des preuves de réfutation examinées par un juge déterministe.
+Utilisez `/oma-read` avant la transmission, `/oma-probe` pour l'aide CLI,
+`/oma-failure` pour les blocages et `/oma-repair-context` pour le lot actif.
+Les fichiers Python nécessitent Python 3.9+. Voir les [schémas et limites](guide/series-runtime.md).
+La livraison des octets ne prouve ni compréhension ni absence de défauts.
+
+## Périmètre et continuité de la v1.1.0
 
 | Fonctionnalité | Comportement |
 | --- | --- |
@@ -80,7 +100,7 @@ mais ils ne figurent pas dans les valeurs par défaut distribuées.
 
 ## Workflows et rôles
 
-Le plugin propose 60 skills courts, dont 49 points d’entrée de commande `/oma-<name>`, et 16 agents
+Le plugin propose 64 skills courts, dont 53 points d’entrée de commande `/oma-<name>`, et 16 agents
 aux capacités limitées. N’utilisez que les procédures utiles à la tâche en cours.
 
 | Commande | Objectif |
@@ -165,6 +185,9 @@ de contrôle et les changements de sources lors de la reprise.
 **Un grand merci à [@hyunuk.lim](https://www.threads.com/@hyunuk.lim) (threads).** Ses fils de discussion
 et ses publications ont beaucoup aidé à orienter cette refonte : des skills plus courts, des contraintes
 physiques sur les outils, des échecs honnêtes, des corrections limitées et des revues ciblées.
+
+Pour aller plus loin : [son article Medium sur les idées derrière la refonte v1.0](https://medium.com/@dev.hyunuk/3f86bb9b8ab7).
+Merci d'avoir partagé les concepts et l'expérience qui ont aidé à façonner le workflow d'OmA.
 
 Le projet s’est également développé à partir de l’observation de Jeongkyu Shin : le harnais
 d’ingénierie qui entoure un modèle compte autant que le modèle lui-même.

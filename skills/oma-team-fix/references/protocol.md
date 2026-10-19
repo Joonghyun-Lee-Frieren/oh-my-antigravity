@@ -5,7 +5,8 @@ Follow the [guard contract](../../../docs/guide/guarded-workflow.md) first. It o
 Task:
 Use the user request following this skill invocation.
 
-Inspect controller status. Require phase repair and a nonempty batch of <=3 issues.
+Inspect controller status and repair-context. Require phase repair and a nonempty
+batch of <=3 groups; honor dependency order and one-group oscillation focus.
 Stop selects the batch. Do not add backlog issues or edit passed/locked files.
 Ask oma-debugger for focused root-cause analysis and oma-executor for patch proposals.
 Only the owning main conversation applies patches to files named in the active batch.

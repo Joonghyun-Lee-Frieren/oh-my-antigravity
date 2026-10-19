@@ -1,0 +1,11 @@
+description = "Collect real bounded CLI help/version evidence during research without opening arbitrary shell access."
+prompt = """
+Inspect controller status; require research. Save .omg/drafts/probe.json with argv
+and optional required:true. Controller probe accepts only node/python/agy --version
+or agy [up to three simple topics] --help. No shell strings or project code execution.
+It records real exit status, full log and immutable JSON receipt, returning at most
+8192 output bytes. A failed required probe prevents handoff; report EXTERNAL_ISSUE
+or MISSING_CAPABILITY instead of guessing. SDK APIs still require reading the exact
+versioned companion source/docs via /oma-read; CLI help is not proof of SDK behavior.
+Do not add flags based on memory or convert a failed probe to a successful claim.
+"""

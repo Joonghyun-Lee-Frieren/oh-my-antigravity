@@ -2,6 +2,35 @@
 
 All notable changes to oh-my-antigravity are documented here.
 
+## v1.2.0 - Runtime Reading, Repair Groups and Blind Jury (2026-10-19)
+
+### Added
+
+- Applied the user-supplied Part 1–7 architecture summary; documented the source digest, part-by-part mapping, schemas, migration and limits in `guide/series-runtime.md`.
+- Source registration and bounded UTF-8 read windows require complete delivery before handoff. Source drift invalidates design/verification. Narrow CLI help/version probes record real evidence; required failures block handoff.
+- Read-only file/directory fingerprints and large-file targeted-edit limits, with deliberate rewrites declared in the sealed design.
+- Typed honest failure exits, including `DEPENDENCY_DEFECT` backed by an actual failed check, retaining evidence and locks.
+- Automatic Python AST validation, exact design-reviewed exemptions, honest missing-interpreter failures, and immutable execution receipts binding actual status/log/source/input hashes.
+- Dependency-ordered repair groups, paged active-group diagnostics, and A→B→A detection that narrows the next execution to one repair unit.
+- Heading-aware Markdown jury shards, one reviewer conversation per shard, stripped author prompt extras, disconfirmation assessments, and a deterministic judge retaining vetoed nonmaterial suggestions.
+- Four commands: `/oma-read`, `/oma-probe`, `/oma-failure`, `/oma-repair-context` (53 command entrypoints and 64 short skills).
+
+### Fixed
+
+- Seal Node/Python validator script hashes and optional check `inputs` alongside the plan. Reject changed inputs before start, unscoped input drift before verification, and input changes during execution or after evidence collection.
+- Keep legitimate scoped validator/test changes possible through the existing file and test declarations; record the updated verification hashes.
+- Supply every covering check result to section reviewers, including later failures. Keep at most two bounded log excerpts, prioritize non-passing checks, and explicitly count checks without excerpts.
+- Add validator-input snapshots and drift reports to Session Trail without restoring ownership, verdicts, or locks.
+
+### Documentation and validation
+
+- Updated all six READMEs, controller examples, continuity guidance, command procedures, and the website for v1.2.0.
+- Added the requested [Medium reading link](https://medium.com/@dev.hyunuk/3f86bb9b8ab7) with thanks to @hyunuk.lim in every README and the website acknowledgment.
+- Expanded behavior coverage for dependency drift, input mutation, stale review receipts, legitimate scoped validator edits, and later failing checks.
+- Validation: 54 behavior tests, 64 skill metadata checks, generated-entrypoint consistency, version/package checks, native plugin validation, package dry-run, and documentation/website link checks passed.
+- The initially inaccessible Medium material was supplied as a local Part 1–7 summary and reviewed for this release. OmA explicitly defines its own five nonmaterial review categories because the summary does not define the original exemptions.
+- New workflows use guardVersion 2; existing sealed workflows retain their prior contract. No ownership transfer, lock reopening, benchmark-reproduction or universal zero-defect claim is implied.
+
 ## v1.1.0 - Scope and Session Continuity (2026-10-16)
 
 ### Added

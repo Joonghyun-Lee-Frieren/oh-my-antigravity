@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="OmA is a native Antigravity CLI plugin: Scope Brief, independent Design Check, bounded evidence, and verified session continuity for Antigravity CLI.">
+  <meta name="description" content="OmA v1.2 brings complete source-window coverage, honest failure exits, Python AST checks, execution receipts, dependency-ordered repairs and blind section review to Antigravity CLI.">
   <meta name="theme-color" content="#073d3a">
   <title>OmA &mdash; Guarded workflows for Antigravity CLI</title>
   <style>
@@ -36,9 +36,9 @@
     <main id="main">
       <header class="hero">
         <div>
-          <p class="eyebrow">v1.1.0 · Native Antigravity CLI plugin</p>
+          <p class="eyebrow">v1.2.0 · Native Antigravity CLI plugin</p>
           <h1>Small skills.<br>Concrete limits.<br><em>Evidence first.</em></h1>
-          <p class="lead">Keep intent and evidence intact across long coding sessions. Settle decisions, check the design independently, and resume from recorded state.</p>
+          <p class="lead">Read the full selected sources. Preserve dependency boundaries. Repair a few related failures at a time, then ask an independent reviewer for concrete counterexamples.</p>
           <div class="actions"><a class="button" href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity#install">Get started ↗</a><a class="button secondary" href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/guide/guarded-workflow.md">Read the guard contract</a></div>
         </div>
         <div class="terminal" aria-label="Installation and first steps">
@@ -47,31 +47,34 @@
             <p class="comment"># Install the native plugin</p>
             <code class="install" id="install-command">agy plugin install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity</code>
             <button class="copy" id="copy" type="button" aria-label="Copy installation command">Copy command</button><span id="copy-status" role="status" aria-live="polite"></span>
-            <div class="terminal-step"><span class="label">TURN 01 / READ &amp; DESIGN</span><code>/oma-team-plan</code><p>Read docs. Settle Scope Brief. Pass Design Check. Stop.</p></div>
+            <div class="terminal-step"><span class="label">TURN 01 / READ &amp; DESIGN</span><code>/oma-team-plan</code><p>/oma-read → /oma-probe → Scope Brief → Design Check. Stop.</p></div>
             <div class="terminal-step"><span class="label">TURN 02 / IMPLEMENT &amp; VERIFY</span><code>/oma-team-exec</code><p>Apply the plan. Run checks. Collect native review receipts.</p></div>
           </div>
         </div>
       </header>
-      <div class="strip"><span><strong>≤20 lines</strong> per skill entrypoint</span><span><strong>Read-only</strong> worker tools</span><span><strong>≤3 issues</strong> per repair batch</span><span><strong>≤120 lines</strong> per review</span></div>
+      <div class="strip"><span><strong>≤20 lines</strong> per skill entrypoint</span><span><strong>Read-only</strong> worker tools</span><span><strong>≤3 groups</strong> per repair batch</span><span><strong>≤120 lines</strong> per review</span></div>
       <section id="release">
-        <div class="section-head"><h2>Keep the decisions. Keep the proof.</h2><span class="section-number">NEW / v1.1.0</span></div>
-        <p class="intro">Four focused surfaces carry the task from its first decisions to a reliable handoff. The existing edit guards, checks, and passed-file locks stay in place.</p>
+        <div class="section-head"><h2>Make the next shortcut visible.</h2><span class="section-number">NEW / v1.2.0</span></div>
+        <p class="intro">Built from the supplied Part 1–7 architecture: enforce source coverage, keep honest failure exits, and narrow both repair and review. Scope Brief, Design Check and Session Trail carry the decisions and evidence across turns.</p>
         <div class="release-cards">
-          <article class="card"><code>/oma-brief</code><h3>Scope Brief</h3><p>Record what should change, what should stay, and who owns each decision. Open questions and conflicting sources prevent the plan from being sealed.</p></article>
-          <article class="card"><code>/oma-design-check</code><h3>Design Check</h3><p>An independent auditor checks the exact plan before implementation. The auditor submits its own verdict; a changed plan needs a fresh check.</p></article>
-          <article class="card"><code>/oma-evidence</code><h3>Evidence Window</h3><p>Inspect the useful part of a long verification log without filling the conversation. Each bounded window includes integrity, position, and a next cursor.</p></article>
-          <article class="card"><code>/oma-checkpoint · /oma-resume</code><h3>Session Trail</h3><p>Preserve a compact handoff and compare it with current source when you return. Drift is explicit; an old snapshot never restores permission or clears locks.</p></article>
+          <article class="card"><code>/oma-read · /oma-probe</code><h3>Cover the source, including the tail</h3><p>Register versioned snapshots, page every byte window, and record real CLI help. Missing source coverage or a failed required probe prevents handoff.</p></article>
+          <article class="card"><code>Read-only boundaries</code><h3>Keep dependencies intact</h3><p>Fingerprint declared dependency trees. Large-file writes need a planned rewrite; other edits target bounded existing chunks.</p></article>
+          <article class="card"><code>/oma-failure</code><h3>An honest failure exit</h3><p>Report DEPENDENCY_DEFECT with a real failed check, or name an external blocker. Preserve evidence and locks without inventing successful behavior.</p></article>
+          <article class="card"><code>AST + execution receipts</code><h3>Check structure. Record execution.</h3><p>Parse scoped Python for suspicious success shortcuts. Bind real status, output and source/input hashes to immutable receipts. Missing Python fails honestly.</p></article>
+          <article class="card"><code>/oma-repair-context</code><h3>Fix related failures in order</h3><p>Sealed dependency groups determine the next bounded batch. Real diagnostics are paged. A→B→A oscillation narrows focus to one group.</p></article>
+          <article class="card"><code>Blind section jury</code><h3>Find the counterexample first</h3><p>Markdown shards follow headings; each uses a fresh reviewer conversation. A central judge requires criterion-level evidence and vetoes unrequested nonmaterial demands.</p></article>
         </div>
+        <p class="note">Read coverage proves delivery, not comprehension. AST patterns and tool guards complement behavioral tests and runtime sandboxing; they do not guarantee zero defects. Python scopes require Python 3.9+. <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/guide/series-runtime.md">Part 1–7 mapping, schemas and limits ↗</a></p>
         <p class="note">Care scales with the scope: routine, elevated, and critical work use review caps of 120, 90, and 60 lines and repair batches of 3, 2, and 1. Sensitive paths can only raise care. Every profile retains real checks and independent receipts. <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/guide/session-continuity.md">Read the operating guide ↗</a></p>
       </section>
       <section id="workflow">
         <div class="section-head"><h2>A boundary at every handoff.</h2><span class="section-number">01 / WORKFLOW</span></div>
         <p class="intro">Procedures load when needed. Native capability limits and lifecycle hooks enforce the work that can happen in each phase.</p>
         <div class="flow">
-          <article><b>01 / READ</b><h3>Documentation first</h3><p>A dedicated agent returns a short summary, sources, constraints, and unknowns. No writes or shell access.</p></article>
+          <article><b>01 / READ</b><h3>Documentation first</h3><p>Register and fully page source snapshots. A read-only reader returns constraints and unknowns. Required CLI probes use recorded execution.</p></article>
           <article><b>02 / DESIGN</b><h3>Seal the contract</h3><p>Resolve Scope Brief decisions, seal exact files and checks, and obtain an independent Design Check. End the user turn.</p></article>
           <article><b>03 / IMPLEMENT</b><h3>Stay inside scope</h3><p>The owning conversation applies patches. PreToolUse rejects off-scope edits, shell bypasses, and evidence writes.</p></article>
-          <article><b>04 / VERIFY</b><h3>Prove each section</h3><p>Actual check results and focused reviews determine completion. Stop locks passed files and schedules bounded repairs.</p></article>
+          <article><b>04 / VERIFY</b><h3>Prove each section</h3><p>Real checks, AST results and blind reviews determine completion. Stop locks passed files and schedules dependency-ordered repairs.</p></article>
         </div>
         <p class="turn-boundary"><strong>Design → implementation is a user-turn boundary.</strong> Repair batches use separate execution slices scheduled by Stop, with verification between batches.</p>
       </section>
@@ -81,7 +84,7 @@
         <div class="cards">
           <article class="card"><code>PreToolUse</code><h3>A narrow write surface</h3><p>Exact planned paths, one conversation owner, protected state and logs, no arbitrary shell calls. Tests and fixtures need explicit scope.</p></article>
           <article class="card"><code>Verification</code><h3>Results from execution</h3><p>Sealed argv checks record real exit codes, output, and source hashes. There is no agent command to declare a failed check passed.</p></article>
-          <article class="card"><code>Stop</code><h3>Fix up to three</h3><p>One batch contains at most three failed validators or non-passing sections. Every batch returns to verification before another is assigned.</p></article>
+          <article class="card"><code>Stop</code><h3>Fix up to three</h3><p>A batch contains at most three dependency groups or non-passing sections. Sensitive scopes and detected oscillation use fewer. Every batch returns to verification.</p></article>
           <article class="card"><code>Hash locks</code><h3>Keep passed code stable</h3><p>A file locks after its checks and every section pass. Further edits and stale evidence are rejected. Reopening requires operator recovery.</p></article>
           <article class="card"><code>Section review</code><h3>A small, concrete assignment</h3><p>The hook builds one source section of up to 120 lines per reviewer. Receipts come from the reviewer’s own conversation. The parent cannot write PASS or steer its verdict.</p></article>
           <article class="card"><code>Fail / unknown / blocked</code><h3>No manufactured success</h3><p>Do not fake service responses, skip validation, or invent logs. Bounded retries and explicit blockers stop unproductive repair loops.</p></article>
@@ -103,12 +106,12 @@
         <div class="section-head"><h2>Native from the entrypoint down.</h2><span class="section-number">04 / UPGRADE</span></div>
         <div class="split">
           <article class="migration"><h3>Moving from v1.0</h3><p>Reinstall with <code>agy plugin install</code>. New plans require Scope Brief and native Design Check. Current clients must support child review messages and hooks.</p><p>Existing v1.0 sealed work can finish through its legacy path. New plans use native independent receipts; missing support remains unknown.</p><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity#upgrade-from-v10-or-gemini-cli">Migration details ↗</a></article>
-          <article class="migration"><h3>A compact control plane</h3><p>60 short skill entrypoints, 16 capability-limited workers, and three guard events. Compact state packs retain the current next action; full evidence stays on disk.</p><p>Use <code>/oma-status</code> for progress, <code>/oma-doctor</code> for diagnostics, and <code>/oma-team-verify</code> for remaining evidence.</p><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/history.md">Read the v1.1.0 history ↗</a></article>
+          <article class="migration"><h3>A compact control plane</h3><p>64 short skill entrypoints, 16 capability-limited workers, and three guard events. New workflows use the v2 reading and jury contract; existing sealed work retains its prior contract.</p><p>Use <code>/oma-status</code> for progress, <code>/oma-doctor</code> for diagnostics, and <code>/oma-team-verify</code> for remaining evidence.</p><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/history.md">Read the v1.2.0 history ↗</a></article>
         </div>
       </section>
-      <aside class="thanks" aria-label="Acknowledgment"><h2>Ideas worth building on.</h2><p><strong>Special thanks to <a href="https://www.threads.com/@hyunuk.lim" style="color:var(--accent)">@hyunuk.lim</a> (threads).</strong> His threads and posts were a major help in shaping this refactor: thin skills, physical tool constraints, honest failure, bounded repairs, and focused reviews.</p></aside>
+      <aside class="thanks" aria-label="Acknowledgment"><h2>Ideas worth building on.</h2><p><strong>Special thanks to <a href="https://www.threads.com/@hyunuk.lim" style="color:var(--accent)">@hyunuk.lim</a> (threads).</strong> His threads and posts were a major help in shaping this refactor: thin skills, physical tool constraints, honest failure, bounded repairs, and focused reviews.<br><br>Further reading: <a href="https://medium.com/@dev.hyunuk/3f86bb9b8ab7" style="color:var(--accent)">his Medium article on the ideas behind the v1.0 renewal</a>. Thank you for sharing the concepts and experience that helped shape OmA’s workflow.</p></aside>
     </main>
-    <footer><span>oh-my-antigravity · v1.1.0 · MIT</span><span><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/README_ko.md" lang="ko">한국어</a> · <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity">Source</a> · <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/history.md">History</a> · <a href="https://github.com/sponsors/Joonghyun-Lee-Frieren">Sponsor</a></span></footer>
+    <footer><span>oh-my-antigravity · v1.2.0 · MIT</span><span><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/README_ko.md" lang="ko">한국어</a> · <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity">Source</a> · <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/history.md">History</a> · <a href="https://github.com/sponsors/Joonghyun-Lee-Frieren">Sponsor</a></span></footer>
   </div>
   <script>
     const copy = document.getElementById('copy');

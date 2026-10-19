@@ -79,10 +79,22 @@ controller transitions and ordinary Stop also capture a checkpoint automatically
 
 Controller resume is read-only. It verifies record identity, owner, workspace, digest,
 plan fingerprint, and source hashes. It reports current, state-advanced, source-changed,
-plan-changed, or missing-checkpoint, plus bounded drift paths and current next action.
+validator-changed, plan-changed, or missing-checkpoint, plus bounded drift paths and current next action.
 Corrupt or missing referenced records are explicit errors. It never loads a stale
 snapshot over live state, transfers an owner, replays a verdict, or clears a lock.
 A continuity-ready report still does not start code work or grant permission.
+
+v1.2 checkpoints also snapshot automatically tracked validator scripts and declared
+check `inputs`. Resume reports `changedValidatorInputs` (up to 12 paths) and the total
+`changedValidatorInputCount`; drift makes `ready` false. Older checkpoints without
+these hashes retain their original source/plan checks. This comparison detects drift
+since the checkpoint; controller start/verify separately enforce the sealed input
+basis. Status exposes `validatorInputCount` without loading the input contents.
+
+Reference snapshots are tracked separately. `reference-changed`, `changedReferences`
+and `changedReferenceCount` report drift in registered specification/SDK sources.
+Status includes reading file/completion counts, oscillation focus, and typed failure.
+See [runtime source, repair and jury schemas](series-runtime.md).
 
 Use the existing owning conversation for continuation. Ownership conflicts, blocked
 work, or locked-file changes require operator reconciliation with evidence retained.

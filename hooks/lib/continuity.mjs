@@ -3,10 +3,11 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import { stripVTControlCharacters } from 'node:util';
 import { assert, within, digest } from './storage.mjs';
+import { inputHashes } from './validation.mjs';
 
 export function nextAction(state) {
   if (!state) return 'init';
-  if (state.phase === 'research') return 'handoff';
+  if (state.phase === 'research') return state.guardVersion !== 2 ? 'handoff' : !state.reading ? 'sources' : Object.values(state.reading).some(item => !item.complete) ? 'read' : 'handoff';
   if (state.phase === 'design') return !state.brief ? 'brief' : !state.designSealed ? 'plan'
     : state.planReview?.verdict === 'pass' ? 'end-design-turn' : state.planReview?.verdict === 'revise' ? 'revise-plan' : 'design-check';
   if (state.phase === 'review') return (state.sections || []).some(section => !state.reviews?.[section.id]) ? 'review-missing-sections' : 'end-review-execution';
@@ -25,6 +26,9 @@ export function contextPack(state) {
     openDecisions: (state.brief?.decisions || []).filter(item => item.status === 'open').map(item => ({ id: item.id, owner: item.owner })).slice(0, 5),
     checks: (state.checks || []).slice(0, 8).map(item => ({ id: item.id, status: item.status, evidence: item.evidence })),
     checkCount: state.checks?.length || 0, pendingReviewCount: pending.length,
+    validatorInputCount: Object.keys(state.validatorBasis || {}).length,
+    reading: { files: Object.keys(state.reading || {}).length, complete: Object.values(state.reading || {}).filter(item => item.complete).length },
+    repairFocus: state.repairFocus || null, failure: state.failure || null,
     nextSections: pending.slice(0, 3).map(({ id, file, start, end, hash }) => ({ id, file, start, end, hash })),
     lockedFileCount: Object.keys(state.locks || {}).length,
     batch: (state.batch || []).slice(0, 3).map(item => ({ id: item.id, files: item.files.slice(0, 2), omittedFiles: Math.max(0, item.files.length - 2) })),
@@ -65,6 +69,8 @@ export function captureTrail(root, state, reason) {
   const record = { schema: 1, id, owner: state.owner, workspace: fs.realpathSync(root), phase: state.phase,
     revision: (state.revision || 0) + 1, reason, at: new Date().toISOString(), planHash: state.planHash || null,
     sourceHashes: Object.fromEntries((state.plan?.files || []).map(file => [file, digest(root, file)])), pack: contextPack(state) };
+  record.validatorHashes = inputHashes(root, state.plan?.checks);
+  record.referenceHashes = Object.fromEntries(Object.entries(state.reading || {}).map(([file]) => [file, digest(root, file)]));
   delete record.pack.checkpoint;
   const relative = `.omg/state/checkpoints/${id}.json`;
   const target = path.join(root, within(root, relative));
@@ -89,8 +95,12 @@ export function resumeView(root, state) {
   assert(snapshot.workspace === fs.realpathSync(root), 'Checkpoint belongs to a different workspace.');
   const changedFiles = Object.entries(snapshot.sourceHashes).filter(([file, hash]) => digest(root, file) !== hash).map(([file]) => file);
   const samePlan = snapshot.planHash === (state.planHash || null);
-  return { ...pack, continuity: !samePlan ? 'plan-changed' : changedFiles.length ? 'source-changed' : snapshot.revision === state.revision ? 'current' : 'state-advanced',
+  const changedInputs = Object.entries(snapshot.validatorHashes || {}).filter(([file, hash]) => digest(root, file) !== hash).map(([file]) => file);
+  const changedReferences = Object.entries(snapshot.referenceHashes || {}).filter(([file, hash]) => digest(root, file) !== hash).map(([file]) => file);
+  return { ...pack, continuity: !samePlan ? 'plan-changed' : changedFiles.length ? 'source-changed' : changedInputs.length ? 'validator-changed' : changedReferences.length ? 'reference-changed' : snapshot.revision === state.revision ? 'current' : 'state-advanced',
     changedFiles: changedFiles.slice(0, 12), changedFileCount: changedFiles.length,
-    ready: samePlan && changedFiles.length === 0 && state.phase !== 'blocked',
+    changedValidatorInputs: changedInputs.slice(0, 12), changedValidatorInputCount: changedInputs.length,
+    changedReferences: changedReferences.slice(0, 12), changedReferenceCount: changedReferences.length,
+    ready: samePlan && changedFiles.length === 0 && changedInputs.length === 0 && changedReferences.length === 0 && state.phase !== 'blocked',
     note: 'This read does not restore state, transfer ownership, start work, or clear locks.' };
 }

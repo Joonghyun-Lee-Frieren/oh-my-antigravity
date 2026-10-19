@@ -1,6 +1,6 @@
 # oh-my-antigravity (OmA)
 
-[![Version](https://img.shields.io/badge/version-1.1.0-0d8a83)](history.md)
+[![Version](https://img.shields.io/badge/version-1.2.0-0d8a83)](history.md)
 [![Checks](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-antigravity/version-check.yml?branch=main&label=checks)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
 
@@ -39,7 +39,21 @@ Design Check。通过后，**结束设计轮次**。在下一轮执行：
 准确的控制器命令、JSON 示例、恢复方法和约束边界，请参阅
 [受保护工作流指南](guide/guarded-workflow.md)。
 
-## v1.1.0 新功能
+## v1.2.0 新功能
+
+现在会记录验证脚本和各检查 `inputs` 中声明的依赖文件哈希。输入变化会阻止开始实现、
+验证或接受过期证据，Session Trail 也会报告验证依赖的变化。分段审查员会收到所有相关
+检查结果，最多两个日志摘录优先展示失败检查。合法测试修改的范围声明和限制请参阅
+[输入格式说明](guide/guarded-workflow.md)。已封存的旧计划需要重新封存才能获得新的输入保护。
+
+根据提供的 Part 1–7 资料，新增完整源码阅读覆盖记录、只读依赖边界、大文件覆盖限制、
+分类失败出口、Python AST 检查，以及按依赖排序的修复组。发现修复振荡时缩减为单组。
+Markdown 按标题分片，每片使用新对话，并由中央判定器审核针对各项要求的反证记录。
+交接前使用 `/oma-read`；`/oma-probe` 记录 CLI 帮助，`/oma-failure` 报告失败，
+`/oma-repair-context` 查看当前修复组。Python 文件需要 Python 3.9+。
+详见[对应表、格式、迁移与限制](guide/series-runtime.md)。字节送达不等于理解，也不保证零缺陷。
+
+## v1.1.0 范围与会话连续性功能
 
 | 功能 | 行为 |
 | --- | --- |
@@ -73,7 +87,7 @@ Design Check。通过后，**结束设计轮次**。在下一轮执行：
 
 ## 工作流与角色
 
-插件提供 60 个简短技能，其中包括 49 个 `/oma-<name>` 命令入口，以及 16 个能力受限的代理。
+插件提供 64 个简短技能，其中包括 53 个 `/oma-<name>` 命令入口，以及 16 个能力受限的代理。
 请仅使用与当前任务相关的流程。
 
 | 命令 | 用途 |
@@ -144,6 +158,9 @@ UTF-8 日志分页、检查点损坏，以及恢复时的资料变化。
 **特别感谢 [@hyunuk.lim](https://www.threads.com/@hyunuk.lim) (threads)。**
 他的讨论串和帖子为本次重构提供了很大帮助，包括更小的技能、物理工具约束、诚实的失败、
 有界修复和聚焦审查。
+
+延伸阅读：[介绍 v1.0 更新背景理念的 Medium 文章](https://medium.com/@dev.hyunuk/3f86bb9b8ab7)。
+感谢分享帮助塑造 OmA 工程工作流的理念与经验。
 
 本项目也受到 Jeongkyu Shin 的观点启发而发展：围绕模型构建的工程框架与模型本身同样重要。
 

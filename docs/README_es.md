@@ -1,6 +1,6 @@
 # oh-my-antigravity (OmA)
 
-[![Version](https://img.shields.io/badge/version-1.1.0-0d8a83)](history.md)
+[![Version](https://img.shields.io/badge/version-1.2.0-0d8a83)](history.md)
 [![Checks](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-antigravity/version-check.yml?branch=main&label=checks)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
 
@@ -42,7 +42,26 @@ permisos o pruebas puede terminar en `blocked` o `unknown`; nunca se exige respo
 Consulta la [guía del flujo de trabajo protegido](guide/guarded-workflow.md) para conocer los comandos
 exactos del controlador, los ejemplos JSON, la recuperación y los límites de las restricciones.
 
-## Novedades de la v1.1.0
+## Novedades de la v1.2.0
+
+Se registran las huellas de los scripts de validación y de los archivos declarados en
+los `inputs` de cada comprobación. Los cambios bloquean el inicio, la validación o
+la aceptación de pruebas obsoletas; Session Trail también informa de estos cambios.
+El revisor recibe todos los resultados pertinentes y hasta dos extractos de registros,
+con prioridad para los fallos. Consulta el [esquema de entradas](guide/guarded-workflow.md)
+para los cambios legítimos en pruebas. Los planes ya sellados deben sellarse de nuevo
+para obtener esta protección.
+
+El material de las partes 1–7 también fundamenta la cobertura completa de lectura,
+las dependencias de solo lectura, los límites de sobrescritura, los fallos tipados,
+el AST de Python y los grupos de reparación ordenados por dependencias. La oscilación
+reduce el lote a un grupo. Cada sección usa una conversación nueva con pruebas de
+refutación y un juez determinista. Usa `/oma-read` antes del traspaso, `/oma-probe`
+para la ayuda CLI, `/oma-failure` para fallos y `/oma-repair-context` para el lote activo.
+Los archivos Python requieren Python 3.9+. Consulta los [esquemas y límites](guide/series-runtime.md).
+Entregar todos los bytes no demuestra comprensión ni garantiza cero defectos.
+
+## Alcance y continuidad de la v1.1.0
 
 | Función | Comportamiento |
 | --- | --- |
@@ -80,7 +99,7 @@ en los valores predeterminados distribuidos.
 
 ## Flujos de trabajo y roles
 
-El plugin ofrece 60 skills breves, incluidos 49 puntos de entrada de comandos `/oma-<name>`, y
+El plugin ofrece 64 skills breves, incluidos 53 puntos de entrada de comandos `/oma-<name>`, y
 16 agentes con capacidades limitadas. Usa solo los procedimientos relevantes para la tarea actual.
 
 | Comando | Propósito |
@@ -166,6 +185,9 @@ puntos de control y los cambios en las fuentes al reanudar.
 **Gracias especialmente a [@hyunuk.lim](https://www.threads.com/@hyunuk.lim) (threads).** Sus hilos y
 publicaciones fueron de gran ayuda para dar forma a esta refactorización: skills más pequeños,
 restricciones físicas de herramientas, fallos honestos, correcciones acotadas y revisiones centradas.
+
+Lectura adicional: [su artículo de Medium sobre las ideas detrás de la renovación v1.0](https://medium.com/@dev.hyunuk/3f86bb9b8ab7).
+Gracias por compartir los conceptos y la experiencia que ayudaron a dar forma al flujo de trabajo de OmA.
 
 El proyecto también creció a partir de la observación de Jeongkyu Shin de que el arnés de ingeniería
 que rodea a un modelo importa tanto como el propio modelo.

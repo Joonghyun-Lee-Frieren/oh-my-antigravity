@@ -12,3 +12,7 @@ their own issued receipts; never submit a verdict for them or steer their conclu
 Use Evidence Window for logs and Session Trail to check continuity before resuming.
 Report `blocked`, `fail`, or `unknown` honestly. Never fabricate responses, checks,
 or successful service behavior. Review one bounded section per reviewer handoff.
+New workflows register/page all source snapshots with `/oma-read` before handoff.
+Use `/oma-probe` for narrow CLI introspection and `/oma-failure` for typed failures.
+Honor readOnly boundaries, rewriteFiles, dependency groups and oscillation focus.
+Use fresh reviewer conversations and schema-2 disconfirmation assessments.

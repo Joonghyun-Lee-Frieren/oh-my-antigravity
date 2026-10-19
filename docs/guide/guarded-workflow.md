@@ -1,4 +1,4 @@
-# Guarded workflow (v1.1)
+# Guarded workflow (v1.2.0)
 
 OmA is a native Antigravity CLI plugin. Use a current CLI and Node.js 20+.
 Inspect `/plugin list` and `/hooks` after installing. Skill entrypoints stay within
@@ -38,6 +38,11 @@ remain available, including reads of installed plugin references.
 
 Save the doc-reader result with native file tools:
 
+For new workflows, first use `/oma-read` to register versioned source snapshots and
+page every bounded source window. This handoff is accepted only when its sources
+exactly match the complete, unchanged registered set. Use `/oma-probe` for required
+CLI help/version evidence. See [Part 1–7 runtime schemas](series-runtime.md).
+
 ```json
 {
   "agent": "oma-doc-reader",
@@ -76,7 +81,8 @@ acceptance criteria, and executable checks. Every file and criterion needs a che
     "id": "pricing",
     "argv": ["node", "scripts/check-pricing.mjs"],
     "files": ["src/pricing.js", "tests/pricing.test.js"],
-    "criteria": ["rounding", "existing-contract"]
+    "criteria": ["rounding", "existing-contract"],
+    "inputs": ["tests/pricing.test.js", "package.json"]
   }]
 }
 ```
@@ -85,6 +91,18 @@ Validators are argv arrays, never shell strings. Node/Python validators must be
 existing workspace scripts; inline interpreters and shells are rejected. On Windows,
 use Node plus a script rather than relying on npm.cmd through a shell. Each check
 has a 30-second timeout. Validators are trusted project code, not sandboxed by OmA.
+
+Node/Python script files are automatically included in each check's `inputs`.
+Declare additional tests, fixtures, imported helpers, and configuration files there;
+OmA does not infer transitive dependencies. Each check accepts at most 100 existing
+workspace files, including its script. Inputs are read dependencies and grant no
+edit permission. They cannot name protected paths or `.omg/` artifacts.
+New plans record their hashes. Start requires unchanged inputs; verify also requires
+unchanged inputs outside the edit scope. Put an input in `files` (and `testFiles`
+for tests/fixtures) when the task legitimately changes it. Verification records the
+updated hashes and rejects any input changed while checks run or before review and
+completion. Previously sealed plans keep their existing guarantees; reseal to obtain
+validator input protection.
 
 Request `/oma-design-check`: invoke oma-design-auditor with Prompt exactly `plan`.
 The hook supplies the brief, documentation handoff, exact plan hash, care policy,
@@ -109,12 +127,17 @@ Scoped source hashes must still match the design basis. Drift requires reconcili
 Edit with native file tools, then run controller verify. It executes the sealed
 checks without a shell and records actual exit codes, logs, timestamps, log digests,
 and source hashes. Missing executables, timeouts, and nonzero exits fail. A validator
-that changes scoped code cannot establish valid evidence.
+that changes scoped code or recorded validator inputs cannot establish valid evidence.
 
 Invoke oma-reviewer with Prompt equal to one current section ID from status, such
 as `src/pricing.js:1`. The hook constructs the packet: bounded source, current hash,
 criteria, check results, and bounded log windows. Oversized packets are rejected,
 not silently truncated. A reviewer may read a specific dependency to trace behavior.
+Every covering check's status, exit code, criteria, evidence path, and input-integrity
+label is included. Up to two 2048-byte log windows prioritize non-passing checks;
+other windows are explicitly null and counted by `windowlessCheckCount`. Missing
+excerpts never imply success. Use `/oma-evidence` for additional log inspection;
+the independent reviewer must return unknown if its packet cannot support a verdict.
 
 Both independent roles use send_message with the issued Recipient and a JSON Message:
 
@@ -129,11 +152,21 @@ Both independent roles use send_message with the issued Recipient and a JSON Mes
       "verdict": "pass",
       "criteria": ["rounding", "existing-contract"],
       "evidence": "Lines 18-24 round once; the check exercises the half-cent boundary.",
+      "assessments": [
+        { "criterion": "rounding", "status": "supported", "probe": "Checked positive and negative half-cent boundaries.", "evidence": "Lines 18-24 round once at the currency boundary." },
+        { "criterion": "existing-contract", "status": "supported", "probe": "Traced existing callers with the original input shape.", "evidence": "The public signature and return structure are preserved." }
+      ],
       "findings": []
     }
   }
 }
 ```
+
+New guardVersion-2 section receipts also require `assessments`: one per criterion,
+with status, evidence and a short counterexample probe. Material findings need
+criterion, expected and observed behavior. The [central judge schema](series-runtime.md#blind-shards-and-a-deterministic-judge)
+defines scope vetoes and unknown outcomes. Use a fresh reviewer conversation per
+shard. Markdown shards follow `##` headings while respecting the line cap.
 
 The hook records the actual sender conversation ID. A sender equal to the parent,
 a wrong recipient, an unknown/superseded ticket, changed source, or a changed replay

@@ -1,6 +1,6 @@
 # oh-my-antigravity (OmA)
 
-[![Version](https://img.shields.io/badge/version-1.1.0-0d8a83)](history.md)
+[![Version](https://img.shields.io/badge/version-1.2.0-0d8a83)](history.md)
 [![Checks](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-antigravity/version-check.yml?branch=main&label=checks)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
 
@@ -40,7 +40,27 @@ CLI에서 `/plugin list`와 `/hooks`를 확인한 뒤 다음과 같이 시작합
 정확한 컨트롤러 명령, JSON 예제, 복구 방법, 제약의 한계는
 [보호 워크플로 가이드](guide/guarded-workflow.md)를 참고하세요.
 
-## v1.1.0의 새로운 기능
+## v1.2.0의 새로운 기능
+
+검증 스크립트와 검증 항목의 `inputs`에 선언한 의존 파일의 해시를 기록합니다.
+파일이 바뀌면 구현 시작·검증·오래된 증거의 승인을 차단하고, Session Trail도 검증 의존 파일의
+변경을 알립니다. 섹션 리뷰어에게 관련 검증 결과를 모두 전달하며, 최대 두 개의 로그 발췌는
+실패한 검증을 우선합니다. 의도적으로 검증 파일을 수정할 때의 범위 선언과 제약은
+[입력 스키마 안내](guide/guarded-workflow.md)를 참고하세요. 기존에 확정한 계획은 다시 확정해야
+새 입력 보호가 적용됩니다.
+
+제공된 Part 1~7의 아키텍처를 바탕으로 문서 전체 범위 읽기, 읽기 전용 의존 경로의 해시 점검,
+큰 파일 덮어쓰기 제한, 유형별 정직한 실패 출구, Python AST 검사, 의존성 순서의 수정 그룹,
+수정 진동 감지 시 한 그룹 집중을 추가했습니다. Markdown 리뷰는 헤딩별로 나누고 섹션마다
+새 대화를 사용합니다. 명세별 반증 점검과 기대·관찰 결과를 중앙 판정기가 검증합니다.
+
+`/oma-read`로 자료 스냅샷을 등록하고 모든 바이트 구간을 읽은 뒤 문서 인계를 진행하세요.
+`/oma-probe`는 실제 CLI 도움말·버전을 기록하고, `/oma-failure`는 의존성 결함 등을 보고하며,
+`/oma-repair-context`는 현재 수정 그룹의 실제 진단만 조회합니다. Python 범위에는 Python 3.9 이상이
+추가로 필요합니다. [Part 1~7 반영표·스키마·마이그레이션과 한계](guide/series-runtime.md)를 참고하세요.
+읽기 기록은 바이트 전달을 증명하며 모델의 이해나 임의 코드의 무결점을 보장하지 않습니다.
+
+## v1.1.0의 범위·세션 연속성 기능
 
 | 기능 | 동작 |
 | --- | --- |
@@ -76,7 +96,7 @@ CLI에서 `/plugin list`와 `/hooks`를 확인한 뒤 다음과 같이 시작합
 
 ## 워크플로와 역할
 
-플러그인은 `/oma-<name>` 명령 진입점 49개를 포함한 짧은 스킬 60개와 기능이 제한된 에이전트 16개를
+플러그인은 `/oma-<name>` 명령 진입점 53개를 포함한 짧은 스킬 64개와 기능이 제한된 에이전트 16개를
 제공합니다. 현재 작업에 필요한 절차만 사용하세요.
 
 | 명령 | 목적 |
@@ -151,6 +171,9 @@ agy plugin validate .
 **[@hyunuk.lim](https://www.threads.com/@hyunuk.lim) (threads) 님께 특별히 감사드립니다.**
 그의 스레드와 포스팅은 작은 스킬, 물리적인 도구 제약, 정직한 실패, 제한된 수정,
 집중된 리뷰를 중심으로 이번 리팩토링의 방향을 잡는 데 큰 도움이 되었습니다.
+
+함께 읽을 글: [v1.0 리뉴얼의 배경이 된 컨셉을 소개한 Medium 글](https://medium.com/@dev.hyunuk/3f86bb9b8ab7).
+OmA의 엔지니어링 워크플로를 다듬는 데 도움이 된 생각과 경험을 공유해 주셔서 감사합니다.
 
 이 프로젝트는 모델 자체만큼 모델을 둘러싼 엔지니어링 하네스도 중요하다는 신정규 님의 관점에서도
 발전했습니다.

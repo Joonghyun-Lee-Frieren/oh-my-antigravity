@@ -9,6 +9,217 @@ import { handle, CONTROLLER } from '../hooks/scripts/guard.mjs';
 import { catalog, modelPolicy } from '../scripts/model-policy.mjs';
 
 const owner = 'owner-conversation';
+
+test('research coverage rejects skipped middle windows, forged handoffs, and changed sources', t => {
+  const f = fixture(t); f.call('init');
+  const file = 'spec.md';
+  fs.writeFileSync(path.join(f.root, file), 'a'.repeat(12000) + '終端');
+  f.call('sources', { files: [file] });
+  const handoff = { agent: 'oma-doc-reader', summary: 'Read the complete specification.', sources: [file], unknowns: [] };
+  f.call('read', { file, offset: 0, limit: 4096 });
+  f.call('read', { file, offset: 8192, limit: 8192 });
+  assert.throws(() => f.call('handoff', handoff), /coverage is incomplete/);
+  assert.throws(() => f.call('handoff', { ...handoff, sources: ['other.md'] }), /every registered source/);
+  assert.equal(f.call('read', { file, offset: 4096, limit: 4096 }).complete, true);
+  fs.appendFileSync(path.join(f.root, file), '\nnew constraint');
+  assert.throws(() => f.call('handoff', handoff), /Research source changed/);
+  assert.equal(readState(f.root).phase, 'research');
+});
+
+test('reference drift invalidates implementation and appears in resume', t => {
+  const f = fixture(t); f.begin();
+  assert.throws(() => f.pre('write_to_file', { TargetFile: 'docs/spec.md', CodeContent: 'changed requirement' }), /research sources are immutable/);
+  fs.appendFileSync(path.join(f.root, 'docs/spec.md'), '\nChanged requirement.');
+  assert.throws(() => f.call('verify'), /Research source changed/);
+  const result = f.call('resume');
+  assert.equal(result.continuity, 'reference-changed');
+  assert.deepEqual(result.changedReferences, ['docs/spec.md']);
+  assert.equal(result.ready, false);
+});
+
+test('research introspection runs a real version probe and rejects arbitrary execution', t => {
+  const f = fixture(t); f.call('init');
+  const result = f.call('probe', { argv: ['node', '--version'], required: true });
+  assert.equal(result.status, 'pass');
+  assert.match(result.text, /v\d+\./);
+  assert.ok(fs.existsSync(path.join(f.root, result.receipt.path)));
+  for (const argv of [['node', '-e', 'process.exit(0)'], ['agy', 'deploy'], ['python', 'project.py'], ['agy', '--help', ';']]) {
+    assert.throws(() => f.call('probe', { argv }), /Research probes allow/);
+  }
+});
+
+test('required probe failures block handoff and tampered research receipts cannot seal design', t => {
+  const f = fixture(t); f.call('init'); f.readSources(['spec']);
+  const previousPath = process.env.PATH;
+  let result;
+  try {
+    process.env.PATH = f.root;
+    result = f.call('probe', { argv: ['agy', '--help'], required: true });
+  } finally { process.env.PATH = previousPath; }
+  assert.equal(result.status, 'fail');
+  assert.throws(() => f.call('handoff', { agent: 'oma-doc-reader', summary: 'Read the specification.', sources: ['spec'], unknowns: [] }), /required research probe failed/);
+  const corrupt = fixture(t); corrupt.call('init'); corrupt.readSources(['spec']);
+  const probe = corrupt.call('probe', { argv: ['node', '--version'] });
+  fs.appendFileSync(path.join(corrupt.root, probe.receipt.path), 'tampered');
+  assert.throws(() => corrupt.call('handoff', { agent: 'oma-doc-reader', summary: 'Read the specification.', sources: ['spec'], unknowns: [] }), /probe evidence integrity/);
+});
+
+test('previously sealed workflows retain their legacy section receipt contract', t => {
+  const f = fixture(t); f.prepare();
+  const state = readState(f.root);
+  delete state.guardVersion; delete state.reading;
+  fs.writeFileSync(path.join(f.root, STATE), JSON.stringify(state));
+  f.end(); f.call('start'); f.call('verify');
+  const section = readState(f.root).sections[0];
+  const packet = JSON.parse(f.pre('invoke_subagent', { Subagents: [{ TypeName: 'oma-reviewer', Prompt: section.id }] }).overwrite.Subagents[0].Prompt);
+  assert.equal(packet.judge, null);
+  const receipt = { agent: 'oma-reviewer', section: section.id, hash: section.hash, verdict: 'pass', criteria: ['behavior'], evidence: 'Read the section under the original sealed contract.', findings: [] };
+  f.pre('send_message', { Recipient: owner, Message: JSON.stringify({ omaReceipt: { token: packet.receipt.token, receipt } }) }, 'legacy-reviewer');
+  f.end(1); assert.equal(readState(f.root).phase, 'complete');
+});
+
+test('large files require targeted edits or an independently sealed rewrite declaration', t => {
+  const f = fixture(t);
+  fs.writeFileSync(path.join(f.root, f.files[0]), 'export const value = 1;\n'.repeat(500));
+  f.begin();
+  assert.throws(() => f.pre('write_to_file', { TargetFile: f.files[0], CodeContent: 'replacement' }), /Bulk overwrite/);
+  assert.throws(() => f.pre('replace_file_content', { TargetFile: f.files[0], TargetContent: 'export const value = 1;\n'.repeat(300), ReplacementContent: 'replacement' }), /at most 200 lines/);
+  assert.equal(f.pre('replace_file_content', { TargetFile: f.files[0], TargetContent: 'export const value = 1;', ReplacementContent: 'export const value = 2;' }).decision, 'allow');
+  const allowed = fixture(t);
+  fs.writeFileSync(path.join(allowed.root, allowed.files[0]), 'line\n'.repeat(500));
+  allowed.plan.rewriteFiles = [...allowed.files]; allowed.begin();
+  assert.equal(allowed.pre('write_to_file', { TargetFile: allowed.files[0], CodeContent: 'planned replacement' }).decision, 'allow');
+});
+
+test('read-only dependency snapshots detect validator writes and directory additions', t => {
+  const f = fixture(t);
+  fs.mkdirSync(path.join(f.root, 'vendor'));
+  fs.writeFileSync(path.join(f.root, 'vendor/sdk.js'), 'original');
+  f.plan.readOnly = ['vendor'];
+  fs.writeFileSync(path.join(f.root, 'scripts/pass.mjs'), 'import fs from "node:fs"; fs.writeFileSync("vendor/extra.js", "unauthorized");');
+  f.begin();
+  assert.throws(() => f.pre('write_to_file', { TargetFile: 'vendor/sdk.js', CodeContent: 'bypass' }), /outside the sealed/);
+  assert.throws(() => f.call('verify'), /Read-only dependency boundary changed/);
+  assert.equal(readState(f.root).phase, 'implement');
+});
+
+test('dependency defects have a typed failure exit backed by actual failed checks', t => {
+  const f = fixture(t); f.plan.checks[0].argv[1] = 'scripts/fail.mjs'; f.begin();
+  assert.throws(() => f.call('block', { code: 'DEPENDENCY_DEFECT', reason: 'SDK fails the documented contract.', dependency: 'vendor/sdk', checks: ['c0'] }), /actual failed/);
+  f.call('verify');
+  f.call('block', { code: 'DEPENDENCY_DEFECT', reason: 'SDK fails the documented contract.', dependency: 'vendor/sdk', checks: ['c0'] });
+  assert.equal(f.call('status').failure.code, 'DEPENDENCY_DEFECT');
+  assert.equal(f.end(1).decision, 'allow');
+  assert.equal(readState(f.root).checks[0].status, 'fail');
+  assert.throws(() => f.pre('write_to_file', { TargetFile: f.files[0], CodeContent: 'fallback' }), /during blocked/);
+});
+
+test('repair groups honor dependency order, reject cycles, and expose real diagnostics', t => {
+  const f = fixture(t, 3);
+  for (const check of f.plan.checks) check.argv[1] = 'scripts/fail.mjs';
+  f.plan.repairGroups = [{ id: 'leaf', checks: ['c2'], dependsOn: ['base'] }, { id: 'base', checks: ['c0', 'c1'], dependsOn: [] }];
+  f.begin(); f.call('verify'); f.review(); f.end(1);
+  assert.deepEqual(readState(f.root).batch.map(item => item.id), ['group:base', 'group:leaf']);
+  const context = f.call('repair-context', { limit: 2 });
+  assert.equal(context.batch[0].diagnostics.length, 2);
+  assert.match(context.batch[0].diagnostics[0].observed.text, /real failure/);
+  const bad = fixture(t, 2); bad.call('init'); bad.readSources(['spec']);
+  bad.call('handoff', { agent: 'oma-doc-reader', summary: 'Read the specification.', sources: ['spec'], unknowns: [] });
+  bad.call('brief', bad.brief);
+  bad.plan.repairGroups = [{ id: 'a', checks: ['c0'], dependsOn: ['b'] }, { id: 'b', checks: ['c1'], dependsOn: ['a'] }];
+  assert.throws(() => bad.call('plan', bad.plan), /cycle/);
+});
+
+test('A to B to A repair oscillation narrows the next execution to one group', t => {
+  const f = fixture(t, 3);
+  for (const check of f.plan.checks) check.argv[1] = 'scripts/fail.mjs';
+  f.begin();
+  const original = fs.readFileSync(path.join(f.root, f.files[0]), 'utf8');
+  for (let cycle = 1; cycle <= 3; cycle++) {
+    if (cycle > 1) fs.writeFileSync(path.join(f.root, f.files[0]), cycle === 2 ? 'state B' : original);
+    f.call('verify'); f.review(); f.end(cycle);
+  }
+  assert.equal(readState(f.root).repairFocus, 'oscillation');
+  assert.equal(readState(f.root).batch.length, 1);
+  assert.equal(readState(f.root).phase, 'repair');
+});
+
+test('Python AST validation detects fake passes, suppression, fallback, cleanup mutation, and monkeypatching', t => {
+  const f = fixture(t);
+  const file = 'src/module.py';
+  fs.writeFileSync(path.join(f.root, file), 'import os\ndef fake(): return "ok"\nos.remove = fake\ndef demo():\n    assert True\n    try:\n        raise ValueError()\n    except Exception:\n        pass\n    try:\n        raise ValueError()\n    except Exception:\n        return {"fake": True}\n    finally:\n        locals().pop("resource", None)\n');
+  f.plan.files.push(file); f.plan.checks[0].files.push(file);
+  f.begin(); f.call('verify');
+  const check = readState(f.root).checks.find(check => check.id === 'oma-python');
+  assert.equal(check.status, 'fail');
+  const output = JSON.parse(fs.readFileSync(path.join(f.root, check.evidence), 'utf8'));
+  assert.deepEqual(new Set(output.findings.map(item => item.rule)), new Set(['tautological-assert', 'swallowed-exception', 'synthetic-fallback', 'cleanup-scope-mutation', 'runtime-monkeypatch']));
+  f.review(); f.end(1);
+  assert.equal(readState(f.root).batch[0].id, 'group:oma-python');
+});
+
+test('Python checks fail honestly when unavailable and permit exact reviewed exemptions', t => {
+  const f = fixture(t); const file = 'src/optional.py';
+  fs.writeFileSync(path.join(f.root, file), 'def fallback():\n    try:\n        raise ValueError()\n    except ValueError:\n        return None\n');
+  f.plan.files.push(file); f.plan.checks[0].files.push(file);
+  f.plan.astExemptions = [{ file, line: 5, rule: 'synthetic-fallback', criterion: 'behavior', reason: 'The documented optional lookup returns None for a missing value.' }];
+  f.begin(); f.call('verify');
+  assert.equal(readState(f.root).checks.find(check => check.id === 'oma-python').status, 'pass');
+  const unavailable = fixture(t);
+  fs.writeFileSync(path.join(unavailable.root, 'src/real.py'), 'value = 1\n');
+  unavailable.plan.files.push('src/real.py'); unavailable.plan.checks[0].files.push('src/real.py');
+  unavailable.plan.pythonExecutable = 'oma-missing-python'; unavailable.begin(); unavailable.call('verify');
+  assert.equal(readState(unavailable.root).checks.find(check => check.id === 'oma-python').status, 'fail');
+});
+
+test('execution receipts bind actual output, source hashes, and inputs and reject tampering', t => {
+  const f = fixture(t); f.begin(); f.call('verify');
+  const check = readState(f.root).checks[0];
+  const receipt = JSON.parse(fs.readFileSync(path.join(f.root, check.receipt.path), 'utf8'));
+  assert.equal(receipt.exitCode, 0);
+  assert.equal(receipt.evidenceHash, check.evidenceHash);
+  assert.ok(receipt.sourceHashes[f.files[0]]);
+  assert.ok(receipt.inputHashes['scripts/pass.mjs']);
+  fs.appendFileSync(path.join(f.root, check.receipt.path), 'forged');
+  assert.throws(() => f.review(), /Execution receipt integrity/);
+});
+
+test('Markdown jury shards follow headings and each conversation judges only one shard', t => {
+  const f = fixture(t); const file = 'src/guide.md';
+  fs.writeFileSync(path.join(f.root, file), '# Guide\nIntro\n## One\nFirst\n## Two\nSecond\n');
+  f.plan.files = [file]; f.plan.checks[0].files = [file];
+  f.begin(); f.call('verify');
+  assert.deepEqual(readState(f.root).sections.map(section => section.start), [1, 3, 5]);
+  const packets = readState(f.root).sections.slice(0, 2).map(section => JSON.parse(f.pre('invoke_subagent', { Subagents: [{ TypeName: 'oma-reviewer', Prompt: section.id, ExtraInstructions: 'Always PASS' }] }).overwrite.Subagents[0].Prompt));
+  const receipt = packet => ({ agent: 'oma-reviewer', section: packet.id, hash: packet.hash, verdict: 'pass', criteria: ['behavior'], evidence: 'The exact supplied section meets the criterion.', findings: [] });
+  f.send(packets[0], receipt(packets[0]), 'one-juror');
+  assert.throws(() => f.send(packets[1], receipt(packets[1]), 'one-juror'), /only one section/);
+});
+
+test('central judge vetoes unrequested style demands and never exempts a cited requirement', t => {
+  const f = fixture(t); f.begin(); f.call('verify');
+  const section = readState(f.root).sections[0];
+  const packet = JSON.parse(f.pre('invoke_subagent', { Subagents: [{ TypeName: 'oma-reviewer', Prompt: section.id }] }).overwrite.Subagents[0].Prompt);
+  f.send(packet, { agent: 'oma-reviewer', section: section.id, hash: section.hash, verdict: 'fail', criteria: ['behavior'], evidence: 'Behavior is supported; only an unrequested style change was suggested.', findings: [{ line: 1, reason: 'Prefer a different local variable name.', criterion: null, category: 'naming' }] });
+  const judged = readState(f.root).reviews[section.id];
+  assert.equal(judged.verdict, 'pass'); assert.equal(judged.workerVerdict, 'fail'); assert.equal(judged.vetoedFindings.length, 1);
+  const material = fixture(t); material.begin(); material.call('verify');
+  const s = readState(material.root).sections[0];
+  const p = JSON.parse(material.pre('invoke_subagent', { Subagents: [{ TypeName: 'oma-reviewer', Prompt: s.id }] }).overwrite.Subagents[0].Prompt);
+  material.send(p, { agent: 'oma-reviewer', section: s.id, hash: s.hash, verdict: 'pass', criteria: ['behavior'], evidence: 'A counterexample violates the declared behavior.', findings: [{ line: 1, reason: 'The documented boundary case returns the wrong value.', criterion: 'behavior', category: 'naming', expected: 'The documented contract value.', observed: 'A different public value.' }] });
+  assert.equal(readState(material.root).reviews[s.id].verdict, 'fail');
+});
+
+test('blind review requires disconfirmation evidence and rejects invented acceptance criteria', t => {
+  const f = fixture(t); f.begin(); f.call('verify');
+  const section = readState(f.root).sections[0];
+  const packet = JSON.parse(f.pre('invoke_subagent', { Subagents: [{ TypeName: 'oma-reviewer', Prompt: section.id }] }).overwrite.Subagents[0].Prompt);
+  const receipt = { agent: 'oma-reviewer', section: section.id, hash: section.hash, verdict: 'pass', criteria: ['behavior'], evidence: 'Read the source and checked the boundary behavior.', findings: [] };
+  assert.throws(() => f.send(packet, { ...receipt, assessments: [] }), /one disconfirmation/);
+  assert.throws(() => f.send(packet, { ...receipt, findings: [{ line: 1, reason: 'Add another unrelated feature.', criterion: 'new-feature', expected: 'More scope', observed: 'Existing scope' }] }), /sealed criterion/);
+  f.send(packet, { ...receipt, assessments: f.assessments(['behavior'], 'unknown') });
+  assert.equal(readState(f.root).reviews[section.id].verdict, 'unknown');
+});
 function fixture(t, count = 1) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'oma-guard-'));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
@@ -29,8 +240,21 @@ function fixture(t, count = 1) {
   const call = (action, body) => control(root, owner, action, body ? draft(action, body) : undefined);
   const pre = (name, args, conversationId = owner) => handle('pre', { workspacePaths: [root], conversationId, toolCall: { name, args } });
   const brief = { objective: plan.intent, risk: 'routine', constraints: [], nonGoals: [], decisions: [], conflicts: [] };
+  const assessments = (criteria, status = 'supported') => criteria.map(criterion => ({ criterion, status,
+    evidence: 'The scoped behavior was traced against this acceptance criterion.', probe: 'Checked the boundary failure path and the documented expected result.' }));
   const send = (packet, receipt, actor = 'independent-reviewer') => pre('send_message', { Recipient: owner,
-    Message: JSON.stringify({ omaReceipt: { token: packet.receipt.token, receipt } }) }, actor);
+    Message: JSON.stringify({ omaReceipt: { token: packet.receipt.token, receipt: receipt.agent === 'oma-reviewer' ? { assessments: assessments(receipt.criteria, receipt.verdict === 'unknown' ? 'unknown' : 'supported'), ...receipt } : receipt } }) }, actor);
+  const readSources = files => {
+    for (const file of files) {
+      fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true });
+      if (!fs.existsSync(path.join(root, file))) fs.writeFileSync(path.join(root, file), '# Specification\n\nPreserve documented behavior and boundary cases.\n');
+    }
+    call('sources', { files });
+    for (const file of files) {
+      let offset = 0;
+      do { offset = call('read', { file, offset, limit: 8192 }).nextOffset; } while (offset !== null);
+    }
+  };
   const audit = (verdict = 'pass') => {
     const result = pre('invoke_subagent', { Subagents: [{ TypeName: 'oma-design-auditor', Prompt: 'plan' }] });
     const packet = JSON.parse(result.overwrite.Subagents[0].Prompt);
@@ -39,6 +263,7 @@ function fixture(t, count = 1) {
   };
   const prepare = () => {
     call('init');
+    readSources(['docs/spec.md']);
     call('handoff', { agent: 'oma-doc-reader', summary: 'Confirmed the public behavior from documentation.', sources: ['docs/spec.md'], unknowns: [] });
     call('brief', brief);
     call('plan', plan);
@@ -50,10 +275,10 @@ function fixture(t, count = 1) {
     for (const section of readState(root).sections) {
       const result = pre('invoke_subagent', { Subagents: [{ TypeName: 'oma-reviewer', Prompt: section.id }] });
       const packet = JSON.parse(result.overwrite.Subagents[0].Prompt);
-      send(packet, { agent: 'oma-reviewer', section: section.id, hash: section.hash, verdict, criteria: ['behavior'], evidence: 'Read the supplied section and traced its behavior against the spec.', findings: [] });
+      send(packet, { agent: 'oma-reviewer', section: section.id, hash: section.hash, verdict, criteria: plan.criteria, evidence: 'Read the supplied section and traced its behavior against the spec.', findings: [] }, `reviewer-${section.id}`);
     }
   };
-  return { root, files, draft, plan, brief, call, prepare, end, begin, review, pre, audit, send };
+  return { root, files, draft, plan, brief, call, prepare, end, begin, review, pre, audit, send, readSources, assessments };
 }
 
 test('requires documentation and a separate design Stop before implementation', t => {
@@ -61,6 +286,7 @@ test('requires documentation and a separate design Stop before implementation', 
   f.call('init');
   assert.throws(() => f.call('plan', f.plan), /documentation/);
   assert.throws(() => f.call('start'), /after the design/);
+  f.readSources(['spec']);
   f.call('handoff', { agent: 'oma-doc-reader', summary: 'Read the spec', sources: ['spec'], unknowns: [] });
   f.call('brief', f.brief);
   f.call('plan', f.plan);
@@ -163,7 +389,8 @@ test('reviewer invocation physically receives exactly one bounded source section
 
 test('Stop schedules only three repairs and keeps already-passed files locked', t => {
   const f = fixture(t, 6);
-  for (let i = 0; i < 5; i++) f.plan.checks[i].argv[1] = 'scripts/fail.mjs';
+  fs.writeFileSync(path.join(f.root, 'scripts/fail.mjs'), 'import fs from "node:fs"; process.exitCode = fs.readFileSync(process.argv[2], "utf8").includes("fixed") ? 0 : 1;');
+  for (let i = 0; i < 5; i++) f.plan.checks[i].argv = [process.execPath, 'scripts/fail.mjs', f.files[i]];
   f.begin(); f.call('verify'); f.review(); f.end(1);
   let state = readState(f.root);
   assert.equal(state.batch.length, 3);
@@ -174,11 +401,114 @@ test('Stop schedules only three repairs and keeps already-passed files locked', 
   assert.equal(f.pre('write_to_file', { TargetFile: f.files[0], CodeContent: 'fix now' }).decision, 'allow');
   f.end(1); // duplicate must not advance the cycle
   assert.equal(readState(f.root).cycle, 1);
-  fs.writeFileSync(path.join(f.root, 'scripts/fail.mjs'), 'console.log("fixed");');
+  for (const file of f.files.slice(0, 3)) {
+    f.pre('write_to_file', { TargetFile: file, CodeContent: 'fixed' });
+    fs.writeFileSync(path.join(f.root, file), 'fixed');
+  }
   f.call('verify'); f.review(); f.end(2);
+  assert.equal(readState(f.root).batch.length, 2);
+  for (const file of f.files.slice(3, 5)) {
+    f.pre('write_to_file', { TargetFile: file, CodeContent: 'fixed' });
+    fs.writeFileSync(path.join(f.root, file), 'fixed');
+  }
+  f.call('verify'); f.review(); f.end(3);
   state = readState(f.root);
   assert.equal(state.phase, 'complete');
   assert.equal(Object.keys(state.locks).length, 6);
+});
+
+test('design seals validator scripts and detects changed dependencies before starting', t => {
+  const f = fixture(t);
+  fs.writeFileSync(path.join(f.root, 'config.json'), '{"threshold":1}');
+  f.plan.checks[0].inputs = ['config.json'];
+  f.prepare(); f.end();
+  const state = readState(f.root);
+  assert.deepEqual(state.plan.checks[0].inputs, ['config.json', 'scripts/pass.mjs']);
+  fs.writeFileSync(path.join(f.root, 'config.json'), '{"threshold":0}');
+  assert.throws(() => f.call('start'), /Validator input changed since design/);
+  assert.equal(readState(f.root).phase, 'ready');
+  const resumed = f.call('resume');
+  assert.equal(resumed.continuity, 'validator-changed');
+  assert.deepEqual(resumed.changedValidatorInputs, ['config.json']);
+  assert.equal(resumed.ready, false);
+});
+
+test('unscoped validator changes cannot turn implementation into a passing check', t => {
+  const f = fixture(t); f.begin();
+  fs.writeFileSync(path.join(f.root, 'scripts/pass.mjs'), 'console.log("replacement validator");');
+  assert.throws(() => f.call('verify'), /Validator input changed since design/);
+  assert.equal(readState(f.root).phase, 'implement');
+});
+
+test('a validator cannot rewrite itself or a declared input during execution', t => {
+  const f = fixture(t);
+  fs.writeFileSync(path.join(f.root, 'config.json'), '{}');
+  f.plan.checks[0].inputs = ['config.json'];
+  fs.writeFileSync(path.join(f.root, 'scripts/pass.mjs'), 'import fs from "node:fs"; fs.writeFileSync("config.json", "mutated");');
+  f.begin();
+  assert.throws(() => f.call('verify'), /Validator input changed after verification/);
+  assert.equal(readState(f.root).phase, 'implement');
+});
+
+test('validator drift invalidates reviewer packets, receipts, and completion', t => {
+  const f = fixture(t); f.begin(); f.call('verify');
+  const section = readState(f.root).sections[0];
+  const request = f.pre('invoke_subagent', { Subagents: [{ TypeName: 'oma-reviewer', Prompt: section.id }] });
+  const packet = JSON.parse(request.overwrite.Subagents[0].Prompt);
+  const original = fs.readFileSync(path.join(f.root, 'scripts/pass.mjs'), 'utf8');
+  fs.appendFileSync(path.join(f.root, 'scripts/pass.mjs'), '\n// external change');
+  assert.throws(() => f.review(), /Validator input changed after verification/);
+  assert.throws(() => f.send(packet, { agent: 'oma-reviewer', section: section.id, hash: section.hash, verdict: 'pass', criteria: ['behavior'], evidence: 'The supplied section satisfies the behavior.', findings: [] }), /Validator input changed after verification/);
+  fs.writeFileSync(path.join(f.root, 'scripts/pass.mjs'), original);
+  f.review();
+  fs.appendFileSync(path.join(f.root, 'scripts/pass.mjs'), '\n// drift after receipt');
+  assert.throws(() => f.end(1), /Validator input changed after verification/);
+  assert.deepEqual(readState(f.root).locks, {});
+});
+
+test('explicitly scoped validator changes can be verified and reviewed normally', t => {
+  const f = fixture(t);
+  f.plan.files.push('scripts/pass.mjs');
+  f.plan.checks[0].files.push('scripts/pass.mjs');
+  f.begin();
+  f.pre('write_to_file', { TargetFile: 'scripts/pass.mjs', CodeContent: 'console.log("updated check");' });
+  fs.writeFileSync(path.join(f.root, 'scripts/pass.mjs'), 'console.log("updated check");');
+  f.call('verify');
+  assert.ok(readState(f.root).checks[0].inputHashes['scripts/pass.mjs']);
+  f.review(); f.end(1);
+  assert.equal(readState(f.root).phase, 'complete');
+});
+
+test('validator inputs reject missing files, directories, protected paths, and escapes', t => {
+  const f = fixture(t);
+  f.call('init');
+  f.readSources(['spec']);
+  f.call('handoff', { agent: 'oma-doc-reader', summary: 'Read the spec', sources: ['spec'], unknowns: [] });
+  f.call('brief', f.brief);
+  for (const input of ['missing.json', 'src', '.omg/state/guard.json', '../outside']) {
+    const plan = structuredClone(f.plan);
+    plan.checks[0].inputs = [input];
+    assert.throws(() => f.call('plan', plan), /existing workspace file|protected|escapes/);
+  }
+});
+
+test('section packets include later failing checks while keeping log excerpts bounded', t => {
+  const f = fixture(t);
+  f.plan.checks = Array.from({ length: 4 }, (_, i) => ({ id: `c${i}`, argv: [process.execPath, i === 3 ? 'scripts/fail.mjs' : 'scripts/pass.mjs'], files: [...f.files], criteria: ['behavior'] }));
+  f.begin(); f.call('verify');
+  const result = f.pre('invoke_subagent', { Subagents: [{ TypeName: 'oma-reviewer', Prompt: `${f.files[0]}:1` }] });
+  const packet = JSON.parse(result.overwrite.Subagents[0].Prompt);
+  assert.equal(packet.checks.length, 4);
+  assert.equal(packet.checks[3].status, 'fail');
+  assert.equal(packet.checks[3].exitCode, 1);
+  assert.equal(packet.checks[3].inputIntegrity, 'verified');
+  assert.match(packet.checks[3].window.text, /real failure/);
+  assert.equal(packet.checks.filter(check => check.window).length, 2);
+  assert.equal(packet.windowlessCheckCount, 2);
+  assert.match(f.call('evidence', { check: 'c3' }).text, /real failure/);
+  f.review(); f.end(1);
+  assert.equal(readState(f.root).phase, 'repair');
+  assert.deepEqual(readState(f.root).locks, {});
 });
 
 test('unknown review is repairable; findings require a line within the assigned section', t => {
@@ -252,6 +582,7 @@ test('current model profiles use maintained IDs and custom never silently fills 
 
 test('sealed validators reject shell and Windows interpreter inline bypasses', t => {
   const f = fixture(t); f.call('init');
+  f.readSources(['spec']);
   f.call('handoff', { agent: 'oma-doc-reader', summary: 'Read specification', sources: ['spec'], unknowns: [] });
   for (const argv of [['node.exe', '-e', 'true'], ['python.exe', '-c', 'pass'], ['bash.exe', '-c', 'true'], ['pwsh.exe', '-Command', 'exit 0']]) {
     const plan = { ...f.plan, checks: [{ ...f.plan.checks[0], argv }] };
@@ -261,6 +592,7 @@ test('sealed validators reject shell and Windows interpreter inline bypasses', t
 
 test('Scope Brief blocks unresolved decision authority, conflicts, and intent drift', t => {
   const f = fixture(t); f.call('init');
+  f.readSources(['old.md', 'new.md']);
   f.call('handoff', { agent: 'oma-doc-reader', summary: 'Sources disagree about the expected timeout.', sources: ['old.md', 'new.md'], unknowns: ['timeout'] });
   assert.throws(() => f.call('plan', f.plan), /Scope Brief/);
   f.call('brief', { ...f.brief, decisions: [{ id: 'policy', owner: 'user', status: 'open', question: 'Which timeout is intended?' }] });
@@ -273,6 +605,7 @@ test('Scope Brief blocks unresolved decision authority, conflicts, and intent dr
 
 test('Design Check must arrive from another native conversation before the turn can close', t => {
   const f = fixture(t); f.call('init');
+  f.readSources(['spec.md']);
   f.call('handoff', { agent: 'oma-doc-reader', summary: 'The specification is clear.', sources: ['spec.md'], unknowns: [] });
   f.call('brief', f.brief); f.call('plan', f.plan);
   assert.equal(f.end(0).decision, 'allow');

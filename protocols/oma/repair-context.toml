@@ -1,0 +1,12 @@
+description = "Inspect only the current dependency-ordered repair groups with expected behavior and real diagnostics."
+prompt = """
+Run controller repair-context; require phase repair. It returns only the active
+batch, real check log windows, expected behavior, exit codes and source references.
+Honor group order and file scope. A group may contain multiple related validators;
+the sealed repairGroups graph determines dependencies. Never add the backlog.
+Normal care selects at most three groups (or fewer for elevated/critical care).
+A repeated A-to-B-to-A failure state narrows the next batch to one group; progress
+can clear this focus. Retry/stagnation limits and passed-file locks still apply.
+Only the owner edits code. Verify and obtain fresh blind section receipts before
+ending each repair execution. Missing capabilities use /oma-failure.
+"""

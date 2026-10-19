@@ -9,6 +9,10 @@ actual exit codes/logs, and hashes source. In review, resume the missing receipt
 Send each oma-reviewer only ONE section from guard.json.sections (<=120 lines), its
 hash, criteria, and relevant validator evidence. Never ask for a repository-wide PASS.
 Each reviewer returns pass/fail/unknown with concrete evidence. Missing proof is unknown.
+Use a fresh child conversation per shard. Schema-2 receipts require one assessment
+per criterion with concrete evidence and a counterexample probe. Material findings
+cite a sealed criterion with expected/observed behavior; the central judge controls
+scope and records vetoed nonmaterial suggestions. Python scopes also run AST checks.
 Reviewers submit their own issued receipts through send_message to the owner. The
 hook records the actual reviewer conversation ID. The parent cannot author/amend
 verdicts or send follow-up messages steering an independent reviewer.

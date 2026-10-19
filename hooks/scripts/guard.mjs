@@ -19,7 +19,7 @@ function quote(value) {
 
 function commandRequest(command) {
   // Deliberately not a shell parser. Accept one exact controller invocation only.
-  const match = /^node\s+(?:"([^"\r\n]+)"|([^\s"']+))\s+(init|status|context|brief|handoff|plan|start|verify|review|block|evidence|checkpoint|resume)(?:\s+(\.omg\/drafts\/[a-zA-Z0-9_./-]+\.json))?\s*$/.exec(command || '');
+  const match = /^node\s+(?:"([^"\r\n]+)"|([^\s"']+))\s+(init|status|context|sources|read|probe|brief|handoff|plan|start|verify|review|block|evidence|checkpoint|resume|repair-context)(?:\s+(\.omg\/drafts\/[a-zA-Z0-9_./-]+\.json))?\s*$/.exec(command || '');
   if (!match || path.resolve(match[1] || match[2]) !== path.resolve(CONTROLLER)) return null;
   return { action: match[3], draft: match[4] || '-' };
 }
@@ -58,7 +58,7 @@ export function pre(root, input) {
     const subagents = args.Subagents.map(agent => {
       if (!['oma-reviewer', 'oma-design-auditor'].includes(agent.TypeName)) return agent;
       const packet = issueReview(root, input.conversationId, agent.TypeName === 'oma-reviewer' ? 'section' : 'design', agent.Prompt);
-      return { ...agent, Role: 'Make an independent evidence-based judgment of only this packet. Submit your own receipt through send_message.', Prompt: JSON.stringify(packet) };
+      return { TypeName: agent.TypeName, Workspace: 'share', Role: 'Make an independent evidence-based judgment of only this packet. Submit your own receipt through send_message.', Prompt: JSON.stringify(packet) };
     });
     return { decision: 'allow', overwrite: { Subagents: subagents } };
   }
@@ -66,7 +66,7 @@ export function pre(root, input) {
     const request = commandRequest(args.CommandLine);
     assert(request, 'Shell execution is restricted to the OmA workflow controller. Use native read tools, scoped edit tools, and sealed verification commands.');
     assert(input.conversationId, 'Missing conversation identity.');
-    if (state && !['status', 'context', 'resume', 'evidence'].includes(request.action)) owner(state, input.conversationId);
+    if (state && !['status', 'context', 'resume', 'evidence', 'repair-context'].includes(request.action)) owner(state, input.conversationId);
     if (!state) assert(['init', 'status', 'context', 'resume'].includes(request.action), 'Initialize the workflow first.');
     const command = [process.execPath, CONTROLLER, request.action, request.draft, root, input.conversationId].map(quote).join(' ');
     return { decision: 'allow', overwrite: { CommandLine: command, Cwd: root, WaitMsBeforeAsync: 1000, RunPersistent: false } };
@@ -78,11 +78,21 @@ export function pre(root, input) {
     const plugin = path.resolve(fileURLToPath(new URL('../../', import.meta.url)));
     assert(!(absolute === plugin || absolute.startsWith(plugin + path.sep)), 'Installed plugin assets cannot be edited by the guarded agent.');
     assert(!protectedFile(file), 'Guard state, evidence, runtime configuration, and Git internals are controller/operator-owned.');
+    assert(!state.reading?.[file], 'Registered research sources are immutable; create a new versioned snapshot and reconcile the workflow.');
     if (file.startsWith('.omg/drafts/')) return { decision: 'allow' };
     assert(!file.startsWith('.omg/'), 'Use .omg/drafts/ for handoff artifacts.');
     assert(['implement', 'repair'].includes(state.phase), `Code edits are unavailable during ${state.phase}. Finish design and end that turn first.`);
     assert(state.plan.files.includes(file), 'File is outside the sealed implementation scope.');
     assert(!state.locks[file], 'Passed code is locked; operator must explicitly reopen it.');
+    if (fs.existsSync(absolute)) {
+      const original = fs.readFileSync(absolute, 'utf8');
+      if (original.split(/\r?\n/).length > 400 && !(state.plan.rewriteFiles || []).includes(file)) {
+        assert(tool.name !== 'write_to_file', 'Bulk overwrite of an existing file over 400 lines requires a sealed rewriteFiles declaration; use targeted edits.');
+        const targets = tool.name === 'replace_file_content' ? [args.TargetContent] : args.ReplacementChunks?.map(chunk => chunk.TargetContent);
+        assert(targets?.length && targets.every(target => typeof target === 'string' && target.length > 0 && original.includes(target))
+          && targets.reduce((sum, target) => sum + target.split(/\r?\n/).length, 0) <= 200, 'Large-file edits require exact existing target chunks covering at most 200 lines per call.');
+      }
+    }
     if (state.phase === 'repair') assert(state.batch.some(issue => issue.files.includes(file)), 'File is outside the current three-issue repair batch.');
     const isTest = /(^|\/)(__tests__|tests?|fixtures?)(\/|\.)|\.(test|spec)\.[^/]+$/i.test(file);
     if (isTest) assert((state.plan.testFiles || []).includes(file), 'Tests and fixtures need an explicit testFiles declaration in the sealed plan.');

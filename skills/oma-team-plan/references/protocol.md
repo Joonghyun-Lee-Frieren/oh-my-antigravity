@@ -4,7 +4,9 @@ Follow the [guard contract](../../../docs/guide/guarded-workflow.md) first. It o
 
 Guarded execution contract (takes precedence):
 Read docs/guide/guarded-workflow.md first. Use the installed workflow controller.
-Documentation handoff precedes Scope Brief. Resolve decisions/conflicts, seal the
+Use /oma-read to register and fully page source snapshots and SDK companions;
+use /oma-probe for required CLI help/version evidence. Documentation handoff
+precedes Scope Brief. Resolve decisions/conflicts, seal the
 plan, obtain native Design Check, and end that USER TURN.
 Implementation starts only in the next user turn. Stop schedules at most three
 repair units per execution and locks passed files. Auxiliary artifacts go to
@@ -28,6 +30,9 @@ Protocol:
    - use `p2` when priority is not explicitly justified
 8. Mark tasks as critical-path, sequential, or sidecar parallelizable, and note when isolated worktrees or explicit handoffs are required.
 9. Define verification checkpoints per phase.
+   - declare readOnly dependency boundaries, deliberate rewriteFiles, and a DAG of
+     repairGroups when checks share a root cause; AST exemptions must name exact
+     file/line/rule, criterion and design justification
 10. Save the plan request in `.omg/drafts/` and submit it to controller plan; keep taskboard/checkpoint links explicit.
 11. List 3-5 critical files most relevant for implementation.
 12. Read `.omg/state/guard.json` before mutating the shared board.

@@ -1,6 +1,6 @@
 # oh-my-antigravity (OmA)
 
-[![Version](https://img.shields.io/badge/version-1.1.0-0d8a83)](history.md)
+[![Version](https://img.shields.io/badge/version-1.2.0-0d8a83)](history.md)
 [![Checks](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-antigravity/version-check.yml?branch=main&label=checks)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
 
@@ -40,7 +40,23 @@ CLI 内で `/plugin list` と `/hooks` を確認し、次のコマンドで開�
 コントローラーの正確なコマンド、JSON の例、復旧方法、強制できる範囲については、
 [保護付きワークフローガイド](guide/guarded-workflow.md)を参照してください。
 
-## v1.1.0 の新機能
+## v1.2.0 の新機能
+
+検証スクリプトと各チェックの `inputs` に宣言した依存ファイルのハッシュを記録します。
+変更された入力による実装開始、検証、古い証拠の承認を防ぎ、Session Trail でも変更を報告します。
+セクションレビュアーには関連する全チェックの結果を渡し、最大二つのログ抜粋は失敗を優先します。
+正当なテスト変更のスコープと制限は[入力スキーマ](guide/guarded-workflow.md)を参照してください。
+確定済みの既存計画には、再確定後に新しい入力保護が適用されます。
+
+Part 1–7 の提供資料に基づき、全ソース範囲の読み取り記録、依存パスの読み取り専用境界、
+大きなファイルの上書き制限、型付き失敗、Python AST 検査、依存順の修正グループと
+振動時の一グループ集中を追加しました。見出し別の独立レビューには反証の証拠が必要です。
+引き継ぎ前に `/oma-read`、CLI 確認には `/oma-probe`、失敗報告には `/oma-failure`、
+修正診断には `/oma-repair-context` を使います。Python 対象には Python 3.9+ が必要です。
+[対応表・スキーマ・移行と限界](guide/series-runtime.md)を参照してください。
+読み取り記録はバイトの配信を示し、理解や無欠陥を保証するものではありません。
+
+## v1.1.0 のスコープとセッション継続機能
 
 | 機能 | 動作 |
 | --- | --- |
@@ -76,7 +92,7 @@ CLI 内で `/plugin list` と `/hooks` を確認し、次のコマンドで開�
 
 ## ワークフローと役割
 
-このプラグインは、49 個の `/oma-<name>` コマンドエントリーポイントを含む 60 個の短いスキルと、
+このプラグインは、53 個の `/oma-<name>` コマンドエントリーポイントを含む 64 個の短いスキルと、
 機能を制限した 16 個のエージェントを提供します。現在の作業に関係する手順だけを使ってください。
 
 | コマンド | 目的 |
@@ -154,6 +170,9 @@ agy plugin validate .
 **[@hyunuk.lim](https://www.threads.com/@hyunuk.lim) (threads) 氏に特別な感謝を捧げます。**
 彼のスレッドや投稿は、小さなスキル、物理的なツール制約、正直な失敗、範囲を限定した修正、
 焦点を絞ったレビューという、今回のリファクタリングの方向性を形作るうえで大きな助けになりました。
+
+参考資料：[v1.0 リニューアルの背景となった考え方を紹介する Medium 記事](https://medium.com/@dev.hyunuk/3f86bb9b8ab7)。
+OmA のワークフローに役立つ考え方と経験を共有してくださったことに感謝します。
 
 このプロジェクトは、モデル自体と同様に、それを取り巻くエンジニアリングハーネスも重要だという
 Jeongkyu Shin 氏の指摘からも発展しました。

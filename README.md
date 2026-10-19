@@ -1,6 +1,6 @@
 # oh-my-antigravity (OmA)
 
-[![Version](https://img.shields.io/badge/version-1.1.0-0d8a83)](docs/history.md)
+[![Version](https://img.shields.io/badge/version-1.2.0-0d8a83)](docs/history.md)
 [![Checks](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-antigravity/version-check.yml?branch=main&label=checks)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -13,7 +13,8 @@ read-only documentation agents, gated edits, real verification evidence, and sma
 
 ## Install
 
-Requires current Antigravity CLI and Node.js 20+.
+Requires current Antigravity CLI and Node.js 20+. Python 3.9+ is additionally needed
+when the sealed scope contains Python files.
 
 ```bash
 agy plugin install https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity
@@ -26,7 +27,9 @@ Inside the CLI, inspect `/plugin list` and `/hooks`, then start with:
 /oma-team-plan Describe the change and its acceptance criteria
 ```
 
-The documentation reader returns a concise summary. Record a Scope Brief, seal the
+Use `/oma-read` to register and fully page the source snapshots, then obtain the
+documentation reader's concise summary. Use `/oma-probe` for required CLI help.
+Record a Scope Brief, seal the
 file scope and checks, and request an independent Design Check. After it passes,
 **end the design turn**. In your next turn:
 
@@ -41,7 +44,28 @@ when checks or reviews fail. Missing services, permissions, or evidence can end 
 Read the [guarded workflow guide](docs/guide/guarded-workflow.md) for exact controller
 commands, JSON examples, recovery, and enforcement limits.
 
-## What's new in v1.1.0
+## What's new in v1.2.0
+
+Validator scripts and declared check `inputs` now have recorded hashes. Changed
+dependencies block start, verification, or acceptance of stale evidence. Session
+Trail also reports validator drift. Every covering check result reaches the section
+reviewer; up to two bounded log excerpts prioritize failures. See the
+[input schema and limits](docs/guide/guarded-workflow.md) for legitimate scoped test
+changes and dependency declarations. Existing sealed plans need resealing for the
+new input protection.
+
+The supplied Part 1–7 architecture now also drives enforced source-read coverage,
+read-only dependency fingerprints, large-file edit limits, typed failure exits,
+Python AST validation, dependency-ordered repair groups, and one-group focus on
+repair oscillation. Markdown reviews split at headings, use a fresh conversation
+per shard, and require disconfirmation evidence before a deterministic judge decides.
+
+Start with `/oma-read`, `/oma-probe`, `/oma-failure`, and `/oma-repair-context`.
+Read the [Part 1–7 mapping and complete schemas](docs/guide/series-runtime.md),
+including migration and enforcement limits. These safeguards do not guarantee
+zero defects or prove that a model understood the delivered source.
+
+## Scope and continuity in v1.1.0
 
 | Surface | Behavior |
 | --- | --- |
@@ -77,11 +101,13 @@ profile. Older enterprise models may remain available; they are absent from ship
 
 ## Workflows and roles
 
-The plugin exposes 60 short skills, including 49 `/oma-<name>` command entrypoints,
+The plugin exposes 64 short skills, including 53 `/oma-<name>` command entrypoints,
 and 16 capability-limited agents. Use only the procedures relevant to the current task.
 
 | Command | Purpose |
 | --- | --- |
+| `/oma-read`, `/oma-probe` | Full source-window coverage and actual bounded CLI introspection |
+| `/oma-failure`, `/oma-repair-context` | Typed honest failure and active dependency-ordered repair diagnostics |
 | `/oma-team-plan`, `/oma-team-prd` | Documentation handoff, scope, acceptance criteria, and design |
 | `/oma-brief` | Objective, constraints, decision ownership, and source conflicts |
 | `/oma-design-check` | Independent check of the exact sealed plan |
@@ -156,6 +182,9 @@ care escalation, UTF-8 log paging, checkpoint corruption, and source drift on re
 **Special thanks to [@hyunuk.lim](https://www.threads.com/@hyunuk.lim) (threads).** His threads and posts were a major
 help in shaping this refactor: smaller skills, physical tool constraints, honest
 failure, bounded repairs, and focused reviews.
+
+Further reading: [his Medium article on the ideas behind the v1.0 renewal](https://medium.com/@dev.hyunuk/3f86bb9b8ab7).
+Thank you for sharing the concepts that helped shape OmA's engineering workflow.
 
 The project also grew from Jeongkyu Shin's observation that the engineering harness
 around a model matters alongside the model itself.

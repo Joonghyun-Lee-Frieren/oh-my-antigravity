@@ -42,6 +42,13 @@ See [the workflow contract](guarded-workflow.md) for schemas and honest-failure 
 Development tests exercise native payloads and observable behavior, including bypass
 attempts. They do not replace authenticated CLI testing.
 
+v1.2 retains these three native events. The controller directly executes validators
+and writes immutable execution receipts, so it does not depend on an undocumented
+PostToolUse result shape. PreToolUse additionally protects registered source snapshots,
+large-file edits and clean reviewer packets. Research read coverage, narrow probes,
+read-only dependency fingerprints, Python AST checks, grouped repairs and the central
+judge are described in [the Part 1–7 runtime guide](series-runtime.md).
+
 ## Independent receipt capture
 
 A review invocation creates a single-use ticket bound to a source hash or plan hash.
