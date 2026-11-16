@@ -1,19 +1,62 @@
 {
-  "verifiedOn": "2026-10-16",
+  "verifiedOn": "2026-11-16",
   "sources": [
     "https://antigravity.google/docs/models",
     "https://antigravity.google/docs/cli/headless/"
   ],
   "models": {
-    "gemini-4-argon": { "efforts": ["low", "medium", "high"], "use": "Architecture, planning, section review" },
-    "gemini-3.8-flash": { "efforts": ["low", "medium", "high"], "use": "Documentation, implementation, quick edits" }
+    "gemini-4-carbon": {
+      "efforts": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "use": "Complex architecture, planning, and review"
+    },
+    "gemini-4-argon": {
+      "efforts": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "use": "Architecture, planning, section review"
+    },
+    "gemini-4-hydrogen": {
+      "efforts": [
+        "low",
+        "medium",
+        "high",
+        "xhigh"
+      ],
+      "use": "Everyday coding, implementation, and quick edits"
+    },
+    "gemini-3.8-flash": {
+      "efforts": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "use": "Documentation, implementation, quick edits"
+    }
   },
   "profiles": {
+    "carbon": {
+      "planning": "gemini-4-carbon-high",
+      "execution": "gemini-4-hydrogen-medium",
+      "quick_edit": "gemini-4-hydrogen-low",
+      "review_verify": "gemini-4-carbon-high"
+    },
     "balanced": {
       "planning": "gemini-4-argon-high",
-      "execution": "gemini-3.8-flash-medium",
-      "quick_edit": "gemini-3.8-flash-low",
+      "execution": "gemini-4-hydrogen-medium",
+      "quick_edit": "gemini-4-hydrogen-low",
       "review_verify": "gemini-4-argon-high"
+    },
+    "hydrogen": {
+      "planning": "gemini-4-hydrogen-high",
+      "execution": "gemini-4-hydrogen-medium",
+      "quick_edit": "gemini-4-hydrogen-low",
+      "review_verify": "gemini-4-hydrogen-high"
     },
     "flash": {
       "planning": "gemini-3.8-flash-high",

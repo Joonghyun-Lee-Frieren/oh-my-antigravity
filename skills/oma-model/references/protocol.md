@@ -5,15 +5,16 @@ Follow the [guard contract](../../../docs/guide/guarded-workflow.md) first. It o
 Request:
 Use the user request following this skill invocation.
 
-Read config/models.json in the installed plugin. It is the maintained catalog.
-Balanced: planning/review gemini-4-argon-high, execution gemini-3.8-flash-medium,
-quick edits gemini-3.8-flash-low. Flash: use only Gemini 3.8 Flash at suitable effort.
-Auto means inherit the operator's selected model; it is not an upstream model ID.
-Custom requires all four lanes with IDs confirmed by agy models for this account.
-Older preview models are removed from shipped defaults. Enterprise users may still
-have older models; do not claim universal upstream deprecation.
-PreInvocation does not support model replacement. Select through agy --model <id>
-or the runtime selector. Subagents inherit that selection. Profiles are recommendations,
-not automatic per-agent switching. Save preferences under .omg/drafts/, not guard state.
-If Argon is unavailable, recommend the explicit flash profile and disclose the change.
-Never silently downgrade or repeatedly retry an unavailable model.
+Read config/models.json in the installed plugin for the maintained lane recommendations.
+Carbon uses Carbon for planning/review and Hydrogen for execution; balanced uses Argon
+and Hydrogen. Hydrogen and flash use their named model for all lanes. Hydrogen also
+supports xhigh effort. Check agy models for account availability before recommending IDs.
+Carbon requires Ultra or an eligible Enterprise account; Argon availability depends on
+plan. If a model is unavailable, explicitly choose an available profile; never silently
+downgrade or repeatedly retry an unavailable model.
+Auto inherits the operator's selected model. Custom requires all four lanes with IDs
+confirmed by agy models. Profiles are recommendations, not automatic switching:
+PreInvocation cannot replace the model. Select through agy --model <id> or the runtime
+selector; subagents inherit that selection. Antigravity's native Orchestrator is a
+separate runtime option with fixed effort and its own plan availability. Save preferences
+under .omg/drafts/, not guard state.

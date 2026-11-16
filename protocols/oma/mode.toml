@@ -24,8 +24,8 @@ Suggested `mode.json` shape:
 {
   "mode": "<selected>",
   "planning_model": "gemini-4-argon-high",
-  "execution_model": "gemini-3.8-flash-medium",
-  "quick_edit_model": "gemini-3.8-flash-low",
+  "execution_model": "gemini-4-hydrogen-medium",
+  "quick_edit_model": "gemini-4-hydrogen-low",
   "verification_strictness": "normal|high",
   "max_autonomous_cycles": 5
 }

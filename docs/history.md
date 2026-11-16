@@ -2,6 +2,12 @@
 
 All notable changes to oh-my-antigravity are documented here.
 
+## Unreleased - Gemini 4 model recommendations (2026-11-16)
+
+- Added Carbon and Hydrogen to the model catalog, including Hydrogen's `xhigh` effort.
+- Added Carbon and Hydrogen profiles and updated balanced execution to Hydrogen; the Flash profile remains available.
+- Updated command guidance, generated skills, localized READMEs, and the website. Profiles remain recommendations; native Orchestrator is a separate runtime option.
+
 ## v1.2.0 - Runtime Reading, Repair Groups and Blind Jury (2026-10-19)
 
 ### Added

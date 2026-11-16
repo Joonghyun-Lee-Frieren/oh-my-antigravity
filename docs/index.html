@@ -93,14 +93,14 @@
       </section>
       <section id="models">
         <div class="section-head"><h2>Current models. Explicit selection.</h2><span class="section-number">03 / MODELS</span></div>
-        <p class="intro">Gemini 4 Argon for deeper design and review. Gemini 3.8 Flash for implementation and quick work. Choose a Flash-only profile when that fits your account.</p>
-        <div class="table-wrap"><table><caption class="skip">Recommended model profiles by workflow lane</caption><thead><tr><th scope="col">Lane</th><th scope="col">Balanced</th><th scope="col">Flash</th></tr></thead><tbody>
-          <tr><td>Design &amp; planning</td><td><code>gemini-4-argon-high</code></td><td><code>gemini-3.8-flash-high</code></td></tr>
-          <tr><td>Implementation</td><td><code>gemini-3.8-flash-medium</code></td><td><code>gemini-3.8-flash-medium</code></td></tr>
-          <tr><td>Quick work</td><td><code>gemini-3.8-flash-low</code></td><td><code>gemini-3.8-flash-low</code></td></tr>
-          <tr><td>Review &amp; verification</td><td><code>gemini-4-argon-high</code></td><td><code>gemini-3.8-flash-high</code></td></tr>
+        <p class="intro">Use Carbon or Argon for planning and review, Hydrogen for everyday implementation, or choose a single-model profile. Availability depends on your account.</p>
+        <div class="table-wrap"><table><caption class="skip">Recommended model profiles by workflow lane</caption><thead><tr><th scope="col">Lane</th><th scope="col">Carbon</th><th scope="col">Balanced</th><th scope="col">Hydrogen</th><th scope="col">Flash</th></tr></thead><tbody>
+          <tr><td>Design &amp; planning</td><td><code>gemini-4-carbon-high</code></td><td><code>gemini-4-argon-high</code></td><td><code>gemini-4-hydrogen-high</code></td><td><code>gemini-3.8-flash-high</code></td></tr>
+          <tr><td>Implementation</td><td><code>gemini-4-hydrogen-medium</code></td><td><code>gemini-4-hydrogen-medium</code></td><td><code>gemini-4-hydrogen-medium</code></td><td><code>gemini-3.8-flash-medium</code></td></tr>
+          <tr><td>Quick work</td><td><code>gemini-4-hydrogen-low</code></td><td><code>gemini-4-hydrogen-low</code></td><td><code>gemini-4-hydrogen-low</code></td><td><code>gemini-3.8-flash-low</code></td></tr>
+          <tr><td>Review &amp; verification</td><td><code>gemini-4-carbon-high</code></td><td><code>gemini-4-argon-high</code></td><td><code>gemini-4-hydrogen-high</code></td><td><code>gemini-3.8-flash-high</code></td></tr>
         </tbody></table></div>
-        <p class="note">Verified 2026-10-16 against <a href="https://antigravity.google/docs/models">official model documentation</a>. Run <code>agy models</code> for account availability, then select with <code>agy --model &lt;id&gt;</code>. Workers inherit that model. Profiles are recommendations; hooks do not switch models automatically.</p>
+        <p class="note">Verified 2026-11-16 against <a href="https://antigravity.google/docs/models">official model documentation</a>. Run <code>agy models</code> to check account availability, then select with <code>agy --model &lt;id&gt;</code> or <code>/model</code>. Hydrogen also supports <code>gemini-4-hydrogen-xhigh</code>; Carbon requires Ultra or an eligible Enterprise account. Workers inherit the selected model. Profiles are recommendations; hooks do not switch models automatically. Antigravity's native <a href="https://antigravity.google/docs/models#orchestrator">Orchestrator</a> is a separate option with fixed effort that coordinates Carbon or Argon and Hydrogen.</p>
       </section>
       <section>
         <div class="section-head"><h2>Native from the entrypoint down.</h2><span class="section-number">04 / UPGRADE</span></div>

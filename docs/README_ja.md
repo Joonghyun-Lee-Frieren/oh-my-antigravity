@@ -73,22 +73,18 @@ Part 1–7 の提供資料に基づき、全ソース範囲の読み取り記録
 
 ## モデル
 
-推奨設定は [config/models.json](../config/models.json) にあり、2026-10-16 に
-[公式のモデル提供状況](https://antigravity.google/docs/models)と照合しました。
+推奨設定は [config/models.json](../config/models.json) にあり、2026-11-16 に[公式モデル文書](https://antigravity.google/docs/models)で確認しました。
 
-| 役割 | Balanced プロファイル | Flash プロファイル |
-| --- | --- | --- |
-| 設計・計画 | `gemini-4-argon-high` | `gemini-3.8-flash-high` |
-| 実装 | `gemini-3.8-flash-medium` | `gemini-3.8-flash-medium` |
-| 短時間の作業 | `gemini-3.8-flash-low` | `gemini-3.8-flash-low` |
-| レビュー・検証 | `gemini-4-argon-high` | `gemini-3.8-flash-high` |
+| 役割 | Carbon | Balanced | Hydrogen | Flash |
+| --- | --- | --- | --- | --- |
+| 設計・計画 | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| 実装 | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
+| 短時間の作業 | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
+| レビュー・検証 | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
 
-`agy models` で自分のアカウントで利用できるモデルを確認し、`agy --model <id>` またはランタイムの
-選択機能で選んでください。サブエージェントは `model: inherit` を使用します。`/oma-model` が
-プロファイルを説明します。`auto` は選択中のランタイムモデルを維持し、`custom` は 4 つの役割すべての
-指定を必要とします。プロファイルは推奨設定であり、モデルを自動で切り替えません。ネイティブフックの
-契約にはモデルを上書きする出力がありません。Argon を利用できない場合は、Flash プロファイルを
-明示的に選んでください。従来の企業向けモデルが引き続き利用できる場合もありますが、配布時の既定値には含めません。
+`agy models` でアカウントの利用可能なモデルを確認し、`agy --model <id>` または `/model` で選択してください。Hydrogen は `gemini-4-hydrogen-xhigh` にも対応します。Carbon は Ultra および対象 Enterprise アカウントで利用でき、Argon の利用可否はプランによります。利用可能なプロファイルを明示的に選択してください。
+
+`/oma-model` でプロファイルを確認できます。`auto` は選択中のモデルを維持し、`custom` は四つの役割すべての指定が必要です。プロファイルは推奨であり、自動切り替えは行いません。フックはモデルを変更できず、サブエージェントは `model: inherit` を使用します。Antigravity の [Orchestrator](https://antigravity.google/docs/models#orchestrator) は Carbon または Argon と Hydrogen を組み合わせる別のランタイムオプションで、推論レベルは固定です。
 
 ## ワークフローと役割
 

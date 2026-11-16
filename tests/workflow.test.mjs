@@ -573,7 +573,18 @@ test('state writes are mutually exclusive and corrupt input fails closed as one 
 });
 
 test('current model profiles use maintained IDs and custom never silently fills missing lanes', () => {
-  assert.deepEqual(Object.keys(catalog.models), ['gemini-4-argon', 'gemini-3.8-flash']);
+  assert.deepEqual(Object.keys(catalog.models), ['gemini-4-carbon', 'gemini-4-argon', 'gemini-4-hydrogen', 'gemini-3.8-flash']);
+  assert.deepEqual(catalog.models['gemini-4-hydrogen'].efforts, ['low', 'medium', 'high', 'xhigh']);
+  assert.equal(modelPolicy('carbon').lanes.planning, 'gemini-4-carbon-high');
+  assert.equal(modelPolicy('carbon').lanes.execution, 'gemini-4-hydrogen-medium');
+  assert.ok(Object.values(modelPolicy('hydrogen').lanes).every(id => id.startsWith('gemini-4-hydrogen-')));
+  assert.equal(modelPolicy().lanes.execution, 'gemini-4-hydrogen-medium');
+  for (const profile of Object.values(catalog.profiles)) {
+    assert.deepEqual(Object.keys(profile), ['planning', 'execution', 'quick_edit', 'review_verify']);
+    for (const id of Object.values(profile)) {
+      assert.ok(Object.entries(catalog.models).some(([model, spec]) => spec.efforts.some(effort => id === `${model}-${effort}`)), `Unknown model or effort: ${id}`);
+    }
+  }
   assert.equal(modelPolicy().lanes.planning, 'gemini-4-argon-high');
   assert.ok(Object.values(modelPolicy('flash').lanes).every(id => id.startsWith('gemini-3.8-flash-')));
   assert.deepEqual(modelPolicy('auto').lanes, {});

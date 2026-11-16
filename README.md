@@ -82,22 +82,18 @@ stays unknown. Read [schemas and examples](docs/guide/session-continuity.md).
 
 ## Models
 
-Recommendations come from [config/models.json](config/models.json), checked against
-[official model availability](https://antigravity.google/docs/models) on 2026-10-16.
+Recommendations come from [config/models.json](config/models.json), checked against the [official model documentation](https://antigravity.google/docs/models) on 2026-11-16.
 
-| Lane | Balanced profile | Flash profile |
-| --- | --- | --- |
-| Design/planning | `gemini-4-argon-high` | `gemini-3.8-flash-high` |
-| Implementation | `gemini-3.8-flash-medium` | `gemini-3.8-flash-medium` |
-| Quick work | `gemini-3.8-flash-low` | `gemini-3.8-flash-low` |
-| Review/verification | `gemini-4-argon-high` | `gemini-3.8-flash-high` |
+| Lane | Carbon | Balanced | Hydrogen | Flash |
+| --- | --- | --- | --- | --- |
+| Design/planning | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| Implementation | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
+| Quick work | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
+| Review/verification | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
 
-Check `agy models` for your account and choose with `agy --model <id>` or the runtime
-selector. Subagents use `model: inherit`. `/oma-model` explains the profiles;
-`auto` means keep the selected runtime model and `custom` requires all four lanes.
-Profiles are recommendations, not automatic model switching: the native hook contract
-has no model-override output. If Argon is unavailable, explicitly choose the Flash
-profile. Older enterprise models may remain available; they are absent from shipped defaults.
+Use `agy models` to check account availability, then select a model with `agy --model <id>` or `/model`. For example, `agy --model gemini-4-hydrogen-xhigh` selects Hydrogen's extra-high reasoning level. Carbon is available on Ultra and eligible Enterprise accounts; Argon availability depends on the plan. Choose an available profile explicitly if necessary.
+
+`/oma-model` explains the profiles. `auto` keeps the selected runtime model; `custom` requires all four lanes. These are recommendations, not automatic model switches: hooks cannot override the runtime model and subagents use `model: inherit`. Antigravity's native [Orchestrator](https://antigravity.google/docs/models#orchestrator) is a separate runtime option that coordinates Carbon or Argon with Hydrogen and has a fixed effort setting.
 
 ## Workflows and roles
 

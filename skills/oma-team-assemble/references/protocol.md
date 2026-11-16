@@ -24,8 +24,8 @@ Protocol:
    - editorial lane: `oma-editor` for final packaging
 4. Assign model profiles by lane:
    - judgment and acceptance gates -> `gemini-4-argon-high`
-   - implementation-heavy execution -> `gemini-3.8-flash-medium`
-   - broad low-risk exploration -> `gemini-3.8-flash-low` (upgrade to `gemini-4-argon-high` if depth is critical)
+   - implementation-heavy execution -> `gemini-4-hydrogen-medium`
+   - broad low-risk exploration -> `gemini-4-hydrogen-low` (upgrade to `gemini-4-argon-high` if depth is critical)
 5. Assign reasoning effort per lane:
    - load `.omg/drafts/reasoning.json` when available
    - apply teammate overrides first, then global default

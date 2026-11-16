@@ -77,22 +77,18 @@ CLI에서 `/plugin list`와 `/hooks`를 확인한 뒤 다음과 같이 시작합
 
 ## 모델
 
-추천 설정은 [config/models.json](../config/models.json)에 있으며, 2026-10-16에
-[공식 모델 제공 현황](https://antigravity.google/docs/models)을 기준으로 확인했습니다.
+추천 설정은 [config/models.json](../config/models.json)에 있으며, 2026-11-16에 [공식 모델 문서](https://antigravity.google/docs/models)를 기준으로 확인했습니다.
 
-| 역할 | Balanced 프로필 | Flash 프로필 |
-| --- | --- | --- |
-| 설계·계획 | `gemini-4-argon-high` | `gemini-3.8-flash-high` |
-| 구현 | `gemini-3.8-flash-medium` | `gemini-3.8-flash-medium` |
-| 빠른 작업 | `gemini-3.8-flash-low` | `gemini-3.8-flash-low` |
-| 리뷰·검증 | `gemini-4-argon-high` | `gemini-3.8-flash-high` |
+| 역할 | Carbon | Balanced | Hydrogen | Flash |
+| --- | --- | --- | --- | --- |
+| 설계·계획 | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| 구현 | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
+| 빠른 작업 | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
+| 리뷰·검증 | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
 
-`agy models`로 계정에서 사용할 수 있는 모델을 확인하고 `agy --model <id>` 또는 런타임 선택기로
-선택하세요. 서브에이전트는 `model: inherit`를 사용합니다. `/oma-model`이 프로필을 설명합니다.
-`auto`는 현재 선택한 런타임 모델을 유지하며, `custom`은 네 역할을 모두 지정해야 합니다.
-프로필은 추천 설정이며 모델을 자동으로 전환하지 않습니다. 네이티브 훅 계약에는 모델 재정의 출력이
-없습니다. Argon을 사용할 수 없다면 Flash 프로필을 명시적으로 선택하세요.
-이전 기업용 모델이 계속 제공될 수 있지만 배포 기본값에는 포함하지 않습니다.
+`agy models`로 계정에서 사용 가능한 모델을 확인하고 `agy --model <id>` 또는 `/model`로 선택하세요. 예를 들어 `agy --model gemini-4-hydrogen-xhigh`는 Hydrogen의 최대 추론 수준을 선택합니다. Carbon은 Ultra 및 해당 Enterprise 계정에서 사용할 수 있으며 Argon은 요금제에 따라 제공됩니다. 사용할 수 없는 모델이 있다면 가능한 프로필을 명시적으로 선택하세요.
+
+`/oma-model`에서 프로필을 확인할 수 있습니다. `auto`는 현재 런타임 모델을 유지하며 `custom`은 네 역할을 모두 지정해야 합니다. 프로필은 추천 설정이며 자동으로 모델을 전환하지 않습니다. 훅은 모델을 덮어쓸 수 없고 서브에이전트는 `model: inherit`를 사용합니다. Antigravity의 [Orchestrator](https://antigravity.google/docs/models#orchestrator)는 Carbon 또는 Argon과 Hydrogen을 조합하는 별도의 런타임 옵션이며 추론 수준이 고정됩니다.
 
 ## 워크플로와 역할
 
