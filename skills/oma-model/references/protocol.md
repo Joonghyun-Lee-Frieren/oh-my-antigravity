@@ -6,15 +6,18 @@ Request:
 Use the user request following this skill invocation.
 
 Read config/models.json in the installed plugin for the maintained lane recommendations.
-Carbon uses Carbon for planning/review and Hydrogen for execution; balanced uses Argon
-and Hydrogen. Hydrogen and flash use their named model for all lanes. Hydrogen also
-supports xhigh effort. Check agy models for account availability before recommending IDs.
-Carbon requires Ultra or an eligible Enterprise account; Argon availability depends on
-plan. If a model is unavailable, explicitly choose an available profile; never silently
+Neon and carbon use their named model for planning/review and Hydrogen for execution;
+balanced uses Argon and Hydrogen. Hydrogen and flash use their named model for all lanes.
+Neon and Hydrogen support xhigh effort. Check agy models for account availability before
+recommending IDs. Neon is available on paid Pro, Ultra and eligible Enterprise plans,
+and eligible device trials; Hydrogen and Argon have their own plan restrictions. Carbon
+requires Ultra or an eligible Enterprise account. If a model is unavailable, explicitly
+choose an available profile; never silently
 downgrade or repeatedly retry an unavailable model.
 Auto inherits the operator's selected model. Custom requires all four lanes with IDs
 confirmed by agy models. Profiles are recommendations, not automatic switching:
 PreInvocation cannot replace the model. Select through agy --model <id> or the runtime
-selector; subagents inherit that selection. Antigravity's native Orchestrator is a
-separate runtime option with fixed effort and its own plan availability. Save preferences
+selector; subagents inherit that selection. Antigravity's native Orchestrator (Neon)
+is a separate runtime option with fixed effort and its own plan availability; select it
+with agy --model "Orchestrator (Neon)". Save preferences
 under .omg/drafts/, not guard state.

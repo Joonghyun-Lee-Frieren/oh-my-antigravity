@@ -2,6 +2,11 @@
 
 All notable changes to oh-my-antigravity are documented here.
 
+## Unreleased - Gemini 4 Neon (2026-11-19)
+
+- Added Neon with four reasoning levels and a Neon/Hydrogen recommendation profile, preserving the existing balanced profile.
+- Updated model guidance, translated READMEs, and the website with Neon availability and the separate native Orchestrator (Neon) option.
+
 ## Unreleased - Gemini 4 model recommendations (2026-11-16)
 
 - Added Carbon and Hydrogen to the model catalog, including Hydrogen's `xhigh` effort.

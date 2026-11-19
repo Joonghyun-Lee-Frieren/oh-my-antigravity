@@ -69,18 +69,20 @@ Markdown 按标题分片，每片使用新对话，并由中央判定器审核�
 
 ## 模型
 
-推荐配置来自 [config/models.json](../config/models.json)，已于 2026-11-16 对照[官方模型文档](https://antigravity.google/docs/models)核实。
+推荐配置来自 [config/models.json](../config/models.json)，已于 2026-11-19 对照[官方模型文档](https://antigravity.google/docs/models)核实。
 
-| 角色 | Carbon | Balanced | Hydrogen | Flash |
-| --- | --- | --- | --- | --- |
-| 设计与规划 | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
-| 实现 | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
-| 快速任务 | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
-| 审查与验证 | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| 角色 | Neon | Carbon | Balanced | Hydrogen | Flash |
+| --- | --- | --- | --- | --- | --- |
+| 设计与规划 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| 实现 | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
+| 快速任务 | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
+| 审查与验证 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
 
 使用 `agy models` 查看账户可用模型，再通过 `agy --model <id>` 或 `/model` 选择。Hydrogen 还支持 `gemini-4-hydrogen-xhigh`。Carbon 适用于 Ultra 和符合条件的 Enterprise 账户；Argon 的可用性取决于套餐。请明确选择可用的配置。
 
-`/oma-model` 说明各配置；`auto` 保留当前模型，`custom` 需要指定全部四个角色。配置只是建议，不会自动切换模型：钩子不能替换模型，子代理使用 `model: inherit`。Antigravity 原生 [Orchestrator](https://antigravity.google/docs/models#orchestrator) 是独立的运行选项，结合 Carbon 或 Argon 与 Hydrogen，推理级别固定。
+`/oma-model` 说明各配置；`auto` 保留当前模型，`custom` 需要指定全部四个角色。配置只是建议，不会自动切换模型：钩子不能替换模型，子代理使用 `model: inherit`。Antigravity 原生 [Orchestrator](https://antigravity.google/docs/models#orchestrator) 是独立的运行选项，结合 Neon、Carbon 或 Argon 与 Hydrogen，推理级别固定。
+
+Neon 支持 `agy --model gemini-4-neon-xhigh`，适用于付费 Google AI Pro、Ultra、符合条件的设备试用版和 Enterprise。原生选项 `agy --model "Orchestrator (Neon)"` 使用 Neon 规划、Hydrogen 实现；推理级别固定，可用套餐另有规定。
 
 ## 工作流与角色
 

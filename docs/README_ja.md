@@ -73,18 +73,20 @@ Part 1–7 の提供資料に基づき、全ソース範囲の読み取り記録
 
 ## モデル
 
-推奨設定は [config/models.json](../config/models.json) にあり、2026-11-16 に[公式モデル文書](https://antigravity.google/docs/models)で確認しました。
+推奨設定は [config/models.json](../config/models.json) にあり、2026-11-19 に[公式モデル文書](https://antigravity.google/docs/models)で確認しました。
 
-| 役割 | Carbon | Balanced | Hydrogen | Flash |
-| --- | --- | --- | --- | --- |
-| 設計・計画 | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
-| 実装 | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
-| 短時間の作業 | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
-| レビュー・検証 | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| 役割 | Neon | Carbon | Balanced | Hydrogen | Flash |
+| --- | --- | --- | --- | --- | --- |
+| 設計・計画 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| 実装 | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
+| 短時間の作業 | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
+| レビュー・検証 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
 
 `agy models` でアカウントの利用可能なモデルを確認し、`agy --model <id>` または `/model` で選択してください。Hydrogen は `gemini-4-hydrogen-xhigh` にも対応します。Carbon は Ultra および対象 Enterprise アカウントで利用でき、Argon の利用可否はプランによります。利用可能なプロファイルを明示的に選択してください。
 
-`/oma-model` でプロファイルを確認できます。`auto` は選択中のモデルを維持し、`custom` は四つの役割すべての指定が必要です。プロファイルは推奨であり、自動切り替えは行いません。フックはモデルを変更できず、サブエージェントは `model: inherit` を使用します。Antigravity の [Orchestrator](https://antigravity.google/docs/models#orchestrator) は Carbon または Argon と Hydrogen を組み合わせる別のランタイムオプションで、推論レベルは固定です。
+`/oma-model` でプロファイルを確認できます。`auto` は選択中のモデルを維持し、`custom` は四つの役割すべての指定が必要です。プロファイルは推奨であり、自動切り替えは行いません。フックはモデルを変更できず、サブエージェントは `model: inherit` を使用します。Antigravity の [Orchestrator](https://antigravity.google/docs/models#orchestrator) は Neon、Carbon または Argon と Hydrogen を組み合わせる別のランタイムオプションで、推論レベルは固定です。
+
+Neon は `agy --model gemini-4-neon-xhigh` に対応し、有料 Google AI Pro、Ultra、対象デバイスの試用版、Enterprise で利用できます。標準の `agy --model "Orchestrator (Neon)"` は Neon の計画と Hydrogen の実装を組み合わせる別のオプションで、推論レベルは固定、提供条件も異なります。
 
 ## ワークフローと役割
 

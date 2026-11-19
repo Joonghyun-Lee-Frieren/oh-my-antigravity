@@ -1,10 +1,14 @@
 {
-  "verifiedOn": "2026-11-16",
+  "verifiedOn": "2026-11-19",
   "sources": [
     "https://antigravity.google/docs/models",
     "https://antigravity.google/docs/cli/headless/"
   ],
   "models": {
+    "gemini-4-neon": {
+      "efforts": ["low", "medium", "high", "xhigh"],
+      "use": "Complex coding, planning, and review"
+    },
     "gemini-4-carbon": {
       "efforts": [
         "low",
@@ -40,6 +44,12 @@
     }
   },
   "profiles": {
+    "neon": {
+      "planning": "gemini-4-neon-high",
+      "execution": "gemini-4-hydrogen-medium",
+      "quick_edit": "gemini-4-hydrogen-low",
+      "review_verify": "gemini-4-neon-high"
+    },
     "carbon": {
       "planning": "gemini-4-carbon-high",
       "execution": "gemini-4-hydrogen-medium",

@@ -79,18 +79,20 @@ Consulta los [esquemas y ejemplos](guide/session-continuity.md).
 
 ## Modelos
 
-Las recomendaciones de [config/models.json](../config/models.json) se contrastaron con la [documentación oficial](https://antigravity.google/docs/models) el 2026-11-16.
+Las recomendaciones de [config/models.json](../config/models.json) se contrastaron con la [documentación oficial](https://antigravity.google/docs/models) el 2026-11-19.
 
-| Rol | Carbon | Balanced | Hydrogen | Flash |
-| --- | --- | --- | --- | --- |
-| Diseño y planificación | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
-| Implementación | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
-| Tareas rápidas | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
-| Revisión y verificación | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| Rol | Neon | Carbon | Balanced | Hydrogen | Flash |
+| --- | --- | --- | --- | --- | --- |
+| Diseño y planificación | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| Implementación | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
+| Tareas rápidas | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
+| Revisión y verificación | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
 
 Consulta `agy models` y selecciona con `agy --model <id>` o `/model`. Hydrogen también admite `gemini-4-hydrogen-xhigh`. Carbon requiere Ultra o una cuenta Enterprise compatible; la disponibilidad de Argon depende del plan. Elige explícitamente un perfil disponible.
 
-`/oma-model` explica los perfiles; `auto` conserva el modelo seleccionado y `custom` exige los cuatro roles. Los perfiles son recomendaciones, no cambian el modelo automáticamente: los hooks no lo sustituyen y los subagentes usan `model: inherit`. El [Orchestrator](https://antigravity.google/docs/models#orchestrator) nativo es una opción separada con esfuerzo fijo que combina Carbon o Argon con Hydrogen.
+`/oma-model` explica los perfiles; `auto` conserva el modelo seleccionado y `custom` exige los cuatro roles. Los perfiles son recomendaciones, no cambian el modelo automáticamente: los hooks no lo sustituyen y los subagentes usan `model: inherit`. El [Orchestrator](https://antigravity.google/docs/models#orchestrator) nativo es una opción separada con esfuerzo fijo que combina Neon, Carbon o Argon con Hydrogen.
+
+Neon admite `agy --model gemini-4-neon-xhigh` y está disponible en Google AI Pro de pago, Ultra, pruebas de dispositivos compatibles y Enterprise. La opción nativa `agy --model "Orchestrator (Neon)"` combina planificación con Neon e implementación con Hydrogen; tiene esfuerzo fijo y disponibilidad propia.
 
 ## Flujos de trabajo y roles
 

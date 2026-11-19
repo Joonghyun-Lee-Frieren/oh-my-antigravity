@@ -573,7 +573,12 @@ test('state writes are mutually exclusive and corrupt input fails closed as one 
 });
 
 test('current model profiles use maintained IDs and custom never silently fills missing lanes', () => {
-  assert.deepEqual(Object.keys(catalog.models), ['gemini-4-carbon', 'gemini-4-argon', 'gemini-4-hydrogen', 'gemini-3.8-flash']);
+  assert.deepEqual(Object.keys(catalog.models), ['gemini-4-neon', 'gemini-4-carbon', 'gemini-4-argon', 'gemini-4-hydrogen', 'gemini-3.8-flash']);
+  assert.deepEqual(catalog.models['gemini-4-neon'].efforts, ['low', 'medium', 'high', 'xhigh']);
+  assert.deepEqual(modelPolicy('neon').lanes, {
+    planning: 'gemini-4-neon-high', execution: 'gemini-4-hydrogen-medium',
+    quick_edit: 'gemini-4-hydrogen-low', review_verify: 'gemini-4-neon-high'
+  });
   assert.deepEqual(catalog.models['gemini-4-hydrogen'].efforts, ['low', 'medium', 'high', 'xhigh']);
   assert.equal(modelPolicy('carbon').lanes.planning, 'gemini-4-carbon-high');
   assert.equal(modelPolicy('carbon').lanes.execution, 'gemini-4-hydrogen-medium');

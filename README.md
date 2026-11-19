@@ -82,18 +82,20 @@ stays unknown. Read [schemas and examples](docs/guide/session-continuity.md).
 
 ## Models
 
-Recommendations come from [config/models.json](config/models.json), checked against the [official model documentation](https://antigravity.google/docs/models) on 2026-11-16.
+Recommendations come from [config/models.json](config/models.json), checked against the [official model documentation](https://antigravity.google/docs/models) on 2026-11-19.
 
-| Lane | Carbon | Balanced | Hydrogen | Flash |
-| --- | --- | --- | --- | --- |
-| Design/planning | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
-| Implementation | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
-| Quick work | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
-| Review/verification | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| Lane | Neon | Carbon | Balanced | Hydrogen | Flash |
+| --- | --- | --- | --- | --- | --- |
+| Design/planning | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| Implementation | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
+| Quick work | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
+| Review/verification | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
 
 Use `agy models` to check account availability, then select a model with `agy --model <id>` or `/model`. For example, `agy --model gemini-4-hydrogen-xhigh` selects Hydrogen's extra-high reasoning level. Carbon is available on Ultra and eligible Enterprise accounts; Argon availability depends on the plan. Choose an available profile explicitly if necessary.
 
-`/oma-model` explains the profiles. `auto` keeps the selected runtime model; `custom` requires all four lanes. These are recommendations, not automatic model switches: hooks cannot override the runtime model and subagents use `model: inherit`. Antigravity's native [Orchestrator](https://antigravity.google/docs/models#orchestrator) is a separate runtime option that coordinates Carbon or Argon with Hydrogen and has a fixed effort setting.
+`/oma-model` explains the profiles. `auto` keeps the selected runtime model; `custom` requires all four lanes. These are recommendations, not automatic model switches: hooks cannot override the runtime model and subagents use `model: inherit`. Antigravity's native [Orchestrator](https://antigravity.google/docs/models#orchestrator) is a separate runtime option that coordinates Neon, Carbon or Argon with Hydrogen and has a fixed effort setting.
+
+Neon supports `agy --model gemini-4-neon-xhigh` and is available on paid Google AI Pro, Ultra, eligible device trials, and Enterprise. The native `agy --model "Orchestrator (Neon)"` pairs Neon planning with Hydrogen execution; it uses fixed effort and has separate plan availability.
 
 ## Workflows and roles
 

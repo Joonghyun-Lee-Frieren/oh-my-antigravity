@@ -77,18 +77,20 @@ CLI에서 `/plugin list`와 `/hooks`를 확인한 뒤 다음과 같이 시작합
 
 ## 모델
 
-추천 설정은 [config/models.json](../config/models.json)에 있으며, 2026-11-16에 [공식 모델 문서](https://antigravity.google/docs/models)를 기준으로 확인했습니다.
+추천 설정은 [config/models.json](../config/models.json)에 있으며, 2026-11-19에 [공식 모델 문서](https://antigravity.google/docs/models)를 기준으로 확인했습니다.
 
-| 역할 | Carbon | Balanced | Hydrogen | Flash |
-| --- | --- | --- | --- | --- |
-| 설계·계획 | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
-| 구현 | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
-| 빠른 작업 | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
-| 리뷰·검증 | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| 역할 | Neon | Carbon | Balanced | Hydrogen | Flash |
+| --- | --- | --- | --- | --- | --- |
+| 설계·계획 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| 구현 | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
+| 빠른 작업 | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
+| 리뷰·검증 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
 
 `agy models`로 계정에서 사용 가능한 모델을 확인하고 `agy --model <id>` 또는 `/model`로 선택하세요. 예를 들어 `agy --model gemini-4-hydrogen-xhigh`는 Hydrogen의 최대 추론 수준을 선택합니다. Carbon은 Ultra 및 해당 Enterprise 계정에서 사용할 수 있으며 Argon은 요금제에 따라 제공됩니다. 사용할 수 없는 모델이 있다면 가능한 프로필을 명시적으로 선택하세요.
 
-`/oma-model`에서 프로필을 확인할 수 있습니다. `auto`는 현재 런타임 모델을 유지하며 `custom`은 네 역할을 모두 지정해야 합니다. 프로필은 추천 설정이며 자동으로 모델을 전환하지 않습니다. 훅은 모델을 덮어쓸 수 없고 서브에이전트는 `model: inherit`를 사용합니다. Antigravity의 [Orchestrator](https://antigravity.google/docs/models#orchestrator)는 Carbon 또는 Argon과 Hydrogen을 조합하는 별도의 런타임 옵션이며 추론 수준이 고정됩니다.
+`/oma-model`에서 프로필을 확인할 수 있습니다. `auto`는 현재 런타임 모델을 유지하며 `custom`은 네 역할을 모두 지정해야 합니다. 프로필은 추천 설정이며 자동으로 모델을 전환하지 않습니다. 훅은 모델을 덮어쓸 수 없고 서브에이전트는 `model: inherit`를 사용합니다. Antigravity의 [Orchestrator](https://antigravity.google/docs/models#orchestrator)는 Neon, Carbon 또는 Argon과 Hydrogen을 조합하는 별도의 런타임 옵션이며 추론 수준이 고정됩니다.
+
+Neon은 `agy --model gemini-4-neon-xhigh`로 사용할 수 있으며 유료 Google AI Pro, Ultra, 대상 기기 체험 및 Enterprise에서 제공됩니다. 기본 제공 `agy --model "Orchestrator (Neon)"`은 Neon으로 계획하고 Hydrogen으로 구현하는 별도 옵션이며, 추론 수준이 고정되고 제공 요금제가 다릅니다.
 
 ## 워크플로와 역할
 
