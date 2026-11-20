@@ -2,12 +2,20 @@
 import fs from 'node:fs';
 
 export const catalog = JSON.parse(fs.readFileSync(new URL('../config/models.json', import.meta.url), 'utf8'));
+export function isAllowedModel(value) {
+  if (typeof value !== 'string' || !value.trim()) return false;
+  const id = value.trim().toLowerCase();
+  if (Object.entries(catalog.orchestrators).some(([slug, entry]) => id === slug || id === entry.name.toLowerCase())) return true;
+  return Object.entries(catalog.models).some(([model, spec]) =>
+    id === model || spec.efforts.some(effort => id === `${model}-${effort}`));
+}
 export function modelPolicy(strategy = 'balanced', overrides = {}) {
   if (strategy === 'auto') return { strategy, lanes: {}, runtime: 'inherit the selected CLI model' };
   if (strategy === 'custom') {
     const lanes = {};
     for (const lane of Object.keys(catalog.profiles.balanced)) {
       if (typeof overrides[lane] !== 'string' || !overrides[lane].trim()) throw new Error(`Custom profile is missing ${lane}.`);
+      if (!isAllowedModel(overrides[lane])) throw new Error(`Custom profile has an unsupported model for ${lane}.`);
       lanes[lane] = overrides[lane];
     }
     return { strategy, lanes, runtime: 'explicit CLI selection required' };

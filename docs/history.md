@@ -2,6 +2,12 @@
 
 All notable changes to oh-my-antigravity are documented here.
 
+## v1.2.1 - Model policy and Orchestrator (2026-11-20)
+
+- Aligned the approved general model catalog with the Gemini model guide and added native Neon and Carbon Orchestrator selections. Flash-Lite CLI availability remains unverified.
+- PreInvocation now blocks unapproved or unreported model identities while the plugin hook is enabled. Custom lane IDs are checked against the same catalog; profiles do not switch models.
+- Updated the README translations, website, generated skills, and version metadata.
+
 ## Unreleased - Gemini 4 Neon (2026-11-19)
 
 - Added Neon with four reasoning levels and a Neon/Hydrogen recommendation profile, preserving the existing balanced profile.

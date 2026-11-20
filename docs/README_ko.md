@@ -1,6 +1,6 @@
 # oh-my-antigravity (OmA)
 
-[![Version](https://img.shields.io/badge/version-1.2.0-0d8a83)](history.md)
+[![Version](https://img.shields.io/badge/version-1.2.1-0d8a83)](history.md)
 [![Checks](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-antigravity/version-check.yml?branch=main&label=checks)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
 
@@ -40,6 +40,10 @@ CLI에서 `/plugin list`와 `/hooks`를 확인한 뒤 다음과 같이 시작합
 정확한 컨트롤러 명령, JSON 예제, 복구 방법, 제약의 한계는
 [보호 워크플로 가이드](guide/guarded-workflow.md)를 참고하세요.
 
+## v1.2.1의 새로운 기능
+
+모델 카탈로그를 Gemini 모델 가이드에 맞추고 Orchestrator (Neon)과 Orchestrator (Carbon)을 추가했습니다. 호출 전 검사가 허용 목록 밖의 모델을 차단합니다. 기존 v1.2.0 워크플로 보호 기능은 유지됩니다.
+
 ## v1.2.0의 새로운 기능
 
 검증 스크립트와 검증 항목의 `inputs`에 선언한 의존 파일의 해시를 기록합니다.
@@ -77,20 +81,18 @@ CLI에서 `/plugin list`와 `/hooks`를 확인한 뒤 다음과 같이 시작합
 
 ## 모델
 
-추천 설정은 [config/models.json](../config/models.json)에 있으며, 2026-11-19에 [공식 모델 문서](https://antigravity.google/docs/models)를 기준으로 확인했습니다.
+[Gemini 모델 가이드](https://aistudio.google.com/docs/choosing-a-model)를 기준으로 카탈로그를 구성하고 [Antigravity 모델 문서](https://antigravity.google/docs/models)에서 CLI 제공 현황을 확인했습니다. 확인일: 2026-11-20.
 
-| 역할 | Neon | Carbon | Balanced | Hydrogen | Flash |
-| --- | --- | --- | --- | --- | --- |
-| 설계·계획 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
-| 구현 | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
-| 빠른 작업 | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
-| 리뷰·검증 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| 역할 | Neon | Carbon | Balanced / Hydrogen |
+| --- | --- | --- | --- |
+| 설계·계획 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-hydrogen-high` |
+| 구현 | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` |
+| 빠른 작업 | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` |
+| 리뷰·검증 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-hydrogen-high` |
 
-`agy models`로 계정에서 사용 가능한 모델을 확인하고 `agy --model <id>` 또는 `/model`로 선택하세요. 예를 들어 `agy --model gemini-4-hydrogen-xhigh`는 Hydrogen의 최대 추론 수준을 선택합니다. Carbon은 Ultra 및 해당 Enterprise 계정에서 사용할 수 있으며 Argon은 요금제에 따라 제공됩니다. 사용할 수 없는 모델이 있다면 가능한 프로필을 명시적으로 선택하세요.
+허용되는 범용 모델은 Gemini 4 Neon, Carbon, Hydrogen과 Gemini 3.5 Flash-Lite입니다. 가이드는 Flash-Lite를 API 텍스트 작업에 추천하며 Antigravity CLI 제공 여부는 확인되지 않아 CLI 프로필에 사용하지 않습니다. 특수 목적 API 모델은 범용 CLI 에이전트 모델이 아닙니다. 선택 전 `agy models`와 계정 이용 조건을 확인하세요.
 
-`/oma-model`에서 프로필을 확인할 수 있습니다. `auto`는 현재 런타임 모델을 유지하며 `custom`은 네 역할을 모두 지정해야 합니다. 프로필은 추천 설정이며 자동으로 모델을 전환하지 않습니다. 훅은 모델을 덮어쓸 수 없고 서브에이전트는 `model: inherit`를 사용합니다. Antigravity의 [Orchestrator](https://antigravity.google/docs/models#orchestrator)는 Neon, Carbon 또는 Argon과 Hydrogen을 조합하는 별도의 런타임 옵션이며 추론 수준이 고정됩니다.
-
-Neon은 `agy --model gemini-4-neon-xhigh`로 사용할 수 있으며 유료 Google AI Pro, Ultra, 대상 기기 체험 및 Enterprise에서 제공됩니다. 기본 제공 `agy --model "Orchestrator (Neon)"`은 Neon으로 계획하고 Hydrogen으로 구현하는 별도 옵션이며, 추론 수준이 고정되고 제공 요금제가 다릅니다.
+기본 제공 `agy --model "Orchestrator (Neon)"`과 `agy --model "Orchestrator (Carbon)"`은 해당 계획 모델과 Hydrogen을 조합하며 추론 수준이 고정됩니다. 플러그인은 호출 전에 허용되지 않거나 보고되지 않은 모델을 차단하며 Orchestrator (Argon)도 차단합니다. 이 검사는 플러그인과 훅이 활성화된 동안에만 적용되며 CLI 모델 선택 목록 자체를 바꾸지 않습니다. `/model` 또는 `agy --model <id>`로 사용 가능한 허용 모델을 선택하세요. 서브에이전트는 런타임 모델을 상속합니다. 프로필은 역할별 추천이며 자동 전환하지 않습니다. `auto`는 현재 선택을 상속하고 `custom`은 허용된 네 역할 ID가 필요합니다.
 
 ## 워크플로와 역할
 

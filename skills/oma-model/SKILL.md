@@ -1,6 +1,6 @@
 ---
 name: oma-model
-description: "Inspect Antigravity model recommendations: neon, carbon, balanced, hydrogen, flash, auto, or custom."
+description: "Inspect the approved Gemini and Orchestrator model policy."
 ---
 
 Read [the protocol](references/protocol.md) for this command.

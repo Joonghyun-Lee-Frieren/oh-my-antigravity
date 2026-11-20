@@ -6,7 +6,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { control, stop, readState, STATE, within, withStateLock } from '../hooks/lib/workflow.mjs';
 import { handle, CONTROLLER } from '../hooks/scripts/guard.mjs';
-import { catalog, modelPolicy } from '../scripts/model-policy.mjs';
+import { catalog, isAllowedModel, modelPolicy } from '../scripts/model-policy.mjs';
 
 const owner = 'owner-conversation';
 
@@ -573,7 +573,7 @@ test('state writes are mutually exclusive and corrupt input fails closed as one 
 });
 
 test('current model profiles use maintained IDs and custom never silently fills missing lanes', () => {
-  assert.deepEqual(Object.keys(catalog.models), ['gemini-4-neon', 'gemini-4-carbon', 'gemini-4-argon', 'gemini-4-hydrogen', 'gemini-3.8-flash']);
+  assert.deepEqual(Object.keys(catalog.models), ['gemini-4-neon', 'gemini-4-carbon', 'gemini-4-hydrogen', 'gemini-3.5-flash-lite']);
   assert.deepEqual(catalog.models['gemini-4-neon'].efforts, ['low', 'medium', 'high', 'xhigh']);
   assert.deepEqual(modelPolicy('neon').lanes, {
     planning: 'gemini-4-neon-high', execution: 'gemini-4-hydrogen-medium',
@@ -590,10 +590,28 @@ test('current model profiles use maintained IDs and custom never silently fills 
       assert.ok(Object.entries(catalog.models).some(([model, spec]) => spec.efforts.some(effort => id === `${model}-${effort}`)), `Unknown model or effort: ${id}`);
     }
   }
-  assert.equal(modelPolicy().lanes.planning, 'gemini-4-argon-high');
-  assert.ok(Object.values(modelPolicy('flash').lanes).every(id => id.startsWith('gemini-3.8-flash-')));
+  assert.equal(modelPolicy().lanes.planning, 'gemini-4-hydrogen-high');
+  assert.throws(() => modelPolicy('flash'), /Unknown model strategy/);
   assert.deepEqual(modelPolicy('auto').lanes, {});
-  assert.throws(() => modelPolicy('custom', { planning: 'custom' }), /missing execution/);
+  assert.throws(() => modelPolicy('custom', { planning: 'gemini-4-neon-high' }), /missing execution/);
+  assert.throws(() => modelPolicy('custom', { planning: 'gemini-4-argon-high' }), /unsupported model/);
+  assert.equal(modelPolicy('custom', { planning: 'gemini-pro-orchestrator-neon', execution: 'gemini-4-hydrogen-medium', quick_edit: 'gemini-4-hydrogen-low', review_verify: 'Orchestrator (Carbon)' }).lanes.review_verify, 'Orchestrator (Carbon)');
+});
+
+test('PreInvocation blocks missing or unapproved models and accepts supported choices', t => {
+  const f = fixture(t);
+  for (const modelName of ['gemini-4-neon-xhigh', 'gemini-4-carbon-high', 'gemini-4-hydrogen-low', 'gemini-3.5-flash-lite-minimal', 'gemini-pro-orchestrator-neon', 'gemini-pro-orchestrator', 'Orchestrator (Neon)', 'Orchestrator (Carbon)']) {
+    assert.equal(isAllowedModel(modelName), true, modelName);
+    assert.equal(handle('context', { workspacePaths: [f.root], modelName }).terminationBehavior, undefined, modelName);
+  }
+  for (const modelName of [undefined, '', 'gemini-4-argon-high', 'gemini-3.8-flash-high', 'gemini-pro-orchestrator-argon', 'gemini-4-carbon-xhigh', 'gemini-4-neon-high-evil']) {
+    assert.equal(isAllowedModel(modelName), false);
+    const result = handle('context', { workspacePaths: [f.root], modelName });
+    assert.equal(result.terminationBehavior, 'terminate');
+    assert.match(result.injectSteps[0].errorMessage.userMessage, /model policy/);
+  }
+  const badInput = spawnSync(process.execPath, [CONTROLLER.replace(/scripts[\\/]workflow\.mjs$/, 'hooks/scripts/guard.mjs'), 'context'], { input: '{', encoding: 'utf8' });
+  assert.equal(JSON.parse(badInput.stdout).terminationBehavior, 'terminate');
 });
 
 test('sealed validators reject shell and Windows interpreter inline bypasses', t => {

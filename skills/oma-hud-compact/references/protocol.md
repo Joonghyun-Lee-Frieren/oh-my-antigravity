@@ -19,7 +19,7 @@ Output format:
 
 ## Preview
 ```text
-[OMA][MODEL gemini-4-argon-high/gemini-4-hydrogen-medium/gemini-4-hydrogen-low runtime:explicit][STAGE team-exec][TASKS 3/8][NEXT /oma-team-verify]
+[OMA][MODEL gemini-4-hydrogen-high/gemini-4-hydrogen-medium/gemini-4-hydrogen-low runtime:explicit][STAGE team-exec][TASKS 3/8][NEXT /oma-team-verify]
 ```
 
 ## Next Command

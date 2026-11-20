@@ -23,7 +23,7 @@ Mode behavior:
 Suggested `mode.json` shape:
 {
   "mode": "<selected>",
-  "planning_model": "gemini-4-argon-high",
+  "planning_model": "gemini-4-hydrogen-high",
   "execution_model": "gemini-4-hydrogen-medium",
   "quick_edit_model": "gemini-4-hydrogen-low",
   "verification_strictness": "normal|high",

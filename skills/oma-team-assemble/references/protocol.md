@@ -23,9 +23,9 @@ Protocol:
    - quality lane: `oma-reviewer`, `oma-verifier`, `oma-debugger`
    - editorial lane: `oma-editor` for final packaging
 4. Assign model profiles by lane:
-   - judgment and acceptance gates -> `gemini-4-argon-high`
+   - judgment and acceptance gates -> `gemini-4-hydrogen-high`
    - implementation-heavy execution -> `gemini-4-hydrogen-medium`
-   - broad low-risk exploration -> `gemini-4-hydrogen-low` (upgrade to `gemini-4-argon-high` if depth is critical)
+   - broad low-risk exploration -> `gemini-4-hydrogen-low` (upgrade to `gemini-4-hydrogen-high` if depth is critical)
 5. Assign reasoning effort per lane:
    - load `.omg/drafts/reasoning.json` when available
    - apply teammate overrides first, then global default

@@ -5,19 +5,16 @@ Follow the [guard contract](../../../docs/guide/guarded-workflow.md) first. It o
 Request:
 Use the user request following this skill invocation.
 
-Read config/models.json in the installed plugin for the maintained lane recommendations.
-Neon and carbon use their named model for planning/review and Hydrogen for execution;
-balanced uses Argon and Hydrogen. Hydrogen and flash use their named model for all lanes.
-Neon and Hydrogen support xhigh effort. Check agy models for account availability before
-recommending IDs. Neon is available on paid Pro, Ultra and eligible Enterprise plans,
-and eligible device trials; Hydrogen and Argon have their own plan restrictions. Carbon
-requires Ultra or an eligible Enterprise account. If a model is unavailable, explicitly
-choose an available profile; never silently
-downgrade or repeatedly retry an unavailable model.
-Auto inherits the operator's selected model. Custom requires all four lanes with IDs
-confirmed by agy models. Profiles are recommendations, not automatic switching:
-PreInvocation cannot replace the model. Select through agy --model <id> or the runtime
-selector; subagents inherit that selection. Antigravity's native Orchestrator (Neon)
-is a separate runtime option with fixed effort and its own plan availability; select it
-with agy --model "Orchestrator (Neon)". Save preferences
-under .omg/drafts/, not guard state.
+Read config/models.json for the model policy and recommended lanes. Neon and carbon
+profiles use the named planner with Hydrogen execution; balanced and hydrogen use
+Hydrogen throughout. The AI Studio catalog also lists Gemini 3.5 Flash-Lite for API
+text generation; its availability as an Antigravity CLI model has not been verified.
+Specialized API models are not general CLI reasoning models. Check agy models and
+account eligibility; never silently downgrade. Custom lanes must use approved IDs.
+Auto inherits the selected runtime model. PreInvocation blocks an unapproved or missing
+modelName before a model call, but does not select or replace a model. Select via /model
+or agy --model. Subagents inherit the runtime selection. Profiles are recommendations,
+not automatic switching. Native Orchestrator (Neon) and Orchestrator (Carbon) use fixed
+effort and can be selected via /model or agy --model "Orchestrator (Neon)". Model
+availability depends on the account. The hook only applies while the plugin is enabled.
+Save preferences under .omg/drafts/, not guard state.

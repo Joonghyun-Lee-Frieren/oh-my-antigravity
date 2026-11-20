@@ -1,12 +1,18 @@
 {
-  "verifiedOn": "2026-11-19",
+  "verifiedOn": "2026-11-20",
   "sources": [
+    "https://aistudio.google.com/docs/choosing-a-model",
     "https://antigravity.google/docs/models",
     "https://antigravity.google/docs/cli/headless/"
   ],
   "models": {
     "gemini-4-neon": {
-      "efforts": ["low", "medium", "high", "xhigh"],
+      "efforts": [
+        "low",
+        "medium",
+        "high",
+        "xhigh"
+      ],
       "use": "Complex coding, planning, and review"
     },
     "gemini-4-carbon": {
@@ -17,14 +23,6 @@
       ],
       "use": "Complex architecture, planning, and review"
     },
-    "gemini-4-argon": {
-      "efforts": [
-        "low",
-        "medium",
-        "high"
-      ],
-      "use": "Architecture, planning, section review"
-    },
     "gemini-4-hydrogen": {
       "efforts": [
         "low",
@@ -34,13 +32,15 @@
       ],
       "use": "Everyday coding, implementation, and quick edits"
     },
-    "gemini-3.8-flash": {
+    "gemini-3.5-flash-lite": {
       "efforts": [
+        "minimal",
         "low",
         "medium",
         "high"
       ],
-      "use": "Documentation, implementation, quick edits"
+      "use": "High-volume text generation",
+      "cliAvailability": "unverified"
     }
   },
   "profiles": {
@@ -57,22 +57,28 @@
       "review_verify": "gemini-4-carbon-high"
     },
     "balanced": {
-      "planning": "gemini-4-argon-high",
+      "planning": "gemini-4-hydrogen-high",
       "execution": "gemini-4-hydrogen-medium",
       "quick_edit": "gemini-4-hydrogen-low",
-      "review_verify": "gemini-4-argon-high"
+      "review_verify": "gemini-4-hydrogen-high"
     },
     "hydrogen": {
       "planning": "gemini-4-hydrogen-high",
       "execution": "gemini-4-hydrogen-medium",
       "quick_edit": "gemini-4-hydrogen-low",
       "review_verify": "gemini-4-hydrogen-high"
+    }
+  },
+  "orchestrators": {
+    "gemini-pro-orchestrator-neon": {
+      "name": "Orchestrator (Neon)",
+      "planner": "gemini-4-neon",
+      "execution": "gemini-4-hydrogen"
     },
-    "flash": {
-      "planning": "gemini-3.8-flash-high",
-      "execution": "gemini-3.8-flash-medium",
-      "quick_edit": "gemini-3.8-flash-low",
-      "review_verify": "gemini-3.8-flash-high"
+    "gemini-pro-orchestrator": {
+      "name": "Orchestrator (Carbon)",
+      "planner": "gemini-4-carbon",
+      "execution": "gemini-4-hydrogen"
     }
   }
 }

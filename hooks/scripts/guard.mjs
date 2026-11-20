@@ -6,6 +6,7 @@ import { assert, within, protectedFile, readState, checkLocks, owner } from '../
 import { stop } from '../lib/workflow.mjs';
 import { issueReview, captureReceipt } from '../lib/reviews.mjs';
 import { contextPack } from '../lib/continuity.mjs';
+import { isAllowedModel } from '../../scripts/model-policy.mjs';
 
 export const CONTROLLER = fileURLToPath(new URL('../../scripts/workflow.mjs', import.meta.url));
 const READ_TOOLS = new Set(['view_file', 'list_dir', 'find_by_name', 'grep_search', 'search_web', 'read_url_content', 'list_permissions', 'ask_question', 'ask_permission']);
@@ -113,6 +114,10 @@ export function handle(event, input) {
   if (event === 'pre') return pre(root, input);
   if (event === 'stop') return stop(root, input);
   if (event === 'context') {
+    if (!isAllowedModel(input.modelName)) return {
+      injectSteps: [{ errorMessage: { userMessage: 'OmA model policy: select an allowed Gemini model or Orchestrator (Neon/Carbon) with /model. The current model is unsupported or was not reported.' } }],
+      terminationBehavior: 'terminate'
+    };
     const state = readState(root);
     const message = `OmA: ${JSON.stringify(contextPack(state))}\nController: node "${CONTROLLER}" <action> [ .omg/drafts/request.json ]. Use Scope Brief and Design Check before ending design; implement in the next user turn. Reviewers send their own native receipts. Never invent success. Read docs/guide/guarded-workflow.md for the protocol. Select runtime models through the CLI.`;
     return { injectSteps: [{ ephemeralMessage: message }] };
@@ -130,7 +135,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   } catch (error) {
     // Safety hooks fail closed. Stop errors do not cause unbounded continuations.
     const output = event === 'context'
-      ? { injectSteps: [{ ephemeralMessage: `OmA guard error: ${error.message}. Stop and report this blocker.` }] }
+      ? { injectSteps: [{ errorMessage: { userMessage: `OmA guard error: ${error.message}` } }], terminationBehavior: 'terminate' }
       : { decision: event === 'stop' ? 'allow' : 'deny', reason: `OmA guard error: ${error.message}` };
     process.stdout.write(JSON.stringify(output));
     process.stderr.write(`OmA guard: ${error.message}\n`);

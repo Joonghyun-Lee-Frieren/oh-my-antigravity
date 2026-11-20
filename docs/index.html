@@ -36,7 +36,7 @@
     <main id="main">
       <header class="hero">
         <div>
-          <p class="eyebrow">v1.2.0 · Native Antigravity CLI plugin</p>
+          <p class="eyebrow">v1.2.1 · Native Antigravity CLI plugin</p>
           <h1>Small skills.<br>Concrete limits.<br><em>Evidence first.</em></h1>
           <p class="lead">Read the full selected sources. Preserve dependency boundaries. Repair a few related failures at a time, then ask an independent reviewer for concrete counterexamples.</p>
           <div class="actions"><a class="button" href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity#install">Get started ↗</a><a class="button secondary" href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/guide/guarded-workflow.md">Read the guard contract</a></div>
@@ -54,7 +54,7 @@
       </header>
       <div class="strip"><span><strong>≤20 lines</strong> per skill entrypoint</span><span><strong>Read-only</strong> worker tools</span><span><strong>≤3 groups</strong> per repair batch</span><span><strong>≤120 lines</strong> per review</span></div>
       <section id="release">
-        <div class="section-head"><h2>Make the next shortcut visible.</h2><span class="section-number">NEW / v1.2.0</span></div>
+        <div class="section-head"><h2>Make the next shortcut visible.</h2><span class="section-number">v1.2.0</span></div>
         <p class="intro">Built from the supplied Part 1–7 architecture: enforce source coverage, keep honest failure exits, and narrow both repair and review. Scope Brief, Design Check and Session Trail carry the decisions and evidence across turns.</p>
         <div class="release-cards">
           <article class="card"><code>/oma-read · /oma-probe</code><h3>Cover the source, including the tail</h3><p>Register versioned snapshots, page every byte window, and record real CLI help. Missing source coverage or a failed required probe prevents handoff.</p></article>
@@ -93,14 +93,15 @@
       </section>
       <section id="models">
         <div class="section-head"><h2>Current models. Explicit selection.</h2><span class="section-number">03 / MODELS</span></div>
-        <p class="intro">Use Neon, Carbon or Argon for planning and review, Hydrogen for everyday implementation, or choose a single-model profile. Availability depends on your account.</p>
-        <div class="table-wrap"><table><caption class="skip">Recommended model profiles by workflow lane</caption><thead><tr><th scope="col">Lane</th><th scope="col">Neon</th><th scope="col">Carbon</th><th scope="col">Balanced</th><th scope="col">Hydrogen</th><th scope="col">Flash</th></tr></thead><tbody>
-          <tr><td>Design &amp; planning</td><td><code>gemini-4-neon-high</code></td><td><code>gemini-4-carbon-high</code></td><td><code>gemini-4-argon-high</code></td><td><code>gemini-4-hydrogen-high</code></td><td><code>gemini-3.8-flash-high</code></td></tr>
-          <tr><td>Implementation</td><td><code>gemini-4-hydrogen-medium</code></td><td><code>gemini-4-hydrogen-medium</code></td><td><code>gemini-4-hydrogen-medium</code></td><td><code>gemini-4-hydrogen-medium</code></td><td><code>gemini-3.8-flash-medium</code></td></tr>
-          <tr><td>Quick work</td><td><code>gemini-4-hydrogen-low</code></td><td><code>gemini-4-hydrogen-low</code></td><td><code>gemini-4-hydrogen-low</code></td><td><code>gemini-4-hydrogen-low</code></td><td><code>gemini-3.8-flash-low</code></td></tr>
-          <tr><td>Review &amp; verification</td><td><code>gemini-4-neon-high</code></td><td><code>gemini-4-carbon-high</code></td><td><code>gemini-4-argon-high</code></td><td><code>gemini-4-hydrogen-high</code></td><td><code>gemini-3.8-flash-high</code></td></tr>
+        <p class="intro">Gemini 4 Neon, Carbon, and Hydrogen power the recommended CLI profiles. The Gemini guide also lists 3.5 Flash-Lite for API text workloads; its CLI availability is unverified.</p>
+        <div class="table-wrap"><table><caption class="skip">Recommended model profiles by workflow lane</caption><thead><tr><th scope="col">Lane</th><th scope="col">Neon</th><th scope="col">Carbon</th><th scope="col">Balanced / Hydrogen</th></tr></thead><tbody>
+          <tr><td>Design &amp; planning</td><td><code>gemini-4-neon-high</code></td><td><code>gemini-4-carbon-high</code></td><td><code>gemini-4-hydrogen-high</code></td></tr>
+          <tr><td>Implementation</td><td><code>gemini-4-hydrogen-medium</code></td><td><code>gemini-4-hydrogen-medium</code></td><td><code>gemini-4-hydrogen-medium</code></td></tr>
+          <tr><td>Quick work</td><td><code>gemini-4-hydrogen-low</code></td><td><code>gemini-4-hydrogen-low</code></td><td><code>gemini-4-hydrogen-low</code></td></tr>
+          <tr><td>Review &amp; verification</td><td><code>gemini-4-neon-high</code></td><td><code>gemini-4-carbon-high</code></td><td><code>gemini-4-hydrogen-high</code></td></tr>
         </tbody></table></div>
-        <p class="note">Verified 2026-11-19 against <a href="https://antigravity.google/docs/models">official model documentation</a>. Run <code>agy models</code> to check account availability, then select with <code>agy --model &lt;id&gt;</code> or <code>/model</code>. Neon and Hydrogen also support <code>xhigh</code> effort; Neon is available on paid Pro, Ultra, eligible device trials, and Enterprise; Carbon requires Ultra or an eligible Enterprise account. Workers inherit the selected model. Profiles are recommendations; hooks do not switch models automatically. Antigravity's native <a href="https://antigravity.google/docs/models#orchestrator">Orchestrator</a> is a separate option with fixed effort that coordinates Neon, Carbon or Argon with Hydrogen. Select <code>agy --model &quot;Orchestrator (Neon)&quot;</code> when available.</p>
+        <p class="note">Checked 2026-11-20 against the <a href="https://aistudio.google.com/docs/choosing-a-model">Gemini model guide</a> and <a href="https://antigravity.google/docs/models">Antigravity model documentation</a>. Run <code>agy models</code> to check account availability. Native <code>Orchestrator (Neon)</code> and <code>Orchestrator (Carbon)</code> combine the planner with Hydrogen at fixed effort. Select an allowed model with <code>/model</code> or <code>agy --model &lt;id&gt;</code>.</p>
+        <p class="note">The enabled plugin blocks unapproved or unreported models before invocation, including Orchestrator (Argon). It does not change the CLI picker. Workers inherit the selected model; profiles are recommendations and do not switch models automatically. Specialized API models are not general-purpose CLI agent models.</p>
       </section>
       <section>
         <div class="section-head"><h2>Native from the entrypoint down.</h2><span class="section-number">04 / UPGRADE</span></div>
@@ -111,7 +112,7 @@
       </section>
       <aside class="thanks" aria-label="Acknowledgment"><h2>Ideas worth building on.</h2><p><strong>Special thanks to <a href="https://www.threads.com/@hyunuk.lim" style="color:var(--accent)">@hyunuk.lim</a> (threads).</strong> His threads and posts were a major help in shaping this refactor: thin skills, physical tool constraints, honest failure, bounded repairs, and focused reviews.<br><br>Further reading: <a href="https://medium.com/@dev.hyunuk/3f86bb9b8ab7" style="color:var(--accent)">his Medium article on the ideas behind the v1.0 renewal</a>. Thank you for sharing the concepts and experience that helped shape OmA’s workflow.</p></aside>
     </main>
-    <footer><span>oh-my-antigravity · v1.2.0 · MIT</span><span><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/README_ko.md" lang="ko">한국어</a> · <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity">Source</a> · <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/history.md">History</a> · <a href="https://github.com/sponsors/Joonghyun-Lee-Frieren">Sponsor</a></span></footer>
+    <footer><span>oh-my-antigravity · v1.2.1 · MIT</span><span><a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/README_ko.md" lang="ko">한국어</a> · <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity">Source</a> · <a href="https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/blob/main/docs/history.md">History</a> · <a href="https://github.com/sponsors/Joonghyun-Lee-Frieren">Sponsor</a></span></footer>
   </div>
   <script>
     const copy = document.getElementById('copy');

@@ -1,6 +1,6 @@
 # oh-my-antigravity (OmA)
 
-[![Version](https://img.shields.io/badge/version-1.2.0-0d8a83)](history.md)
+[![Version](https://img.shields.io/badge/version-1.2.1-0d8a83)](history.md)
 [![Checks](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-antigravity/version-check.yml?branch=main&label=checks)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](../LICENSE)
 
@@ -39,6 +39,10 @@ Design Check。通过后，**结束设计轮次**。在下一轮执行：
 准确的控制器命令、JSON 示例、恢复方法和约束边界，请参阅
 [受保护工作流指南](guide/guarded-workflow.md)。
 
+## v1.2.1 新功能
+
+模型目录现遵循 Gemini 指南，并包含 Orchestrator (Neon) 和 Orchestrator (Carbon)。调用前检查会阻止不允许的模型。v1.2.0 的工作流保护保持不变。
+
 ## v1.2.0 新功能
 
 现在会记录验证脚本和各检查 `inputs` 中声明的依赖文件哈希。输入变化会阻止开始实现、
@@ -69,20 +73,18 @@ Markdown 按标题分片，每片使用新对话，并由中央判定器审核�
 
 ## 模型
 
-推荐配置来自 [config/models.json](../config/models.json)，已于 2026-11-19 对照[官方模型文档](https://antigravity.google/docs/models)核实。
+模型目录依据 [Gemini 模型指南](https://aistudio.google.com/docs/choosing-a-model)；CLI 可用性参见 [Antigravity 模型文档](https://antigravity.google/docs/models)。核实日期：2026-11-20。
 
-| 角色 | Neon | Carbon | Balanced | Hydrogen | Flash |
-| --- | --- | --- | --- | --- | --- |
-| 设计与规划 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
-| 实现 | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
-| 快速任务 | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
-| 审查与验证 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| 角色 | Neon | Carbon | Balanced / Hydrogen |
+| --- | --- | --- | --- |
+| 设计与规划 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-hydrogen-high` |
+| 实现 | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` |
+| 快速任务 | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` |
+| 审查与验证 | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-hydrogen-high` |
 
-使用 `agy models` 查看账户可用模型，再通过 `agy --model <id>` 或 `/model` 选择。Hydrogen 还支持 `gemini-4-hydrogen-xhigh`。Carbon 适用于 Ultra 和符合条件的 Enterprise 账户；Argon 的可用性取决于套餐。请明确选择可用的配置。
+允许的通用模型为 Gemini 4 Neon、Carbon、Hydrogen 和 Gemini 3.5 Flash-Lite。指南建议将 Flash-Lite 用于 API 文本任务；其在 Antigravity CLI 中的可用性尚未确认，因此 CLI 配置不依赖它。专用 API 模型并非通用 CLI 代理模型。选择前请用 `agy models` 确认账户可用性。
 
-`/oma-model` 说明各配置；`auto` 保留当前模型，`custom` 需要指定全部四个角色。配置只是建议，不会自动切换模型：钩子不能替换模型，子代理使用 `model: inherit`。Antigravity 原生 [Orchestrator](https://antigravity.google/docs/models#orchestrator) 是独立的运行选项，结合 Neon、Carbon 或 Argon 与 Hydrogen，推理级别固定。
-
-Neon 支持 `agy --model gemini-4-neon-xhigh`，适用于付费 Google AI Pro、Ultra、符合条件的设备试用版和 Enterprise。原生选项 `agy --model "Orchestrator (Neon)"` 使用 Neon 规划、Hydrogen 实现；推理级别固定，可用套餐另有规定。
+原生选项 `agy --model "Orchestrator (Neon)"` 和 `agy --model "Orchestrator (Carbon)"` 将对应规划模型与 Hydrogen 组合，推理级别固定。插件在调用前阻止未允许或未报告的模型，包括 Orchestrator (Argon)。此检查仅在插件和钩子启用时生效，不会修改 CLI 模型选择列表。请通过 `/model` 或 `agy --model <id>` 选择可用且允许的模型。子代理继承当前模型。配置仅提供角色建议，不会自动切换；`auto` 保留当前选择，`custom` 需要四个允许的角色 ID。
 
 ## 工作流与角色
 

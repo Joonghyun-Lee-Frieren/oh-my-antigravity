@@ -1,6 +1,6 @@
 # oh-my-antigravity (OmA)
 
-[![Version](https://img.shields.io/badge/version-1.2.0-0d8a83)](docs/history.md)
+[![Version](https://img.shields.io/badge/version-1.2.1-0d8a83)](docs/history.md)
 [![Checks](https://img.shields.io/github/actions/workflow/status/Joonghyun-Lee-Frieren/oh-my-antigravity/version-check.yml?branch=main&label=checks)](https://github.com/Joonghyun-Lee-Frieren/oh-my-antigravity/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -44,6 +44,10 @@ when checks or reviews fail. Missing services, permissions, or evidence can end 
 Read the [guarded workflow guide](docs/guide/guarded-workflow.md) for exact controller
 commands, JSON examples, recovery, and enforcement limits.
 
+## What's new in v1.2.1
+
+The model catalog now follows the Gemini model guide and includes Orchestrator (Neon) and Orchestrator (Carbon). A pre-invocation check blocks models outside the approved list. The existing v1.2.0 workflow safeguards remain in place.
+
 ## What's new in v1.2.0
 
 Validator scripts and declared check `inputs` now have recorded hashes. Changed
@@ -82,20 +86,18 @@ stays unknown. Read [schemas and examples](docs/guide/session-continuity.md).
 
 ## Models
 
-Recommendations come from [config/models.json](config/models.json), checked against the [official model documentation](https://antigravity.google/docs/models) on 2026-11-19.
+The [Gemini model guide](https://aistudio.google.com/docs/choosing-a-model) informs the catalog; [Antigravity model documentation](https://antigravity.google/docs/models) describes CLI availability. Checked 2026-11-20.
 
-| Lane | Neon | Carbon | Balanced | Hydrogen | Flash |
-| --- | --- | --- | --- | --- | --- |
-| Design/planning | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
-| Implementation | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-3.8-flash-medium` |
-| Quick work | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-3.8-flash-low` |
-| Review/verification | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-argon-high` | `gemini-4-hydrogen-high` | `gemini-3.8-flash-high` |
+| Lane | Neon | Carbon | Balanced / Hydrogen |
+| --- | --- | --- | --- |
+| Design/planning | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-hydrogen-high` |
+| Implementation | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` | `gemini-4-hydrogen-medium` |
+| Quick work | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` | `gemini-4-hydrogen-low` |
+| Review/verification | `gemini-4-neon-high` | `gemini-4-carbon-high` | `gemini-4-hydrogen-high` |
 
-Use `agy models` to check account availability, then select a model with `agy --model <id>` or `/model`. For example, `agy --model gemini-4-hydrogen-xhigh` selects Hydrogen's extra-high reasoning level. Carbon is available on Ultra and eligible Enterprise accounts; Argon availability depends on the plan. Choose an available profile explicitly if necessary.
+The approved general models are Gemini 4 Neon, Carbon, Hydrogen, and Gemini 3.5 Flash-Lite. The guide recommends Flash-Lite for API text workloads; its availability in Antigravity CLI is unverified, so no CLI profile assumes it. Specialized API models are not general-purpose CLI agent models. Check `agy models` and account eligibility before selecting a model.
 
-`/oma-model` explains the profiles. `auto` keeps the selected runtime model; `custom` requires all four lanes. These are recommendations, not automatic model switches: hooks cannot override the runtime model and subagents use `model: inherit`. Antigravity's native [Orchestrator](https://antigravity.google/docs/models#orchestrator) is a separate runtime option that coordinates Neon, Carbon or Argon with Hydrogen and has a fixed effort setting.
-
-Neon supports `agy --model gemini-4-neon-xhigh` and is available on paid Google AI Pro, Ultra, eligible device trials, and Enterprise. The native `agy --model "Orchestrator (Neon)"` pairs Neon planning with Hydrogen execution; it uses fixed effort and has separate plan availability.
+Native `agy --model "Orchestrator (Neon)"` and `agy --model "Orchestrator (Carbon)"` coordinate the named planner with Hydrogen; effort is fixed. The plugin blocks unapproved or missing model identities before invocation, including Orchestrator (Argon). This check applies only while the plugin and hook are enabled; it does not change the CLI model picker. Choose an allowed available model with `/model` or `agy --model <id>`. Subagents inherit the selected runtime model. Profiles recommend lanes; they do not switch models. `auto` inherits the current selection and `custom` requires four approved lane IDs.
 
 ## Workflows and roles
 
